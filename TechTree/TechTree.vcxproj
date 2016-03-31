@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CFF4EF58-9565-4D66-89D7-79A59D95ADF8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>TechTree</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;TECHTREE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;TECHTREE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/arch:SSE %(AdditionalOptions)</AdditionalOptions>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ExceptionHandling>false</ExceptionHandling>
+      <PreprocessToFile>false</PreprocessToFile>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AnotherControlRelatedClass.cpp" />
+    <ClCompile Include="BaseUnitData.cpp" />
+    <ClCompile Include="ButtonControl.cpp" />
+    <ClCompile Include="CivData.cpp" />
+    <ClCompile Include="ComboBoxControl.cpp" />
+    <ClCompile Include="Control.cpp" />
+    <ClCompile Include="DirectDrawBufferData.cpp" />
+    <ClCompile Include="DirectDrawBufferDataListElement.cpp" />
+    <ClCompile Include="DirectDrawHandler.cpp" />
+    <ClCompile Include="DropDownButtonControl.cpp" />
+    <ClCompile Include="FontData.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameDataHandler.cpp" />
+    <ClCompile Include="LabelControl.cpp" />
+    <ClCompile Include="LabelLineData.cpp" />
+    <ClCompile Include="ListBoxControl.cpp" />
+    <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="ResearchData.cpp" />
+    <ClCompile Include="ResearchDataItem.cpp" />
+    <ClCompile Include="ScrollBarControl.cpp" />
+    <ClCompile Include="SlpFile.cpp" />
+    <ClCompile Include="SlpFileElement.cpp" />
+    <ClCompile Include="SlpFrameHeader.cpp" />
+    <ClCompile Include="StaticControlContainer.cpp" />
+    <ClCompile Include="TechTree.cpp" />
+    <ClCompile Include="functions.cpp" />
+    <ClCompile Include="ControlListElement.cpp" />
+    <ClCompile Include="TechTreeData.cpp" />
+    <ClCompile Include="TechTreeElement.cpp" />
+    <ClCompile Include="TechTreeRenderer.cpp" />
+    <ClCompile Include="TechTreeWindow.cpp" />
+    <ClCompile Include="TextBoxControl.cpp" />
+    <ClCompile Include="TextFormatData.cpp" />
+    <ClCompile Include="Unknown1064ByteDirectDrawRelatedClass.cpp" />
+    <ClCompile Include="UnknownPaletteRelatedClass.cpp" />
+    <ClCompile Include="VanillaTechTreeRenderer.cpp" />
+    <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnotherControlRelatedClass.h" />
+    <ClInclude Include="BaseUnitData.h" />
+    <ClInclude Include="ButtonControl.h" />
+    <ClInclude Include="CivData.h" />
+    <ClInclude Include="ComboBoxControl.h" />
+    <ClInclude Include="Control.h" />
+    <ClInclude Include="DirectDrawBufferData.h" />
+    <ClInclude Include="DirectDrawBufferDataListElement.h" />
+    <ClInclude Include="DirectDrawHandler.h" />
+    <ClInclude Include="DrawUtilities.h" />
+    <ClInclude Include="DropDownButtonControl.h" />
+    <ClInclude Include="FontData.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameDataHandler.h" />
+    <ClInclude Include="GameType.h" />
+    <ClInclude Include="functions.h" />
+    <ClInclude Include="LabelControl.h" />
+    <ClInclude Include="LabelLineData.h" />
+    <ClInclude Include="ListBoxControl.h" />
+    <ClInclude Include="Panel.h" />
+    <ClInclude Include="ResearchData.h" />
+    <ClInclude Include="ResearchDataItem.h" />
+    <ClInclude Include="ScrollBarControl.h" />
+    <ClInclude Include="SlpFile.h" />
+    <ClInclude Include="SlpFileElement.h" />
+    <ClInclude Include="SlpFrameHeader.h" />
+    <ClInclude Include="ControlListElement.h" />
+    <ClInclude Include="StaticControlContainer.h" />
+    <ClInclude Include="TechTreeData.h" />
+    <ClInclude Include="TechTreeElement.h" />
+    <ClInclude Include="TechTreeRenderer.h" />
+    <ClInclude Include="TechTreeWindow.h" />
+    <ClInclude Include="TextBoxControl.h" />
+    <ClInclude Include="TextFormatData.h" />
+    <ClInclude Include="Unknown1064ByteDirectDrawRelatedClass.h" />
+    <ClInclude Include="UnknownPaletteRelatedClass.h" />
+    <ClInclude Include="VanillaTechTreeRenderer.h" />
+    <ClInclude Include="VTableType.h" />
+    <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
