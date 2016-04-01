@@ -31,9 +31,8 @@ Also some virus scanners may have problems with this software, as it uses DLL in
 
 ## TODO
 
-* Support all resolutions and more than 4 ages.
 * Recognize additional information the game gives, i.e. researched items, civs of allies...
-* Add another renderer that is easier moddable and less hardcoded than the vanilla one in terms of resolution and background images.
+* Add another renderer that is easier moddable and less hardcoded than the vanilla one in terms of age count, resolution and background images.
 
 
 ## LEGAL INFO & CREDITS

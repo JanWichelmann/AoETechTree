@@ -79,7 +79,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int someDa
 
 	// Create tech tree renderer
 	// TODO: Hardcoded
-	_renderer = new VanillaTechTreeRenderer((*_staticGameObjectPointer)->GetGameDataHandler());
+	_renderer = new VanillaTechTreeRenderer((*_staticGameObjectPointer)->GetGameDataHandler(), Size(_width1, _height1));
 
 	// Get the renderer's age count
 	_ageCount = _renderer->GetAgeCount();
@@ -365,7 +365,7 @@ int TechTreeWindow::DoUpdate()
 		// Calculate scroll offsets depending on current mouse cursor position
 		int scrollOffsetX = 0;
 		if(_mouseCursorPosition.X <= SCROLL_AREA)
-			scrollOffsetX = -15; // TODO: Hardcoded...
+			scrollOffsetX = -15;
 		else if(_mouseCursorPosition.X > _width1 - SCROLL_AREA)
 			scrollOffsetX = 15;
 		int scrollOffsetY = 0;

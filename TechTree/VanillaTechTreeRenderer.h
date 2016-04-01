@@ -21,7 +21,7 @@ private:
 
 private:
 	// The space between to tech tree elements.
-	static const int ELEMENT_SPACING = 32;
+	static const int ELEMENT_SPACING = 3;
 
 	// The inner padding of the popup label box.
 	static const int POPUP_LABEL_BOX_PADDING = 8;
@@ -126,7 +126,8 @@ public:
 	// Creates a new vanilla tech tree renderer for the given tech tree.
 	// Parameteres:
 	// -> gameData: The game data.
-	VanillaTechTreeRenderer(GameDataHandler *gameData);
+	// -> windowSize: The size of the render window.
+	VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize);
 
 	// Destructor.
 	~VanillaTechTreeRenderer();

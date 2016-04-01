@@ -13,7 +13,7 @@
 
 /* FUNCTIONS */
 
-VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData)
+VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize)
 	: TechTreeRenderer(gameData)
 {
 	// Load icon SLPs
@@ -24,64 +24,151 @@ VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData)
 	// Load node SLP
 	_nodeGraphics = new SlpFileElement("technodex.slp", 53206);
 
-	// Load node caption font
-	_nodeFont = (*_staticGameObjectPointer)->GetFontWithIndex(12);
-
 	// Load legend SLP
 	_legendAndAgesSlp = new SlpFileElement("techages.slp", 50342);
-	_legendFrameIndex = 1; // TODO: Hardcoded
-	_legendAndAgesSlp->GetFrameSize(_legendFrameIndex, &_legendFrameWidth, &_legendFrameHeight);
-	_agesFrameIndex = 8; // TODO: Hardcoded
-	_legendAndAgesSlp->GetFrameSize(_agesFrameIndex, &_agesFrameWidth, &_agesFrameHeight);
 
 	// Load tile SLP
 	_tileSlp = new SlpFileElement("techback.slp", 50341);
-	_tileFrameIndex = 1; // TODO: Hardcoded
-	_tileSlp->GetFrameSize(_tileFrameIndex, &_tileFrameWidth, &_tileFrameHeight);
 
 	// Load legend "disable" SLP
 	_legendDisableSlp = new SlpFileElement("ttx.slp", 53211);
-	_legendDisableSlpDrawPosition = Point(121, 926); // TODO: Hardcoded
+
+	// Set resolution specific position values
+	_verticalDrawOffsets = new int[_ageCount * 2];
+	_ageLabelRectangles = new Rect[_ageCount][2][2];
+	if(windowSize.Y >= 1024)
+	{
+		// Frame indices
+		_legendFrameIndex = 1;
+		_agesFrameIndex = 8;
+		_tileFrameIndex = 1;
+
+		// Control draw positions
+		_legendDisableSlpDrawPosition = Point(121, 926);
+		_civBonusLabelRectangle = Rect(40, 125, 290, 660);
+		_civSelectionComboBoxRectangle = Rect(70, 90, 230, 25);
+		_gameCivsLabelRectangle = Rect(70, 70, 230, 25);
+
+		// Legend labels
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(50, 814, 80, 40);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(50 + 100, 814, 80, 40);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(200, 855 + 0 * 23, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(200, 855 + 1 * 23, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(200, 855 + 2 * 23, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(200 - 45, 855 + 3 * 23 + 15, 160, 25);
+
+		// Age draw heights
+		_verticalDrawOffsets[0] = 10;
+		_verticalDrawOffsets[1] = 133;
+		_verticalDrawOffsets[2] = 267;
+		_verticalDrawOffsets[3] = 390;
+		_verticalDrawOffsets[4] = 525;
+		_verticalDrawOffsets[5] = 648;
+		_verticalDrawOffsets[6] = 783;
+		_verticalDrawOffsets[7] = 906;
+
+		// Age labels
+		// Calculate left side rectangles, right side follows later when the tree width is known
+		// Bottom lines follow after resolution setting, they are always the same relative to the upper line labels
+		_ageLabelRectangles[0][0][0] = Rect(450, 140, 150, 25);
+		_ageLabelRectangles[1][0][0] = Rect(450, 420, 150, 25);
+		_ageLabelRectangles[2][0][0] = Rect(450, 660, 150, 25);
+		_ageLabelRectangles[3][0][0] = Rect(450, 920, 150, 25);
+	}
+	else if(windowSize.Y >= 768)
+	{
+		// Frame indices
+		_legendFrameIndex = 0;
+		_agesFrameIndex = 7;
+		_tileFrameIndex = 0;
+
+		// Control draw positions
+		_legendDisableSlpDrawPosition = Point(113, 665);
+		_civBonusLabelRectangle = Rect(40, 120, 280, 430);
+		_civSelectionComboBoxRectangle = Rect(65, 85, 230, 25);
+		_gameCivsLabelRectangle = Rect(65, 65, 230, 25);
+
+		// Legend labels
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(45, 550, 80, 40);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(45 + 90, 550, 80, 40);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(188, 593 + 0 * 22, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(188, 593 + 1 * 22, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(188, 593 + 2 * 22, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(188 - 40, 593 + 3 * 22 + 15, 160, 25);
+
+		// Age draw heights
+		_verticalDrawOffsets[0] = 7;
+		_verticalDrawOffsets[1] = 99;
+		_verticalDrawOffsets[2] = 200;
+		_verticalDrawOffsets[3] = 292;
+		_verticalDrawOffsets[4] = 393;
+		_verticalDrawOffsets[5] = 485;
+		_verticalDrawOffsets[6] = 586;
+		_verticalDrawOffsets[7] = 678;
+
+		// Age labels
+		_ageLabelRectangles[0][0][0] = Rect(345, 131, 150, 25);
+		_ageLabelRectangles[1][0][0] = Rect(345, 324, 150, 25);
+		_ageLabelRectangles[2][0][0] = Rect(345, 517, 150, 25);
+		_ageLabelRectangles[3][0][0] = Rect(345, 711, 150, 25);
+	}
+	else
+	{
+		// Frame indices
+		_legendFrameIndex = 2;
+		_agesFrameIndex = 17;
+		_tileFrameIndex = 2;
+
+		// Control draw positions
+		_legendDisableSlpDrawPosition = Point(102, 528);
+		_civBonusLabelRectangle = Rect(30, 115, 270, 300);
+		_civSelectionComboBoxRectangle = Rect(55, 80, 230, 25);
+		_gameCivsLabelRectangle = Rect(55, 60, 230, 25);
+
+		// Legend labels
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(35, 430, 80, 40);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(35 + 80, 430, 80, 40);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(167, 470 + 0 * 22, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(167, 470 + 1 * 22, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(167, 470 + 2 * 22, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(167 - 30, 470 + 3 * 22 + 3, 160, 25);
+
+		// Age draw heights
+		_verticalDrawOffsets[0] = 6;
+		_verticalDrawOffsets[1] = 78;
+		_verticalDrawOffsets[2] = 157;
+		_verticalDrawOffsets[3] = 229;
+		_verticalDrawOffsets[4] = 308;
+		_verticalDrawOffsets[5] = 380;
+		_verticalDrawOffsets[6] = 459;
+		_verticalDrawOffsets[7] = 531;
+
+		// Age labels
+		_ageLabelRectangles[0][0][0] = Rect(340, 110, 150, 25);
+		_ageLabelRectangles[1][0][0] = Rect(340, 261, 150, 25);
+		_ageLabelRectangles[2][0][0] = Rect(340, 412, 150, 25);
+		_ageLabelRectangles[3][0][0] = Rect(340, 563, 150, 25);
+	}
+
+	// Set upper line position data according to difference of the last two age Y positions for all extra ages
+	for(int i = 4; i < _ageCount; ++i)
+		_ageLabelRectangles[i][0][0] = Rect(_ageLabelRectangles[3][0][0].X, _ageLabelRectangles[3][0][0].Y - _ageLabelRectangles[2][0][0].Y, _ageLabelRectangles[3][0][0].Width, _ageLabelRectangles[3][0][0].Height);
+
+	// Set second line age label parameters (they directly depend on first line label parameters)
+	for(int i = 0; i < _ageCount; ++i)
+		_ageLabelRectangles[i][0][1] = Rect(_ageLabelRectangles[i][0][0].X, _ageLabelRectangles[i][0][0].Y + 17, _ageLabelRectangles[i][0][0].Width, _ageLabelRectangles[i][0][0].Height);
+
+	// Get some SLP frame sizes
+	_legendAndAgesSlp->GetFrameSize(_agesFrameIndex, &_agesFrameWidth, &_agesFrameHeight);
+	_tileSlp->GetFrameSize(_tileFrameIndex, &_tileFrameWidth, &_tileFrameHeight);
+	_legendAndAgesSlp->GetFrameSize(_legendFrameIndex, &_legendFrameWidth, &_legendFrameHeight);
+
+	// Load node caption font
+	_nodeFont = (*_staticGameObjectPointer)->GetFontWithIndex(12);
 
 	// Initialize tree computation variables
 	_treeWidth = 0;
 	_treeLayoutMatrix = new TechTreeElement**[_ageCount * 2](); // Filled later
-
-	// Initialize age offsets
-	_verticalDrawOffsets = new int[_ageCount * 2];
-	// TODO: Hardcoded
-	_verticalDrawOffsets[0] = 45;
-	_verticalDrawOffsets[1] = 145;
-	_verticalDrawOffsets[2] = 305;
-	_verticalDrawOffsets[3] = 405;
-	_verticalDrawOffsets[4] = 565;
-	_verticalDrawOffsets[5] = 665;
-	_verticalDrawOffsets[6] = 825;
-	_verticalDrawOffsets[7] = 925;
-
-	// Set various control rectangles
-	// TODO: Hardcoded
-	_civBonusLabelRectangle = Rect(40, 120, 280, 430);
-	_civSelectionComboBoxRectangle = Rect(65, 85, 230, 25);
-	_gameCivsLabelRectangle = Rect(65, 65, 230, 25);
-	_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(50, 814, 80, 40);
-	_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(50 + 100, 814, 80, 40);
-	_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(200, 855 + 0 * 23, 160, 25);
-	_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(200, 855 + 1 * 23, 160, 25);
-	_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(200, 855 + 2 * 23, 160, 25);
-	_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(200 - 45, 855 + 3 * 23 + 15, 160, 25);
-
-	// Set age label rectangles
-	_ageLabelRectangles = new Rect[_ageCount][2][2];
-	// TODO: Hardcoded
-	for(int i = 0; i < _ageCount; ++i)
-	{
-		// Calculate left side rectangles
-		// Right side follows later when the tree width is known
-		int currAgeLabelPosY = i * 260 + 140;
-		_ageLabelRectangles[i][0][0] = Rect(_legendFrameWidth, currAgeLabelPosY, 150, 25); // OK to be constant
-		_ageLabelRectangles[i][0][1] = Rect(_legendFrameWidth, currAgeLabelPosY + 17, 150, 25);
-	}
 
 	// Set popup label box bevel colors
 	HPALETTE palette = (*_staticGameObjectPointer)->GetDirectDrawHandler()->GetMainPalette();
@@ -466,22 +553,17 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 	}
 
 	// Recalculate age label positions
-	// TODO: Hardcoded
 	for(int i = 0; i < _ageCount; ++i)
 	{
 		// Calculate rectangles
-		int currAgeLabelPosY = i * 260 + 140;
 		int fullTreeWidth = GetFullWidth();
-		_ageLabelRectangles[i][1][0] = Rect(fullTreeWidth - 150, currAgeLabelPosY, 150, 25); // X position is calculated later when the full tree width is known
-		_ageLabelRectangles[i][1][1] = Rect(fullTreeWidth - 150, currAgeLabelPosY + 17, 150, 25);
+		_ageLabelRectangles[i][1][0] = Rect(fullTreeWidth - _ageLabelRectangles[i][0][0].Width, _ageLabelRectangles[i][0][0].Y, _ageLabelRectangles[i][0][0].Width, _ageLabelRectangles[i][0][0].Height);
+		_ageLabelRectangles[i][1][1] = Rect(fullTreeWidth - _ageLabelRectangles[i][0][1].Width, _ageLabelRectangles[i][0][1].Y, _ageLabelRectangles[i][0][1].Width, _ageLabelRectangles[i][0][1].Height);
 	}
 }
 
 int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startColumnIndex, bool secondInAge)
 {
-	// TODO: Assertion for debugging purposes
-	_ASSERTE(startColumnIndex % 2 == 0);
-
 	// Compute children sub trees
 	int subTreeWidth = 0;
 	for(TechTreeElement *currChild : element->_children)
