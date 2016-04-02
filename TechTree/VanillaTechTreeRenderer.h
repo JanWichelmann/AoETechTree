@@ -21,7 +21,8 @@ private:
 
 private:
 	// The space between to tech tree elements.
-	static const int ELEMENT_SPACING = 3;
+	// WARNING: When you want to change this to an odd value, you have to use floating point division in the GetElementAtPosition function, else you'll get precision errors.
+	static const int ELEMENT_SPACING = 4;
 
 	// The inner padding of the popup label box.
 	static const int POPUP_LABEL_BOX_PADDING = 8;
@@ -97,6 +98,9 @@ protected: // Member variables
 	// Even column indices: Elements at integer positions.
 	// Odd column indices: Elements at half positions.
 	TechTreeElement ***_treeLayoutMatrix;
+
+	// The size of the drawing window. Used for more efficient drawing.
+	Size _windowSize;
 
 	// The rectangle of the civ bonus label.
 	Rect _civBonusLabelRectangle;

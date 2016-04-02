@@ -36,6 +36,7 @@ VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size
 	// Set resolution specific position values
 	_verticalDrawOffsets = new int[_ageCount * 2];
 	_ageLabelRectangles = new Rect[_ageCount][2][2];
+	_windowSize = windowSize;
 	if(windowSize.Y >= 1024)
 	{
 		// Frame indices
@@ -210,28 +211,29 @@ void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX
 	// Lock surface of draw buffer
 	drawBuffer->LockAssociatedSurface(1);
 
-	// Draw background tiles
+	// Draw background tiles (only for visible area)
 	int treeWidthInPixels = _treeWidth * (64 + ELEMENT_SPACING);
 	int tileCount = treeWidthInPixels / _tileFrameWidth;
 	if(tileCount * _tileFrameWidth < treeWidthInPixels)
 		++tileCount;
-	for(int i = 0; i < tileCount; ++i)
+	int tileMin = (offsetX - _legendFrameWidth - _agesFrameWidth) / _tileFrameWidth;
+	int tileMax = std::min(tileCount, tileMin + (_windowSize.X / _tileFrameWidth) + 1);
+	for(int i = tileMin; i <= tileMax; ++i)
 		_tileSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX + _legendFrameWidth + _agesFrameWidth + i * _tileFrameWidth, -offsetY, _tileFrameIndex, 0);
 
 	// Draw age bars
-	_legendAndAgesSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX + _legendFrameWidth, -offsetY, _agesFrameIndex, 0);
-	_legendAndAgesSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX + _legendFrameWidth + _agesFrameWidth + tileCount * _tileFrameWidth, -offsetY, _agesFrameIndex, 0);
+	if(offsetX <= _legendFrameWidth + _agesFrameWidth)
+		_legendAndAgesSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX + _legendFrameWidth, -offsetY, _agesFrameIndex, 0);
+	if(offsetX >= _legendFrameWidth + tileCount * _tileFrameWidth - _windowSize.X)
+		_legendAndAgesSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX + _legendFrameWidth + _agesFrameWidth + tileCount * _tileFrameWidth, -offsetY, _agesFrameIndex, 0);
 
 	// Draw legend
-	_legendAndAgesSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX, -offsetY, _legendFrameIndex, 0);
+	if(offsetX <= _legendFrameWidth)
+		_legendAndAgesSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, -offsetX, -offsetY, _legendFrameIndex, 0);
 
 	// Draw legend "disable" symbol
-	_legendDisableSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, _legendDisableSlpDrawPosition.X - offsetX, _legendDisableSlpDrawPosition.Y - offsetY, 0, 0);
-
-	// Debugging
-	for(int i = 0; i < _ageCount * 2; ++i)
-		for(int j = 0; j < _treeWidth * 2; ++j)
-			drawBuffer->DrawFilledRectangle(1700 + 16 * j, 900 + 16 * i, 1716 + 16 * j, 916 + 16 * i, _treeLayoutMatrix[i][j] != nullptr ? 36 : 0);
+	if(offsetX <= _legendFrameWidth)
+		_legendDisableSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, _legendDisableSlpDrawPosition.X - offsetX, _legendDisableSlpDrawPosition.Y - offsetY, 0, 0);
 
 	// Unlock surface of draw buffer
 	drawBuffer->UnlockAssociatedSurface();
@@ -340,14 +342,14 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	if(element->_renderState == TechTreeElement::ItemRenderState::Hidden)
 		return;
 
-	// Lock surface of draw buffer
-	drawBuffer->LockAssociatedSurface(1);
-
 	// Calculate element absolute draw position
 	int drawX = -offsetX + (element->_renderPosition.X / 2) * (64 + ELEMENT_SPACING);
 	if(element->_renderPosition.X % 2 == 1)
 		drawX += (64 + ELEMENT_SPACING) / 2;
 	int drawY = -offsetY + _verticalDrawOffsets[element->_renderPosition.Y];
+
+	// Check whether element is visible (if not, omit drawing)
+	bool elementIsVisible = (-64 <= drawX) || (drawX <= _windowSize.X);
 
 	// Is the element part of a selection path? => Store flag for drawing
 	// This flag is not set for the selected element itself.
@@ -380,6 +382,9 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		iconId = _gameData->_researches->_researches[element->_elementObjectID]._iconID;
 	}
 
+	// Lock surface of draw buffer
+	drawBuffer->LockAssociatedSurface(1);
+
 	// Need to draw lines below?
 	if(element->_children.size() > 0)
 	{
@@ -391,6 +396,10 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		int rightMostChildDrawX = INT32_MIN;
 		for(TechTreeElement *currChild : element->_children)
 		{
+			// Check whether child is visible
+			if(currChild->_renderState == TechTreeElement::ItemRenderState::Hidden)
+				continue;
+
 			// Check whether the element is directly reachable from the root element (there are no elements on top of it)
 			bool elementIsReachable = true;
 			for(int y = currChild->_renderPosition.Y; y < element->_renderPosition.Y; --y)
@@ -463,44 +472,52 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		}
 	}
 
-	// Is the element selected or part of a selection path? => Draw white box as background
-	if(elementIsSelectionPathElement || element == _selectedElement)
-		drawBuffer->DrawFilledRectangle(drawX - 2, drawY - 2, drawX + 64 + 1, drawY + 64 + 1, 255);
-
-	// Draw element
-	_nodeGraphics->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX, drawY, boxSlpFrameIndex, 0);
-	if(iconId >= 0)
-		iconSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, iconId, 0);
-
-	// If the element is disabled, draw disable graphic on top of it
-	if(element->_renderState == TechTreeElement::ItemRenderState::Disabled)
+	// If element is not visible, don't draw it
+	if(elementIsVisible)
 	{
-		// Draw node disable graphic (frame #6)
-		// Per default this graphic consists only of one transparent pixel, so it could as well be omitted. Kept here for possible modding purposes.
-		_nodeGraphics->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX, drawY, 6, 0);
+		// Is the element selected or part of a selection path? => Draw white box as background
+		if(elementIsSelectionPathElement || element == _selectedElement)
+			drawBuffer->DrawFilledRectangle(drawX - 2, drawY - 2, drawX + 64 + 1, drawY + 64 + 1, 255);
 
-		// Draw icon disable graphic (frame #117 in research icon SLP)
-		_researchIcons->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, 117, 0);
+		// Draw element
+		_nodeGraphics->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX, drawY, boxSlpFrameIndex, 0);
+		if(iconId >= 0)
+			iconSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, iconId, 0);
+
+		// If the element is disabled, draw disable graphic on top of it
+		if(element->_renderState == TechTreeElement::ItemRenderState::Disabled)
+		{
+			// Draw node disable graphic (frame #6)
+			// Per default this graphic consists only of one transparent pixel, so it could as well be omitted. Kept here for possible modding purposes.
+			_nodeGraphics->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX, drawY, 6, 0);
+
+			// Draw icon disable graphic (frame #117 in research icon SLP)
+			_researchIcons->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, 117, 0);
+		}
 	}
 
 	// Unlock surface of draw buffer
 	drawBuffer->UnlockAssociatedSurface();
 
-	// Load element font for GDI
-	HDC gdiContext = drawBuffer->CreateGdiContext();
-	SetBkMode(gdiContext, TRANSPARENT);
-	HGDIOBJ oldGdiObject = SelectObject(gdiContext, _nodeFont->GetFontHandle());
-	SetTextColor(gdiContext, 0xFFFFFF);
+	// Same procedure with the text: This saves a lot of time
+	if(elementIsVisible)
+	{
+		// Load element font for GDI
+		HDC gdiContext = drawBuffer->CreateGdiContext();
+		SetBkMode(gdiContext, TRANSPARENT);
+		HGDIOBJ oldGdiObject = SelectObject(gdiContext, _nodeFont->GetFontHandle());
+		SetTextColor(gdiContext, 0xFFFFFF);
 
-	// Draw element text
-	if(element->_elementNameFirstLine[0] != '\0')
-		TextOutA(gdiContext, drawX + 3, drawY + 37, element->_elementNameFirstLine, strlen(element->_elementNameFirstLine));
-	if(element->_elementNameSecondLine[0] != '\0')
-		TextOutA(gdiContext, drawX + 3, drawY + 37 + _nodeFont->GetCharHeightWithRowSpace() - 6, element->_elementNameSecondLine, strlen(element->_elementNameSecondLine));
+		// Draw element text
+		if(element->_elementNameFirstLine[0] != '\0')
+			TextOutA(gdiContext, drawX + 3, drawY + 37, element->_elementNameFirstLine, strlen(element->_elementNameFirstLine));
+		if(element->_elementNameSecondLine[0] != '\0')
+			TextOutA(gdiContext, drawX + 3, drawY + 37 + _nodeFont->GetCharHeightWithRowSpace() - 6, element->_elementNameSecondLine, strlen(element->_elementNameSecondLine));
 
-	// Reset selected GDI object
-	SelectObject(gdiContext, oldGdiObject);
-	drawBuffer->DeleteGdiContext();
+		// Reset selected GDI object
+		SelectObject(gdiContext, oldGdiObject);
+		drawBuffer->DeleteGdiContext();
+	}
 
 	// Render sub elements
 	for(TechTreeElement *currChild : element->_children)
