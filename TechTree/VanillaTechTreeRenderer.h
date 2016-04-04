@@ -8,6 +8,9 @@
 // Other includes
 #include "SlpFileElement.h"
 #include "FontData.h"
+#include <stack>
+#include <vector>
+#include <tuple>
 
 
 /* DEFINITIONS */
@@ -125,6 +128,9 @@ protected: // Member variables
 
 	// The bevel colors of the popup label box.
 	unsigned char _popupLabelBoxBevelColors[6];
+
+	// A temporary storage for the element captions to be drawn. This allows to do all TextOutA calls at once, saving a lot of context creations/deletions.
+	std::stack<std::tuple<int, int, char *, unsigned int>> _elementTextsForDrawRun;
 
 public:
 	// Creates a new vanilla tech tree renderer for the given tech tree.

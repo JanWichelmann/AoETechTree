@@ -5,8 +5,6 @@
 
 // Other includes
 #include <algorithm>
-#include <stack>
-#include <vector>
 #include <functional>
 #include "Game.h"
 #include "DirectDrawHandler.h"
@@ -235,12 +233,31 @@ void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX
 	if(offsetX <= _legendFrameWidth)
 		_legendDisableSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, _legendDisableSlpDrawPosition.X - offsetX, _legendDisableSlpDrawPosition.Y - offsetY, 0, 0);
 
-	// Unlock surface of draw buffer
-	drawBuffer->UnlockAssociatedSurface();
-
 	// Render elements recursively
 	for(TechTreeElement *currRootElement : _gameData->_techTree->GetRootElements())
 		RenderSubTree(currRootElement, drawBuffer, offsetX - _legendFrameWidth - _agesFrameWidth, offsetY);
+
+	// Unlock surface of draw buffer
+	drawBuffer->UnlockAssociatedSurface();
+
+	// Load element font for GDI
+	HDC gdiContext = drawBuffer->CreateGdiContext();
+	SetBkMode(gdiContext, TRANSPARENT);
+	HGDIOBJ oldGdiObject = SelectObject(gdiContext, _nodeFont->GetFontHandle());
+	SetTextColor(gdiContext, 0xFFFFFF);
+
+	// Render element captions
+	while(!_elementTextsForDrawRun.empty())
+	{
+		// Draw current entry
+		auto currEntry = _elementTextsForDrawRun.top();
+		_elementTextsForDrawRun.pop();
+		TextOutA(gdiContext, std::get<0>(currEntry), std::get<1>(currEntry), std::get<2>(currEntry), std::get<3>(currEntry));
+	}
+
+	// Reset selected GDI object
+	SelectObject(gdiContext, oldGdiObject);
+	drawBuffer->DeleteGdiContext();
 }
 
 void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer, int x, int y)
@@ -382,9 +399,6 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		iconId = _gameData->_researches->_researches[element->_elementObjectID]._iconID;
 	}
 
-	// Lock surface of draw buffer
-	drawBuffer->LockAssociatedSurface(1);
-
 	// Need to draw lines below?
 	if(element->_children.size() > 0)
 	{
@@ -494,29 +508,12 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 			// Draw icon disable graphic (frame #117 in research icon SLP)
 			_researchIcons->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, 117, 0);
 		}
-	}
-
-	// Unlock surface of draw buffer
-	drawBuffer->UnlockAssociatedSurface();
-
-	// Same procedure with the text: This saves a lot of time
-	if(elementIsVisible)
-	{
-		// Load element font for GDI
-		HDC gdiContext = drawBuffer->CreateGdiContext();
-		SetBkMode(gdiContext, TRANSPARENT);
-		HGDIOBJ oldGdiObject = SelectObject(gdiContext, _nodeFont->GetFontHandle());
-		SetTextColor(gdiContext, 0xFFFFFF);
-
-		// Draw element text
+	
+		// Put caption onto the text stack for later drawing
 		if(element->_elementNameFirstLine[0] != '\0')
-			TextOutA(gdiContext, drawX + 3, drawY + 37, element->_elementNameFirstLine, strlen(element->_elementNameFirstLine));
+			_elementTextsForDrawRun.push(std::make_tuple(drawX + 3, drawY + 37, element->_elementNameFirstLine, strlen(element->_elementNameFirstLine)));
 		if(element->_elementNameSecondLine[0] != '\0')
-			TextOutA(gdiContext, drawX + 3, drawY + 37 + _nodeFont->GetCharHeightWithRowSpace() - 6, element->_elementNameSecondLine, strlen(element->_elementNameSecondLine));
-
-		// Reset selected GDI object
-		SelectObject(gdiContext, oldGdiObject);
-		drawBuffer->DeleteGdiContext();
+			_elementTextsForDrawRun.push(std::make_tuple(drawX + 3, drawY + 37 + _nodeFont->GetCharHeightWithRowSpace() - 6, element->_elementNameSecondLine, strlen(element->_elementNameSecondLine)));
 	}
 
 	// Render sub elements
@@ -723,7 +720,7 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 
 	// Compute parent elements of selected element to draw the selection path
 	std::function<bool(TechTreeElement *)> getElementPathRecursively;
-	getElementPathRecursively = [this, element, &getElementPathRecursively](TechTreeElement *currElement)
+	getElementPathRecursively = [this, element, &getElementPathRecursively] (TechTreeElement *currElement)
 	{
 		// Push onto the path stack
 		_selectedElementPath.push_back(currElement);
