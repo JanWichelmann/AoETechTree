@@ -645,7 +645,7 @@ const Rect* VanillaTechTreeRenderer::GetAgeLabelRectangle(int age, bool side, bo
 	return &_ageLabelRectangles[age][side ? 1 : 0][line ? 1 : 0];
 }
 
-Rect& VanillaTechTreeRenderer::UpdateAndGetPopupLabelBoxDrawData(Size &popupLabelSize)
+Rect VanillaTechTreeRenderer::UpdateAndGetPopupLabelBoxDrawData(Size &popupLabelSize)
 {
 	// Calculate content width
 	int contentWidth = std::max(popupLabelSize.X, static_cast<int>(_selectedElement->_requiredElements.size() * (64 + ELEMENT_SPACING)) - ELEMENT_SPACING);

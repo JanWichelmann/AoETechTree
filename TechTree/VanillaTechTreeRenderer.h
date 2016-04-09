@@ -204,7 +204,7 @@ public:
 	// The position hereby is the relative offset of the label to the top left of the box, the size is the size of the box itself.
 	// Parameters:
 	// -> popupLabelSize: The size of the popup label.
-	virtual Rect& UpdateAndGetPopupLabelBoxDrawData(Size &popupLabelSize);
+	virtual Rect UpdateAndGetPopupLabelBoxDrawData(Size &popupLabelSize);
 
 	// Returns the element at the given pixel position.
 	// Parameters:
