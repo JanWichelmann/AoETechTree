@@ -31,7 +31,5 @@ protected: // Member variables
 	char _unknownValue16;
 
 public:
-
 };
 #pragma pack(pop)
-

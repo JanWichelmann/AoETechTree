@@ -27,7 +27,5 @@ protected: // Member variables
 	LabelLineData *_nextLineData;
 
 public:
-
 };
 #pragma pack(pop)
-

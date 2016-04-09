@@ -122,14 +122,26 @@ public:
 	// -> underlyingWindow: The calling window.
 	// -> someData: Data given ingame to highlight currently available units and researches.
 	// -> selectedCivId: The id of the initially selected civ.
-	TechTreeWindow(Window *underlyingWindow, int someData, int selectedCivId) { Constructor(underlyingWindow, someData, selectedCivId); }
+	TechTreeWindow(Window *underlyingWindow, int someData, int selectedCivId)
+	{
+		Constructor(underlyingWindow, someData, selectedCivId);
+	}
 	TechTreeWindow *Constructor(Window *underlyingWindow, int someData, int selectedCivId);
 
 	// Destructor.
 	void Destructor();
-	~TechTreeWindow() { Destructor(); }
-	void ScalarDeletingDestructor(char mode) { if(mode & 1) delete this; else Destructor(); }
-	static void operator delete(void *obj) { ::operator delete(obj); }
+	~TechTreeWindow()
+	{
+		Destructor();
+	}
+	void ScalarDeletingDestructor(char mode)
+	{
+		if(mode & 1) delete this; else Destructor();
+	}
+	static void operator delete(void *obj)
+	{
+		::operator delete(obj);
+	}
 
 	// Draws the tech tree and its sub controls.
 	void Draw();
@@ -190,7 +202,7 @@ public:
 	// -> verticalScrollOffset: The vertical scroll offset (> 0 -> scroll down).
 	void ApplyScrollOffset(int horizontalScrollOffset, int verticalScrollOffset);
 
-	// Sets the currently selected civ. 
+	// Sets the currently selected civ.
 	// Parameters:
 	// -> civId: The civ to be selected.
 	void SetCurrentCiv(int civId);

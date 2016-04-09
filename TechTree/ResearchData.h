@@ -8,7 +8,6 @@
 // Other includes
 #include "ResearchDataItem.h"
 
-
 /* DEFINITIONS */
 
 // Class prototype to avoid include loops
@@ -25,7 +24,5 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	GameDataHandler *_gameDataHandler;
 
 public:
-
 };
 #pragma pack(pop)
-

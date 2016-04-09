@@ -58,7 +58,10 @@ protected: // Member variables
 
 public:
 	// Constructor. Creates a new label.
-	LabelControl() { Constructor(); }
+	LabelControl()
+	{
+		Constructor();
+	}
 	LabelControl* Constructor();
 
 	// Sets an unknown flag and issues a redraw.

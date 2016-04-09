@@ -18,7 +18,5 @@ protected: // Member variables
 	DWORD _gap1[263];
 
 public:
-
 };
 #pragma pack(pop)
-

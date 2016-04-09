@@ -4,4 +4,3 @@
 #include "ResearchDataItem.h"
 
 /* FUNCTIONS */
-

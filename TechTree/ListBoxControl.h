@@ -26,6 +26,5 @@ protected: // Member variables
 	int _listControlValue10;
 
 public:
-
 };
 #pragma pack(pop)

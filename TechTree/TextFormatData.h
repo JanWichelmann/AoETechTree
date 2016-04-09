@@ -19,7 +19,5 @@ protected: // Member variables
 	TextFormatData *_nextFormatData;
 
 public:
-
 };
 #pragma pack(pop)
-

@@ -6,7 +6,6 @@
 #include <vector>
 #include "DrawUtilities.h"
 
-
 /* DEFINITIONS */
 
 // Represents a single tech tree element.

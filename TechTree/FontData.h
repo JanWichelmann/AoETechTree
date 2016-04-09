@@ -7,7 +7,6 @@
 
 // Other includes
 
-
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
@@ -30,4 +29,3 @@ public:
 	int GetAverageCharWidth();
 };
 #pragma pack(pop)
-

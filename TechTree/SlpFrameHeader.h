@@ -22,6 +22,5 @@ protected: // Member variables
 	int AnchorY;
 
 public:
-
 };
 #pragma pack(pop)

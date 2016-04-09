@@ -4,4 +4,3 @@
 #include "ControlListElement.h"
 
 /* FUNCTIONS */
-

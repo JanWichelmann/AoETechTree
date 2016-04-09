@@ -4,4 +4,3 @@
 #include "GameDataHandler.h"
 
 /* FUNCTIONS */
-

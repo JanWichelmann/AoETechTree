@@ -4,4 +4,3 @@
 #include "BaseUnitData.h"
 
 /* FUNCTIONS */
-

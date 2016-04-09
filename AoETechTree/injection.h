@@ -12,12 +12,10 @@
 // C standard I/O functions
 #include <cstdio>
 
-
 /* MAKROS */
 
 // Maximum string length.
 #define MAX_STRING_LENGTH MAX_PATH
-
 
 /* FUNKTIONEN */
 
@@ -42,7 +40,7 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 	DWORD addrInjectErrorTitle = 0;
 	char injectErrorTitle[MAX_STRING_LENGTH + 1] = { 0 };
 	_snprintf_s(injectErrorTitle, MAX_STRING_LENGTH + 1, MAX_STRING_LENGTH, "Error");
-	
+
 	// Error message: DLL loading failed
 	DWORD addrInjectError1 = 0;
 	char injectError1[MAX_STRING_LENGTH + 1] = { 0 };
@@ -68,7 +66,7 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 
 	// Get address of MessageBox function (for error messages)
 	FARPROC procMessageBoxA = GetProcAddress(user32, "MessageBoxA");
-	
+
 	// Execution offset in reserved memory
 	DWORD addrExecBegin = 0;
 
@@ -76,7 +74,6 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 	LPBYTE mem = (LPBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 1024);
 	LPVOID memProcAddr = VirtualAllocEx(process, 0, 1024, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 	DWORD memProcAddrVal = PtrToUlong(memProcAddr);
-
 
 	/*** DATA ***/
 
@@ -118,7 +115,6 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 
 	// Save code segment start
 	addrExecBegin = memProcAddrVal + memPos;
-
 
 	/*** DLL LOAD CODE ***/
 	// The following commands are assembled by hand.
@@ -186,7 +182,7 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 		// -> Call MessageBoxA and show error message
 		mem[memPos++] = 0xFF;
 		mem[memPos++] = 0xD0;
-		
+
 		// push 0
 		// -> Push error code for ExitProcess onto the stack
 		mem[memPos++] = 0x6A;
@@ -290,7 +286,6 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 	mem[memPos++] = 0xFF;
 	mem[memPos++] = 0xD0;
 
-	
 	/*** END OF DLL LOAD CODE ***/
 	// The DLL stays loaded, the loading thread is terminated.
 
@@ -309,7 +304,6 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 	// -> Call ExitThread, end of execution
 	mem[memPos++] = 0xFF;
 	mem[memPos++] = 0xD0;
-
 
 	/*** INJECT THE LOAD CODE ***/
 
@@ -333,7 +327,7 @@ void InjectDLL(HANDLE process, const char* dllPath, const char* dllFunc)
 	// Run DLL loading thread
 	// The start address is the offset where our load code starts (addrExecBegin)
 	HANDLE loaderThread = CreateRemoteThread(process, NULL, 0, (LPTHREAD_START_ROUTINE)ULongToPtr(addrExecBegin), 0, 0, NULL);
-	
+
 	// Wait for the loading thread to exit
 	WaitForSingleObject(loaderThread, INFINITE);
 

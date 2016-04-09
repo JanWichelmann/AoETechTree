@@ -10,7 +10,6 @@
 #include "CivData.h"
 #include "ResearchData.h"
 
-
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
@@ -126,7 +125,5 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	char _unknown4[4];
 
 public:
-
 };
 #pragma pack(pop)
-

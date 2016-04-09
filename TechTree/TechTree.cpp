@@ -2,7 +2,6 @@
 --- AOE TECH TREE REPLACEMENT :: MAIN FILE ---
 */
 
-
 /* INCLUDES */
 
 // Codecave functions
@@ -11,7 +10,6 @@
 // Installed classes
 #include "TechTreeWindow.h"
 #include "TechTreeData.h"
-
 
 /* GLOBAL OPERATOR OVERRIDES */
 
@@ -28,7 +26,6 @@ void operator delete(void *ptr)
 	// Call game delete
 	((void(__cdecl *)(void *))0x006137BE)(ptr);
 }
-
 
 /* DLL FUNCTION */
 
@@ -50,4 +47,3 @@ extern "C" __declspec(dllexport) void Init()
 	TechTreeWindow::__Install();
 	TechTreeData::__Install();
 }
-

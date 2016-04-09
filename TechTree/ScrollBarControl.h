@@ -30,6 +30,5 @@ protected: // Member variables
 	short _unknown100b2;
 
 public:
-
 };
 #pragma pack(pop)

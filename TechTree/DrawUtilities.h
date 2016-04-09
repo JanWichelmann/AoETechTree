@@ -15,12 +15,14 @@ public:
 	// Creates a new point with (0, 0) coordinates.
 	Point() :
 		X(0), Y(0)
-	{ }
+	{
+	}
 
 	// Creates a new point with the given coordinates.
 	Point(int x, int y)
 		: X(x), Y(y)
-	{ }
+	{
+	}
 
 	// Assigns the coordinates of the given point to this point.
 	void operator=(const Point &point)
@@ -47,12 +49,14 @@ public:
 	// Creates a new rectangle with (0, 0) coordinates.
 	Rect()
 		: X(0), Y(0), Width(0), Height(0)
-	{ }
+	{
+	}
 
 	// Creates a new rectangle with the given coordinates and size.
 	Rect(int x, int y, int width, int height)
 		: X(x), Y(y), Width(width), Height(height)
-	{ }
+	{
+	}
 
 	// Assigns the data of the given rectangle to this rectangle.
 	void operator=(const Rect &rect)

@@ -508,7 +508,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 			// Draw icon disable graphic (frame #117 in research icon SLP)
 			_researchIcons->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, 117, 0);
 		}
-	
+
 		// Put caption onto the text stack for later drawing
 		if(element->_elementNameFirstLine[0] != '\0')
 			_elementTextsForDrawRun.push(std::make_tuple(drawX + 3, drawY + 37, element->_elementNameFirstLine, strlen(element->_elementNameFirstLine)));

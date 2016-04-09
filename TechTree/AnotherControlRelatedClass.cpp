@@ -4,4 +4,3 @@
 #include "AnotherControlRelatedClass.h"
 
 /* FUNCTIONS */
-

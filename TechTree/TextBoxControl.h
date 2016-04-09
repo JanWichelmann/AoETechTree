@@ -23,6 +23,5 @@ protected: // Member variables
 	char _unknown100c[22];
 
 public:
-
 };
 #pragma pack(pop)

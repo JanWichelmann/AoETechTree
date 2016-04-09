@@ -20,7 +20,5 @@ protected: // Member variables
 	DirectDrawBufferDataListElement *_nextElement;
 
 public:
-
 };
 #pragma pack(pop)
-

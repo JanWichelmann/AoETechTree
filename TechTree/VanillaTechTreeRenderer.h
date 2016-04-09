@@ -12,7 +12,6 @@
 #include <vector>
 #include <tuple>
 
-
 /* DEFINITIONS */
 
 // Represents a renderer for the vanilla tech tree.

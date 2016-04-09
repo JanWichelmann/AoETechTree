@@ -22,7 +22,5 @@ protected: // Member variables
 	DWORD _positionY;
 
 public:
-
 };
 #pragma pack(pop)
-

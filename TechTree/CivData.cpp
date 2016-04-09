@@ -4,4 +4,3 @@
 #include "CivData.h"
 
 /* FUNCTIONS */
-

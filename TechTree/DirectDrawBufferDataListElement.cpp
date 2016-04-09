@@ -4,4 +4,3 @@
 #include "DirectDrawBufferDataListElement.h"
 
 /* FUNCTIONS */
-

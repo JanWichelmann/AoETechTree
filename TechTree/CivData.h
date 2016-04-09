@@ -8,7 +8,6 @@
 // Other includes
 #include "BaseUnitData.h"
 
-
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
@@ -31,7 +30,5 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	short _unknown4;
 
 public:
-
 };
 #pragma pack(pop)
-

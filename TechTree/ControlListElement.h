@@ -21,7 +21,5 @@ public: // Member variables
 	ControlListElement *NextElement;
 
 public:
-	
 };
 #pragma pack(pop)
-

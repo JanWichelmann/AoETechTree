@@ -74,4 +74,3 @@ public:
 	HPALETTE GetMainPalette();
 };
 #pragma pack(pop)
-

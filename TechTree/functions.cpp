@@ -7,7 +7,6 @@
 // Definition header
 #include "functions.h"
 
-
 /* FUNCTIONS */
 
 void CopyBytesToAddr(DWORD destAddr, void *data, size_t byteCount)

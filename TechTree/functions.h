@@ -20,7 +20,6 @@ static_assert(sizeof(char) == 1, "char type has not 8 bit size");
 static_assert(sizeof(short) == 2, "short type has not 16 bit size");
 static_assert(sizeof(int) == 4, "int type has not 32 bit size");
 
-
 /* DEFINITIONS */
 
 // Copies the given data to a given address.

@@ -7,7 +7,6 @@
 
 // Other includes
 
-
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
@@ -19,7 +18,6 @@ private:
 	typedef Panel base;
 
 protected: // Member variables
-	
 
 public:
 	// Hide base class install function.

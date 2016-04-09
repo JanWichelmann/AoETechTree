@@ -125,4 +125,3 @@ public:
 	void DeleteGdiContext();
 };
 #pragma pack(pop)
-

@@ -7,7 +7,6 @@
 
 // Other includes
 
-
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
@@ -39,7 +38,5 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	int _unknown1;
 
 public:
-
 };
 #pragma pack(pop)
-

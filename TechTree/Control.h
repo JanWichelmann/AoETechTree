@@ -215,4 +215,3 @@ public: // Function pointers
 	DWORD _func8;
 };
 #pragma pack(pop)
-

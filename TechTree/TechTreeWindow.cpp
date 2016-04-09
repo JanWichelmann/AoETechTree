@@ -26,7 +26,6 @@ STATIC_WRAPPER(HandleChildControlEvent, int, Control *, int, int, int);
 // The "required" string for the popup label box.
 char popupBoxRequiredString[128] = { 0 };
 
-
 /* FUNCTIONS */
 
 void TechTreeWindow::__Install()

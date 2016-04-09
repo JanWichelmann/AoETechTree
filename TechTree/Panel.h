@@ -82,7 +82,7 @@ public:
 
 	// Draws the background.
 	void Draw();
-	
+
 	// TODO: To be deleted, unused....
 	// Creates a button with a string read from the language DLLs and a single font.
 	// Parameters:

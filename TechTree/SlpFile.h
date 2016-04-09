@@ -21,6 +21,5 @@ protected: // Member variables
 	SlpFrameHeader FirstFrameHeader;
 
 public:
-
 };
 #pragma pack(pop)

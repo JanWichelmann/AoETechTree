@@ -4,4 +4,3 @@
 #include "LabelLineData.h"
 
 /* FUNCTIONS */
-

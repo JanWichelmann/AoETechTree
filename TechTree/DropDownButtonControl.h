@@ -20,6 +20,5 @@ protected: // Member variables
 	ComboBoxControl *_parentComboBox;
 
 public:
-
 };
 #pragma pack(pop)

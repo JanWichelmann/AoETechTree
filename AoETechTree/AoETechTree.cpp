@@ -20,7 +20,6 @@
 // Injecton functions
 #include "injection.h"
 
-
 /* FUNCTIONS */
 
 // Application entry point.
@@ -51,7 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 	// DLL path
 	char dllpath[MAX_STRING_LENGTH + 1] = { 0 };
 	_snprintf_s(dllpath, MAX_STRING_LENGTH, MAX_STRING_LENGTH, "TechTree.dll");
-	
+
 	// Variables for process startup
 	STARTUPINFO si = { sizeof(STARTUPINFO) };
 	PROCESS_INFORMATION pi = { 0 };
@@ -72,12 +71,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLin
 
 	// Perform DLL injection
 	InjectDLL(pi.hProcess, dllpath, "Init");
-	
+
 	// Resume EXE
 	ResumeThread(pi.hThread);
 
 	// Exit loader
 	return 0;
 }
-
-

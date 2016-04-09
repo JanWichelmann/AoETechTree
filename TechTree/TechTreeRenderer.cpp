@@ -6,7 +6,6 @@
 // Other includes
 #include <stack>
 
-
 /* FUNCTIONS */
 
 TechTreeRenderer::TechTreeRenderer(GameDataHandler *gameData)

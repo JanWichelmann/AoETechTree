@@ -7,7 +7,6 @@
 
 // Other includes
 
-
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
@@ -99,7 +98,5 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	float _hpBarHeight2;
 
 public:
-
 };
 #pragma pack(pop)
-
