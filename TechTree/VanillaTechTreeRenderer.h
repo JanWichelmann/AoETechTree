@@ -136,7 +136,8 @@ public:
 	// Parameteres:
 	// -> gameData: The game data.
 	// -> windowSize: The size of the render window.
-	VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize);
+	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
+	VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData);
 
 	// Destructor.
 	~VanillaTechTreeRenderer();

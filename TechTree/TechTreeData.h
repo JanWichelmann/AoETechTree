@@ -31,10 +31,14 @@ public:
 	TechTreeData(int datFileHandle);
 	static TechTreeData * __stdcall Constructor(int datFileHandle);
 
+	// Destructor.
+	void Destructor();
+
 	// Updates the render states for the selected civ.
 	// Parameters:
 	// -> selectedCivId: The ID of the selected civ.
-	void UpdateRenderStates(char selectedCivId);
+	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
+	void UpdateRenderStates(char selectedCivId, int unknownGameAndPlayerData);
 
 	// Returns the root elements of the tech tree.
 	const std::vector<TechTreeElement *> &GetRootElements();

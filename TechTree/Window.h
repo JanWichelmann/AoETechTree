@@ -38,8 +38,5 @@ public:
 	// -> styleResourceId: The resource file id.
 	// -> unk: Unknown.
 	bool PrepareParentWindowAndLoadStyleData(DirectDrawBufferData *backBuffer, char *styleResourceName, int styleResourceId, int unk);
-
-	// Returns a reference to the back buffer of this window.
-	DirectDrawBufferData *GetBackBufferData();
 };
 #pragma pack(pop)

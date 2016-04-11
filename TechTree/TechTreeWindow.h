@@ -35,6 +35,9 @@ protected: // Member variables
 	// The underlying window (that called the tech tree screen).
 	Window *_underlyingWindow;
 
+	// Pointer to a large chunk of game and player data, containing information about player colors, diplomacy, researched items etc.
+	int _unknownGameAndPlayerData;
+
 	// Horizontal scroll offset (relative position of left screen bound,  > 0 => scroll right).
 	int _horizontalScrollOffset;
 
@@ -120,13 +123,13 @@ public:
 	// Constructor. Creates a new tech tree screen.
 	// Parameters:
 	// -> underlyingWindow: The calling window.
-	// -> someData: Data given ingame to highlight currently available units and researches.
+	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
 	// -> selectedCivId: The id of the initially selected civ.
-	TechTreeWindow(Window *underlyingWindow, int someData, int selectedCivId)
+	TechTreeWindow(Window *underlyingWindow, int unknownGameAndPlayerData, int selectedCivId)
 	{
-		Constructor(underlyingWindow, someData, selectedCivId);
+		Constructor(underlyingWindow, unknownGameAndPlayerData, selectedCivId);
 	}
-	TechTreeWindow *Constructor(Window *underlyingWindow, int someData, int selectedCivId);
+	TechTreeWindow *Constructor(Window *underlyingWindow, int unknownGameAndPlayerData, int selectedCivId);
 
 	// Destructor.
 	void Destructor();

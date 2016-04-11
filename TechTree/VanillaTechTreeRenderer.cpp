@@ -11,8 +11,8 @@
 
 /* FUNCTIONS */
 
-VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize)
-	: TechTreeRenderer(gameData)
+VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData)
+	: TechTreeRenderer(gameData, unknownGameAndPlayerData)
 {
 	// Load icon SLPs
 	_researchIcons = new SlpFileElement("btntech.shp", 50729);
@@ -203,8 +203,8 @@ VanillaTechTreeRenderer::~VanillaTechTreeRenderer()
 void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX, int offsetY)
 {
 	// Set player color palette offset (16 + x, where x is 0, 16, 32, 48, 64, 80, 96 or 112)
-	// TODO: Hardcoded (red)
-	((void(__cdecl *)(int))0x00632860)(32);
+	// Default is blue (16)
+	((void(__cdecl *)(int))0x00632860)(_unknownGameAndPlayerData != 0 ? reinterpret_cast<int **>(_unknownGameAndPlayerData)[88][4] : 16);
 
 	// Lock surface of draw buffer
 	drawBuffer->LockAssociatedSurface(1);
@@ -398,6 +398,10 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		iconSlp = _researchIcons;
 		iconId = _gameData->_researches->_researches[element->_elementObjectID]._iconID;
 	}
+
+	// Item not researched or disabled? => Darker Box
+	if(element->_renderState == TechTreeElement::ItemRenderState::NotResearched || element->_renderState == TechTreeElement::ItemRenderState::Disabled)
+		++boxSlpFrameIndex;
 
 	// Need to draw lines below?
 	if(element->_children.size() > 0)

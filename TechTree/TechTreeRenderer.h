@@ -31,6 +31,9 @@ protected: // Member variables
 	// The game data.
 	GameDataHandler *_gameData;
 
+	// Pointer to a large chunk of game and player data, containing information about player colors, diplomacy, researched items etc.
+	int _unknownGameAndPlayerData;
+
 	// The ID of the currently selected civ.
 	int _selectedCivId;
 
@@ -41,7 +44,8 @@ public:
 	// Creates a new tech tree renderer for the given tech tree.
 	// Parameteres:
 	// -> gameData: The game data.
-	TechTreeRenderer(GameDataHandler *gameData);
+	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
+	TechTreeRenderer(GameDataHandler *gameData, int unknownGameAndPlayerData);
 
 	// Draws the tree with the given offset for the current civ.
 	// Parameters:

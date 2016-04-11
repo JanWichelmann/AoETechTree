@@ -7,19 +7,20 @@
 // Other includes
 #include "Game.h"
 #include "VanillaTechTreeRenderer.h"
+#include "GameDataHandler.h"
 
 /* STATIC WRAPPER FUNCTIONS */
 
 STATIC_WRAPPER(Constructor, TechTreeWindow *, Window *, int, int)
 STATIC_WRAPPER(ScalarDeletingDestructor, void, char)
-STATIC_WRAPPER(Draw, void);
-STATIC_WRAPPER(HandleWindowsMessage, int, HWND, signed int, WPARAM, LPARAM);
-STATIC_WRAPPER(DoUpdate, int);
-STATIC_WRAPPER(HandleUserMessage, int, WPARAM, LPARAM);
-STATIC_WRAPPER(HandleMouseButtonDown, int, int, int, int, int, int);
-STATIC_WRAPPER(HandleMouseMove, int, int, int, int, int);
-STATIC_WRAPPER(HandleKeyDown2, int, int, int, int, int, int);
-STATIC_WRAPPER(HandleChildControlEvent, int, Control *, int, int, int);
+STATIC_WRAPPER(Draw, void)
+STATIC_WRAPPER(HandleWindowsMessage, int, HWND, signed int, WPARAM, LPARAM)
+STATIC_WRAPPER(DoUpdate, int)
+STATIC_WRAPPER(HandleUserMessage, int, WPARAM, LPARAM)
+STATIC_WRAPPER(HandleMouseButtonDown, int, int, int, int, int, int)
+STATIC_WRAPPER(HandleMouseMove, int, int, int, int, int)
+STATIC_WRAPPER(HandleKeyDown2, int, int, int, int, int, int)
+STATIC_WRAPPER(HandleChildControlEvent, int, Control *, int, int, int)
 
 /* VARIABLES */
 
@@ -52,13 +53,16 @@ void TechTreeWindow::__Install()
 	INSTALL_WRAPPER_VIRTUAL(HandleChildControlEvent, 0x006451DC);
 }
 
-TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int someData, int selectedCivId)
+TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknownGameAndPlayerData, int selectedCivId)
 {
 	// Needed for window management and proper cleanup in other places
 	base::Constructor("One Button Tech Tree Screen");
 
 	// Save underlying window
 	_underlyingWindow = underlyingWindow;
+
+	// Save game data
+	_unknownGameAndPlayerData = unknownGameAndPlayerData;
 
 	// Set virtual function table address
 	_VTable = reinterpret_cast<ControlVTable *>(0x00645118);
@@ -78,7 +82,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int someDa
 
 	// Create tech tree renderer
 	// TODO: Hardcoded
-	_renderer = new VanillaTechTreeRenderer((*_staticGameObjectPointer)->GetGameDataHandler(), Size(_width1, _height1));
+	_renderer = new VanillaTechTreeRenderer((*_staticGameObjectPointer)->GetGameDataHandler(), Size(_width1, _height1), unknownGameAndPlayerData);
 
 	// Get the renderer's age count
 	_ageCount = _renderer->GetAgeCount();
@@ -163,7 +167,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int someDa
 	// Fill civ selection combo box
 	int civCount = (*_staticGameObjectPointer)->GetGameDataHandler()->_civCount;
 	char civNameBuffer[128];
-	char civNameSuffixBuffer[128]; // TODO: " (Player)" or " (Ally)"
+	char civNameSuffixBuffer[128];
 	char civNameMergedBuffer[256];
 	for(int c = 1; c < civCount; ++c)
 	{
@@ -173,7 +177,24 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int someDa
 		civNameMergedBuffer[0] = '\0';
 
 		// Load civ name
-		(*_staticGameObjectPointer)->GetIndexedDllString(105, c, 0, civNameBuffer, 128);
+		(*_staticGameObjectPointer)->GetIndexedDllString(105, c, 0, civNameBuffer, sizeof(civNameBuffer));
+
+		// Load civ suffix " (Player)" or " (Ally)", if neccessary
+		if(_unknownGameAndPlayerData != 0)
+			if(reinterpret_cast<char *>(_unknownGameAndPlayerData)[349] == c) // Check player
+				(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(20126, civNameSuffixBuffer, sizeof(civNameSuffixBuffer));
+			else
+			{
+				// Check allies
+				GameDataHandler *gdh = (*_staticGameObjectPointer)->GetGameDataHandler();
+				for(int p = 1; p < 9; ++p)
+					if(reinterpret_cast<char *>(_unknownGameAndPlayerData + 6458)[p] == 4 && reinterpret_cast<char *>(gdh->_dword4C[p])[349] == c)
+					{
+						//Get suffix and break
+						(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(20127, civNameSuffixBuffer, sizeof(civNameSuffixBuffer));
+						break;
+					}
+			}
 
 		// Merge civ name and suffix
 		sprintf(civNameMergedBuffer, "%s%s", civNameBuffer, civNameSuffixBuffer);
@@ -221,7 +242,8 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int someDa
 	_popupLabel->SetStyleText2Colors(0x000000, 0x00E7E7);
 
 	// Set current civ
-	// TODO: Extract it from passed player data
+	if(unknownGameAndPlayerData != 0)
+		selectedCivId = reinterpret_cast<char *>(unknownGameAndPlayerData)[349];
 	if(selectedCivId < 1)
 		selectedCivId = 1;
 	_civSelectionComboBox->SetSelectedItemId(selectedCivId);

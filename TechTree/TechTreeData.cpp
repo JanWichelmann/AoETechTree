@@ -4,6 +4,10 @@
 #define CLASS TechTreeData
 #include "TechTreeData.h"
 
+/* STATIC WRAPPER FUNCTIONS */
+
+STATIC_WRAPPER(Destructor, void)
+
 /* FUNCTIONS */
 
 void TechTreeData::__Install()
@@ -37,6 +41,9 @@ void TechTreeData::__Install()
 	CopyBytesToAddr(0x00454B23, nopPatch1, 15);
 	BYTE nopPatch2[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
 	CopyBytesToAddr(0x00454D25, nopPatch2, 6);
+
+	// Install destructor
+	INSTALL_WRAPPER_DIRECT(Destructor, 0x0042602E);
 }
 
 TechTreeData::TechTreeData(int datFileHandle)
@@ -61,11 +68,18 @@ TechTreeData *TechTreeData::Constructor(int datFileHandle)
 	return new TechTreeData(datFileHandle);
 }
 
-void TechTreeData::UpdateRenderStates(char selectedCivId)
+void TechTreeData::Destructor()
+{
+	// Delete root elements, they delete their children recursively
+	for(TechTreeElement *root : _rootElements)
+		delete root;
+}
+
+void TechTreeData::UpdateRenderStates(char selectedCivId, int unknownGameAndPlayerData)
 {
 	// Update render state for all elements recursively
 	for(auto &r : _rootElements)
-		r->UpdateRenderState(selectedCivId);
+		r->UpdateRenderState(selectedCivId, unknownGameAndPlayerData);
 }
 
 const std::vector<TechTreeElement *> &TechTreeData::GetRootElements()

@@ -38,9 +38,10 @@ public:
 	// The current tech tree element render states.
 	enum class ItemRenderState : char
 	{
-		Visible = 0,
+		Visible = 0, // = Researched
 		Disabled = 1,
-		Hidden = 2
+		Hidden = 2,
+		NotResearched = 3
 	};
 
 private:
@@ -122,5 +123,7 @@ public:
 	// Updates the render state for the selected civ.
 	// Parameters:
 	// -> selectedCivId: The ID of the selected civ.
-	void UpdateRenderState(char selectedCivId);
+	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
+	// -> forceNotResearched: Optional. When set, all child elements are marked as not researched recursively.
+	void UpdateRenderState(char selectedCivId, int unknownGameAndPlayerData, bool forceNotResearched = false);
 };

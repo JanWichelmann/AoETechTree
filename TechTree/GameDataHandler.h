@@ -40,7 +40,7 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	int _graphics;
 	short _unknown_ProbablyPlayerCount;
 	char _gap_4A[2];
-	int _dword4C;
+	int *_dword4C;
 	short _civCount;
 	char _gap_52[2];
 	CivData **_civs;
