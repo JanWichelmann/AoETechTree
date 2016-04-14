@@ -234,7 +234,7 @@ void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX
 		_legendDisableSlp->DrawFrameIntoDirectDrawBuffer(drawBuffer, _legendDisableSlpDrawPosition.X - offsetX, _legendDisableSlpDrawPosition.Y - offsetY, 0, 0);
 
 	// Render elements recursively
-	for(TechTreeElement *currRootElement : _gameData->_techTree->GetRootElements())
+	for(TechTreeElement *currRootElement : _staticNewTechTreeDataObject->GetRootElements())
 		RenderSubTree(currRootElement, drawBuffer, offsetX - _legendFrameWidth - _agesFrameWidth, offsetY);
 
 	// Unlock surface of draw buffer
@@ -532,7 +532,7 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 
 	// Start with root elements for width computation (order is not important)
 	std::stack<TechTreeElement *> remainingElements;
-	for(TechTreeElement *currRootElement : _gameData->_techTree->GetRootElements())
+	for(TechTreeElement *currRootElement : _staticNewTechTreeDataObject->GetRootElements())
 		remainingElements.push(currRootElement);
 
 	// Compute tree width (count of leaf elements)
@@ -563,7 +563,7 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 
 	// Compute sub trees for root elements
 	int subTreeWidth = 0;
-	for(TechTreeElement *currRootElement : _gameData->_techTree->GetRootElements())
+	for(TechTreeElement *currRootElement : _staticNewTechTreeDataObject->GetRootElements())
 	{
 		// Compute sub tree and get its width
 		if(currRootElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
@@ -742,7 +742,7 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 		_selectedElementPath.pop_back();
 		return false;
 	};
-	for(TechTreeElement *currRoot : _gameData->_techTree->GetRootElements())
+	for(TechTreeElement *currRoot : _staticNewTechTreeDataObject->GetRootElements())
 		if(getElementPathRecursively(currRoot))
 			break;
 }

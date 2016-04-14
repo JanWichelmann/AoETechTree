@@ -120,7 +120,7 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	char _unknown3b[7];
 	float _unknownFloat9_initial_5500;
 	char _unknown3c[4];
-	TechTreeData *_techTree;
+	int _oldTechTree;
 	int _unknownObj8;
 	char _unknown4[4];
 

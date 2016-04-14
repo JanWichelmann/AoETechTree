@@ -29,9 +29,10 @@ public:
 	// Parameters:
 	// -> datFileHandle: A handle to an uncompressed DAT file.
 	TechTreeData(int datFileHandle);
-	static TechTreeData * __stdcall Constructor(int datFileHandle);
+	void Constructor(int datFileHandle);
 
 	// Destructor.
+	~TechTreeData();
 	void Destructor();
 
 	// Updates the render states for the selected civ.
@@ -43,3 +44,6 @@ public:
 	// Returns the root elements of the tech tree.
 	const std::vector<TechTreeElement *> &GetRootElements();
 };
+
+// The data of the new tech tree. This variable is initialized when the game data is loaded, else its value is nullptr.
+extern TechTreeData *_staticNewTechTreeDataObject;

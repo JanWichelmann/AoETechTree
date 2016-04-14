@@ -6,44 +6,44 @@
 
 /* STATIC WRAPPER FUNCTIONS */
 
+STATIC_WRAPPER(Constructor, void, int)
 STATIC_WRAPPER(Destructor, void)
 
 /* FUNCTIONS */
+
+// Set static data object
+TechTreeData *_staticNewTechTreeDataObject = nullptr;
 
 void TechTreeData::__Install()
 {
 	// First call base function
 	base::__Install();
 
-	// Patch a very ugly code region (tech tree construction when reading the DAT file, it's a complete mess of three different things randomly spread
-	// between operator new and constructor call)
-	DWORD constructorCallOffset = (PtrToUlong(&Constructor) - 0x004268D1) - 5;
-	BYTE patch[] =
+	// Patch tech tree object creation: Replace the null check of operator new by a call to TechTreeData::Constructor
+	BYTE patch1[] =
 	{
-		0x89, 0x9E, 0x58, 0x02, 0x00, 0x00, // mov [esi+0x258], ebx
-		0x83, 0xC4, 0x0C, // add esp, 0x0C (stack cleanup for previous call)
-		0xC7, 0x44, 0x24, 0x14, 0x01, 0x00, 0x00, 0x00, // mov [__$EHRec$.state], 1
-		0x57, // push edi (datFileHandle parameter for constructor)
-		0xE8, 0x00, 0x00, 0x00, 0x00, // TechTreeData::Constructor call (address will be inserted in the next step)
-		0xEB, 0x14, // jmp short 0x004268EC
-		0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, // 8 dummy NOPs for easier debugging
-		0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, // 8 dummy NOPs for easier debugging
-		0x90, 0x90, 0x90, 0x90 // 4 dummy NOPs for easier debugging
+		0x53, // push ebx (0 here)
+		0x57, // push edi (datFileHandle parameter)
+		0x8B, 0xC8, // mov ecx, eax (handle to allocated memory)
+		0xE8, 0xCA, 0xD2, 0xFD, 0xFF, // call constructor (of old tech tree data object)
+		0x89, 0x86, 0xA4, 0x02, 0x00, 0x00, // mov [esi+2A4h], eax (store old tech tree data object pointer)
+		0x57, // push edi (datFileHandle parameter)
+		0xE8, 0x00, 0x00, 0x00, 0x00  // call TechTreeData::Constructor (address will be inserted in the next step)
 	};
-	memcpy(patch + 19, &constructorCallOffset, sizeof(DWORD));
-	CopyBytesToAddr(0x004268BF, patch, sizeof(patch));
+	CopyBytesToAddr(0x004268DD, patch1, sizeof(patch1));
+	INSTALL_WRAPPER_DIRECT(Constructor, 0x004268ED);
 
 	// Patch version number (no page protection change needed)
 	*reinterpret_cast<char *>(0x0066B15A) = 'T';
 
-	// Patch two original unknown TechTreeData calls that immediately crash the program if a game is started
-	BYTE nopPatch1[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-	CopyBytesToAddr(0x00454B23, nopPatch1, 15);
-	BYTE nopPatch2[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
-	CopyBytesToAddr(0x00454D25, nopPatch2, 6);
-
-	// Install destructor
-	INSTALL_WRAPPER_DIRECT(Destructor, 0x0042602E);
+	// Install destructor (overwrite VTable address assignment as that isn't neccessary)
+	BYTE patch2[] =
+	{
+		0x90, // nop (alignment)
+		0xE8, 0x00, 0x00, 0x00, 0x00  // call TechTreeData::Destructor (address will be inserted in the next step)
+	};
+	CopyBytesToAddr(0x00425F9F, patch2, sizeof(patch2));
+	INSTALL_WRAPPER_DIRECT(Destructor, 0x00425FA0);
 }
 
 TechTreeData::TechTreeData(int datFileHandle)
@@ -62,17 +62,26 @@ TechTreeData::TechTreeData(int datFileHandle)
 		_rootElements.push_back(new TechTreeElement(datFileHandle));
 }
 
-TechTreeData *TechTreeData::Constructor(int datFileHandle)
+void TechTreeData::Constructor(int datFileHandle)
 {
-	// Return new object
-	return new TechTreeData(datFileHandle);
+	// Create new object
+	if(_staticNewTechTreeDataObject == nullptr)
+		_staticNewTechTreeDataObject = new TechTreeData(datFileHandle);
 }
 
-void TechTreeData::Destructor()
+TechTreeData::~TechTreeData()
 {
 	// Delete root elements, they delete their children recursively
 	for(TechTreeElement *root : _rootElements)
 		delete root;
+}
+
+void TechTreeData::Destructor()
+{
+	// Delete and set value of static object pointer
+	if(_staticNewTechTreeDataObject != nullptr)
+		delete _staticNewTechTreeDataObject;
+	_staticNewTechTreeDataObject = nullptr;
 }
 
 void TechTreeData::UpdateRenderStates(char selectedCivId, int unknownGameAndPlayerData)

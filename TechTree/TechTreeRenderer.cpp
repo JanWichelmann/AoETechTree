@@ -20,7 +20,7 @@ TechTreeRenderer::TechTreeRenderer(GameDataHandler *gameData, int unknownGameAnd
 	// Get age count by determining the maximum specified age.
 	_ageCount = 1;
 	std::stack<TechTreeElement *> remainingElements;
-	for(TechTreeElement *currRootElement : _gameData->_techTree->GetRootElements())
+	for(TechTreeElement *currRootElement : _staticNewTechTreeDataObject->GetRootElements())
 		remainingElements.push(currRootElement);
 	while(!remainingElements.empty())
 	{
@@ -44,7 +44,7 @@ void TechTreeRenderer::SetCurrentCiv(int civId)
 	_selectedCivId = civId;
 
 	// Update render states
-	_gameData->_techTree->UpdateRenderStates(civId, _unknownGameAndPlayerData);
+	_staticNewTechTreeDataObject->UpdateRenderStates(civId, _unknownGameAndPlayerData);
 }
 
 int TechTreeRenderer::GetAgeCount()
