@@ -6,8 +6,12 @@ At the moment there is only one renderer, the "vanilla renderer". It uses the or
 
 As a consequence, the DAT tech tree structure used by this implementation is incompatible with the original one.
 You can edit it with this tool: https://github.com/Janworks/AoETechTreeTool
+If you want to do more modding than just changing the tech tree view itself, use the TechTreeEditor, which also exports the new tech tree format: https://github.com/Janworks/TechTreeEditor
+
 
 ## USAGE
+
+Unpack the EXE and DLL files to the age2_x1 folder of Age of Empires II. If you haven't already created a custom empires2_x1_p1.dat with the new tech tree, you can unpack the empires2_x1_p1.dat of the archive into the DATA folder, replacing the old one (do not forget a backup!).
 
 The launcher starts the age2_x1.exe process and injects the TechTree.dll containing the code changes to add a new age.
 I created this software while working on the (german) Agearena AddOn (http://www.agearena.de/forum/index.php?mode=viewforum&forum_id=7) and will update it periodically.
@@ -31,7 +35,6 @@ Also some virus scanners may have problems with this software, as it uses DLL in
 
 ## TODO
 
-* Recognize additional information the game gives, i.e. researched items, civs of allies...
 * Add another renderer that is easier moddable and less hardcoded than the vanilla one in terms of age count, resolution and background images.
 
 

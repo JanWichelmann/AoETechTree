@@ -23,6 +23,11 @@
   <ItemGroup>
     <Image Include="symbol.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\empires2_x1_p1.dat" />
+    <None Include="..\LICENSE" />
+    <None Include="..\README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C15A14C1-4035-4F43-BEE2-279AA6567CC1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -88,6 +93,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)README.md" "$(OutDir)"
+copy "$(SolutionDir)LICENSE" "$(OutDir)"
+copy "$(SolutionDir)empires2_x1_p1.dat" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
