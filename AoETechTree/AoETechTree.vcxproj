@@ -12,9 +12,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="injection.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AoETechTree.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AoETechTree.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="symbol.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C15A14C1-4035-4F43-BEE2-279AA6567CC1}</ProjectGuid>
