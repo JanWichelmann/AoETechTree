@@ -157,6 +157,14 @@ VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size
 	for(int i = 0; i < _ageCount; ++i)
 		_ageLabelRectangles[i][0][1] = Rect(_ageLabelRectangles[i][0][0].X, _ageLabelRectangles[i][0][0].Y + 17, _ageLabelRectangles[i][0][0].Width, _ageLabelRectangles[i][0][0].Height);
 
+	// Initialize remaining age draw offsets of ages >= 4
+	for(int i = 4; i < _ageCount; ++i)
+	{
+		// Use difference values from age #3
+		_verticalDrawOffsets[2 * i] = _verticalDrawOffsets[7] + (_verticalDrawOffsets[6] - _verticalDrawOffsets[5]);
+		_verticalDrawOffsets[2 * i + 1] = _verticalDrawOffsets[2 * i] + (_verticalDrawOffsets[7] - _verticalDrawOffsets[6]);
+	}
+
 	// Get some SLP frame sizes
 	_legendAndAgesSlp->GetFrameSize(_agesFrameIndex, &_agesFrameWidth, &_agesFrameHeight);
 	_tileSlp->GetFrameSize(_tileFrameIndex, &_tileFrameWidth, &_tileFrameHeight);
@@ -359,6 +367,9 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	if(element->_renderState == TechTreeElement::ItemRenderState::Hidden)
 		return;
 
+	//if(element->_age == 4)
+	//	__asm int 3;
+
 	// Calculate element absolute draw position
 	int drawX = -offsetX + (element->_renderPosition.X / 2) * (64 + ELEMENT_SPACING);
 	if(element->_renderPosition.X % 2 == 1)
@@ -537,19 +548,25 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 
 	// Compute tree width (count of leaf elements)
 	_treeWidth = 0;
-	char elementNameBuffer[256];
 	while(!remainingElements.empty())
 	{
 		// Pop top element
 		TechTreeElement *currElement = remainingElements.top();
 		remainingElements.pop();
 
-		// If there are no children, increment tree width
-		if(currElement->_children.size() == 0 && currElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
-			++_treeWidth;
-		else // Iterate and push children
-			for(TechTreeElement *currChild : currElement->_children)
+		// Check if there are enabled children
+		bool enabledChildExists = false;
+		for(TechTreeElement *currChild : currElement->_children)
+			if(currChild->_renderState != TechTreeElement::ItemRenderState::Hidden)
+			{
+				// Enabled child found, put onto the stack
 				remainingElements.push(currChild);
+				enabledChildExists = true;
+			}
+
+		// If there are no children, increment tree width
+		if(!enabledChildExists && currElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
+			++_treeWidth;
 	}
 
 	// Free tree layout matrix rows if neccessary
@@ -594,6 +611,9 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 	// If element has no children, the sub tree width is 1
 	if(subTreeWidth == 0)
 		subTreeWidth = 1;
+
+	if(element->_renderState == TechTreeElement::ItemRenderState::Hidden)
+		__asm int 3;
 
 	// Center element above subtree
 	element->_renderPosition = Point(startColumnIndex + subTreeWidth - 1, rowIndex);
