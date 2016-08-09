@@ -600,10 +600,6 @@ void TechTreeWindow::ApplyScrollOffset(int horizontalScrollOffset, int verticalS
 
 void TechTreeWindow::SetCurrentCiv(int civId)
 {
-	// Is the selected civ changed?
-	if(civId == _currentCivId)
-		return;
-
 	// Save ID
 	_currentCivId = civId;
 

@@ -1,0 +1,46 @@
+Tracking Number: 12694
+Title: New Ingame Tech Tree View
+Short description: A new implementation for the ingame tech tree view, making modding easier while keeping the original graphics.
+
+Long description:
+
+Please post your comments, questions and feedback into the [url=http://aok.heavengames.com/cgi-bin/forums/display.cgi?action=ct&f=9,44286,0,30]corresponding forum thread[/url] :)
+
+[b]Introduction[/b]
+This is a new implementation of the ingame tech tree view (F2) completely replacing the old one. It is much easier moddable, as there are absolutely no hardcoded elements. Basically each element only requires its ID, type, age and rendering mode. The positioning is done by the rendering algorithm completely.
+
+The current renderer uses the vanilla graphics, so you won't see any differences, except some improvements in navigation, trying to make it feel more natural.
+
+In the future a second renderer will be implemented; this will depend on a set of custom SLP files allowing much more flexibility when redesigning the tech tree graphics (e.g. adding a fifth age). Currently the vanilla renderer only supports two levels per age, and a maximum of four ages. You may add data for more than four ages, but probably that won't look very pretty for now, as the background frames are too small.
+
+A little warning at this place: The tech tree replacement seems to be pretty stable by now, but anyway there may still be random bugs difficult to spot. If you encounter a crash that was caused by the new tech tree, let me know. It will help if you can give a short description of the steps leading to the crash, as this will make it easier to fix it.
+
+I tested the new tech tree with the UserPatch installed; as far as I know there shouldn't be any incompatibilities.
+
+You can follow development on GitHub: [url=https://github.com/Janworks/AoETechTree]tech tree view[/url] and [url=https://github.com/Janworks/AoETechTreeTool]editor[/url].
+
+Note: As some of you may know, a few months ago I released the [url=http://aok.heavengames.com/blacksmith/showfile.php?fileid=12574]TechTreeEditor[/url]. This software is compatible with the new tech tree format (as of version 1.1.0), but also capable of doing much more than just modifiying the ingame tree view. If you want to do your modding in a more graphical way, feel free to test it out.
+
+
+[b]Installation[/b]
+The ZIP archive consists of three folders: "NewTechTree" is the tech tree implementation itself, providing two installation variants: "Install" is the recommended and easiest one (this one changes the EXE file to load the TechTree.dll automatically). The other one, "Inject", is useful when you don't want to change your EXE file and rather apply the tech tree DLL changes at runtime (use it when you know what you are doing).
+A modded sample empires2_x1_p1.dat is in the "DATA" folder. "Editor" contains a simple application to edit the new tech tree format. Read the respective README.md files for more detailed information.
+
+"NewTechTree\Install": Unpack the EXE and DLL files into an arbitrary folder and run the EXE file. It will ask you for the age2_x1.exe, after that click "Install". This will patch your EXE and copy the TechTree.dll into the age2_x1 folder. If you haven't already created a custom empires2_x1_p1.dat with the new tech tree, you can unpack the empires2_x1_p1.dat from the archive into your DATA folder, replacing the old one (do not forget a backup!). Now you can start your age2_x1.exe as usual. It will automatically load the new tech tree and display it ingame.
+
+"NewTechTree\Inject": Unpack the EXE and DLL files to the age2_x1 folder of Age of Empires II. If you haven't already created a custom empires2_x1_p1.dat with the new tech tree, you can unpack the empires2_x1_p1.dat from the archive into your DATA folder, replacing the old one (do not forget a backup!). Start the game by clicking on the AoETechTree.exe that you've put into the age2_x1 folder.
+
+"Editor": Unpack all files into an arbitrary folder and run the EXE file. You're prompted to specify a DAT file to edit (use the one from the "NewTechTree" folder for testing), and some language DLL files for proper name display. After that you can add, edit and delete tree nodes, import/export the tech tree data and save your changes into a new DAT file.
+
+
+[b]Requirements[/b]
+The tech tree view itself was built with Microsoft Visual Studio 2015, so you'll need [url=https://www.microsoft.com/de-de/download/details.aspx?id=48145]the appropiate Visual C++ redistributable[/url].
+
+The editor depends on the .NET Framework 4.0. It should already be installed on current windows systems; if not, you can find it [url=https://www.microsoft.com/en-us/download/details.aspx?id=17718]here[/url].
+
+To find out if all requirements are installed just start the programs, they will tell you when some dependencies are not found.
+
+
+[b]Legal Info & Credits[/b]
+
+This software is published under the MIT/X11 license. Please read the LICENSE for further information.

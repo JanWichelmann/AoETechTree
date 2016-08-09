@@ -1,0 +1,27 @@
+[center][img]https://www.dropbox.com/s/34ikiutf5h3d4uq/Icon.png?dl=1[/img][/center]
+
+[b]Introduction[/b]
+This is a new implementation of the ingame tech tree view (F2) completely replacing the old one. It is much easier moddable, as there are absolutely no hardcoded elements. Basically each element only requires its ID, type, age and rendering mode. The positioning is done by the rendering algorithm completely.
+
+The current renderer uses the vanilla graphics, so you won't see any differences, except some improvements in navigation, trying to make it feel more natural.
+
+In the future a second renderer will be implemented; this will depend on a set of custom SLP files allowing much more flexibility when redesigning the tech tree graphics (e.g. adding a fifth age). Currently the vanilla renderer only supports two levels per age, and a maximum of four ages. You may add data for more than four ages, but probably that won't look very pretty for now, as the background frames are too small.
+
+A little warning at this place: The tech tree replacement seems to be pretty stable by now, but anyway there may still be random bugs difficult to spot. If you encounter a crash that was caused by the new tech tree, let me know. It will help if you can give a short description of the steps leading to the crash, as this will make it easier to fix it.
+
+I tested the new tech tree with the UserPatch installed; as far as I know there shouldn't be any incompatibilities (Update: Nevertheless Gallas recently encountered some problems with UP, I'm working on fixing that already).
+
+
+[b]Download, installation infos and updates[/b]
+[url=http://aok.heavengames.com/blacksmith/showfile.php?fileid=12694&f=&st=0&ci=]See the blacksmith download page.[/url]
+
+
+[b]How do I patch an existing DAT file with the new tech tree information?[/b]
+1. Load your DAT in the Editor (and specify some language DLLs).
+2. Click "Import" and select the "age2_x1.ntt" from the "Editor" folder. This will put the tech tree data into the loaded DAT file.
+3. Edit the tech tree data...
+4. Save the edited DAT file.
+
+
+
+I hope you like it! I'd appreciate any feedback and tips :)

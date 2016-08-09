@@ -583,10 +583,30 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startColumnIndex, bool secondInAge)
 {
 	// Compute children sub trees
+	// If possible, center element above non-building subtree
 	int subTreeWidth = 0;
+	int firstNonBuildingChildPosX = -1;
+	int nonBuildingChildSubTreeWidth = 0;
 	for(TechTreeElement *currChild : element->_children)
 		if(currChild->_renderState != TechTreeElement::ItemRenderState::Hidden)
-			subTreeWidth += ComputeSubTree(currChild, startColumnIndex + 2 * subTreeWidth, currChild->_age == element->_age);
+		{
+			// Compute child sub tree
+			int currChildSubTreeWidth = ComputeSubTree(currChild, startColumnIndex + 2 * subTreeWidth, currChild->_age == element->_age);
+
+			// Non-building child?
+			if(currChild->_elementType != TechTreeElement::ItemType::Building)
+			{
+				// Is this the first non-building child?
+				if(firstNonBuildingChildPosX < 0)
+					firstNonBuildingChildPosX = startColumnIndex + 2 * subTreeWidth;
+
+				// Add child sub tree width to non-building sub tree width
+				nonBuildingChildSubTreeWidth += currChildSubTreeWidth;
+			}
+
+			// Add child sub tree width to whole subtree width
+			subTreeWidth += currChildSubTreeWidth;
+		}
 
 	// Get row index for this element
 	int rowIndex = 2 * element->_age + (secondInAge ? 1 : 0);
@@ -595,8 +615,16 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 	if(subTreeWidth == 0)
 		subTreeWidth = 1;
 
-	// Center element above subtree
-	element->_renderPosition = Point(startColumnIndex + subTreeWidth - 1, rowIndex);
+	// Are there any non-building children?
+	if(firstNonBuildingChildPosX < 0)
+	{
+		// Use all children for centering
+		firstNonBuildingChildPosX = startColumnIndex;
+		nonBuildingChildSubTreeWidth = subTreeWidth;
+	}
+
+	// Center element above non-building subtree
+	element->_renderPosition = Point(firstNonBuildingChildPosX + nonBuildingChildSubTreeWidth - 1, rowIndex);
 	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = element;
 	return subTreeWidth;
 }
