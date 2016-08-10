@@ -59,7 +59,7 @@ TechTreeData::TechTreeData(int datFileHandle)
 	short rootElementCount;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&rootElementCount), 2);
 	for(int i = 0; i < rootElementCount; ++i)
-		_rootElements.push_back(new TechTreeElement(datFileHandle));
+		_rootElements.push_back(new TechTreeElement(datFileHandle, nullptr));
 }
 
 void TechTreeData::Constructor(int datFileHandle)

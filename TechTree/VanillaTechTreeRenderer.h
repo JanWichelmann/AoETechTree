@@ -93,6 +93,9 @@ protected: // Member variables
 	// The age label draw rectangles: [age][side][line].
 	AgeLabelRectanglesType _ageLabelRectangles;
 
+	// The width of the tree matrix (measured before compactification step).
+	int _treeMatrixWidth;
+
 	// The width of the rendered tree (not pixels, leaf count here).
 	int _treeWidth;
 
@@ -164,7 +167,9 @@ public:
 	// -> element: The current element which sub tree should be computed.
 	// -> startColumnIndex: The matrix column index where the new sub tree can start. This should be even, if not, there was an error.
 	// -> secondInAge: Specifies if the element is the first vertical element in the current age or the second one.
-	int ComputeSubTree(TechTreeElement *element, int startColumnIndex, bool secondInAge);
+	// -> minimumStartColumnIndex: The minimal column index where the subtree can be positioned without causing conflicts. Only a return parameter, must be initialised with -1.
+	// -> parentType: The type of the parent element. If it is a building, compactification is allowed.
+	int ComputeSubTree(TechTreeElement *element, int startColumnIndex, bool secondInAge, int *minimumStartColumnIndex, TechTreeElement::ItemType parentType);
 
 	// Renders the given element an its sub tree.
 	// Parameters:
@@ -217,4 +222,10 @@ public:
 	// Parameters:
 	// -> element: The element to be selected.
 	virtual void SetSelectedElement(TechTreeElement *element);
+
+	// Helper function. Moves the given element and its subtree by the given amount to the left. The tree matrix positions are updated.
+	// Parameters:
+	// -> element: The root element of the subtree to be moved.
+	// -> amount: The amount by which the tree should be moved.
+	void MoveTreeLeft(TechTreeElement *element, int amount);
 };

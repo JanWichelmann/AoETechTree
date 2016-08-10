@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "DirectDrawHandler.h"
 
+
 /* FUNCTIONS */
 
 VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData)
@@ -175,6 +176,7 @@ VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size
 
 	// Initialize tree computation variables
 	_treeWidth = 0;
+	_treeMatrixWidth = 0;
 	_treeLayoutMatrix = new TechTreeElement**[_ageCount * 2](); // Filled later
 
 	// Set popup label box bevel colors
@@ -367,9 +369,6 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	if(element->_renderState == TechTreeElement::ItemRenderState::Hidden)
 		return;
 
-	//if(element->_age == 4)
-	//	__asm int 3;
-
 	// Calculate element absolute draw position
 	int drawX = -offsetX + (element->_renderPosition.X / 2) * (64 + ELEMENT_SPACING);
 	if(element->_renderPosition.X % 2 == 1)
@@ -386,6 +385,36 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	TechTreeElement *nextSelectionPathChild = nullptr;
 	if(elementIsSelectionPathElement)
 		nextSelectionPathChild = *(++selectionPathIterator);
+
+	// Check whether the next selection path element is directly reachable (i.e., draw a line to it)
+	bool nextSelectionPathElementDirectlyReachable = true;
+	if(nextSelectionPathChild != nullptr)
+		for(int y = nextSelectionPathChild->_renderPosition.Y - 1; y > element->_renderPosition.Y; --y)
+		{
+			// Check left
+			if(nextSelectionPathChild->_renderPosition.X > 0)
+				if(_treeLayoutMatrix[y][nextSelectionPathChild->_renderPosition.X - 1])
+				{
+					// Not reachable
+					nextSelectionPathElementDirectlyReachable = false;
+					break;
+				}
+			// Check middle
+			if(_treeLayoutMatrix[y][nextSelectionPathChild->_renderPosition.X])
+			{
+				// Not reachable
+				nextSelectionPathElementDirectlyReachable = false;
+				break;
+			}
+			// Check right
+			if(nextSelectionPathChild->_renderPosition.X < _treeMatrixWidth * 2 - 1)
+				if(_treeLayoutMatrix[y][nextSelectionPathChild->_renderPosition.X + 1])
+				{
+					// Not reachable
+					nextSelectionPathElementDirectlyReachable = false;
+					break;
+				}
+		}
 
 	// Select graphics
 	int boxSlpFrameIndex = 0;
@@ -418,7 +447,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	if(element->_children.size() > 0)
 	{
 		// Draw vertical line
-		drawBuffer->DrawFilledRectangle(drawX + 31, drawY + 64, drawX + 32, drawY + 67, elementIsSelectionPathElement ? 255 : 0);
+		drawBuffer->DrawFilledRectangle(drawX + 31, drawY + 64, drawX + 32, drawY + 67, (elementIsSelectionPathElement && nextSelectionPathElementDirectlyReachable ? 255 : 0));
 
 		// Draw vertical line for each child and store left most / right most child coordinates
 		int leftMostChildDrawX = INT32_MIN;
@@ -431,7 +460,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 
 			// Check whether the element is directly reachable from the root element (there are no elements on top of it)
 			bool elementIsReachable = true;
-			for(int y = currChild->_renderPosition.Y; y < element->_renderPosition.Y; --y)
+			for(int y = currChild->_renderPosition.Y - 1; y > element->_renderPosition.Y; --y)
 			{
 				// Check left
 				if(currChild->_renderPosition.X > 0)
@@ -449,7 +478,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 					break;
 				}
 				// Check right
-				if(currChild->_renderPosition.X < _treeWidth * 2 - 1)
+				if(currChild->_renderPosition.X < _treeMatrixWidth * 2 - 1)
 					if(_treeLayoutMatrix[y][currChild->_renderPosition.X + 1])
 					{
 						// Not reachable
@@ -486,7 +515,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 			drawBuffer->DrawFilledRectangle(leftMostChildDrawX + 31, drawY + 68, rightMostChildDrawX + 32, drawY + 69, 0);
 
 		// If the element is part of a selection path, draw horizontal line along path
-		if(elementIsSelectionPathElement)
+		if(elementIsSelectionPathElement && nextSelectionPathElementDirectlyReachable)
 		{
 			// Get child position
 			int childDrawX = -offsetX + (nextSelectionPathChild->_renderPosition.X / 2) * (64 + ELEMENT_SPACING);
@@ -546,8 +575,8 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 	for(TechTreeElement *currRootElement : _staticNewTechTreeDataObject->GetRootElements())
 		remainingElements.push(currRootElement);
 
-	// Compute tree width (count of leaf elements)
-	_treeWidth = 0;
+	// Measure tree width (count of leaf elements)
+	_treeMatrixWidth = 0;
 	while(!remainingElements.empty())
 	{
 		// Pop top element
@@ -566,7 +595,7 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 
 		// If there are no children, increment tree width
 		if(!enabledChildExists && currElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
-			++_treeWidth;
+			++_treeMatrixWidth;
 	}
 
 	// Free tree layout matrix rows if neccessary
@@ -576,15 +605,17 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 
 	// Create tree layout matrix rows (at maximum 2 vertical elements per age)
 	for(int i = 0; i < _ageCount * 2; ++i)
-		_treeLayoutMatrix[i] = new TechTreeElement*[_treeWidth * 2](); // Create and clear row
+		_treeLayoutMatrix[i] = new TechTreeElement*[_treeMatrixWidth * 2](); // Create and clear row
 
 	// Compute sub trees for root elements
-	int subTreeWidth = 0;
+	_treeWidth = 0;
 	for(TechTreeElement *currRootElement : _staticNewTechTreeDataObject->GetRootElements())
 	{
 		// Compute sub tree and get its width
+		// Simulate a virtual root building to allow compactification
+		int minimumStartColumnIndexDummy = -1;
 		if(currRootElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
-			subTreeWidth += ComputeSubTree(currRootElement, 2 * subTreeWidth, false);
+			_treeWidth += ComputeSubTree(currRootElement, 2 * _treeWidth, false, &minimumStartColumnIndexDummy, TechTreeElement::ItemType::Building);
 	}
 
 	// Recalculate age label positions
@@ -597,8 +628,41 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 	}
 }
 
-int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startColumnIndex, bool secondInAge)
+int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startColumnIndex, bool secondInAge, int *minimumStartColumnIndex, TechTreeElement::ItemType parentType)
 {
+	// Get row index for this element
+	int rowIndex = 2 * element->_age + (secondInAge ? 1 : 0);
+
+	// Calculate space to the left
+	int elementMinimumStartColumnIndex = startColumnIndex;
+	while(elementMinimumStartColumnIndex > 1)
+	{
+		// Check if there are other elements at the next position or below
+		bool conflict = false;
+		for(int y = rowIndex; y < 2 * _ageCount; ++y)
+			if(_treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2] != nullptr)
+			{
+				// Conflict found
+				conflict = true;
+				break;
+			}
+
+		// Check whether there are now collisions with subtrees of different buildings
+		for(int y = rowIndex - 1; y >= 0; --y)
+			if(_treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2] != nullptr
+				&& _treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2]->_parentBuilding != element->_parentBuilding)
+			{
+				// Conflict found
+				conflict = true;
+				break;
+			}
+
+		// No conflict? => Next position
+		if(conflict)
+			break;
+		--elementMinimumStartColumnIndex;
+	}
+
 	// Compute children sub trees
 	// If possible, center element above non-building subtree
 	int subTreeWidth = 0;
@@ -608,7 +672,12 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 		if(currChild->_renderState != TechTreeElement::ItemRenderState::Hidden)
 		{
 			// Compute child sub tree
-			int currChildSubTreeWidth = ComputeSubTree(currChild, startColumnIndex + 2 * subTreeWidth, currChild->_age == element->_age);
+			int currChildMinimumStartColumnIndex = -1;
+			int currChildSubTreeWidth = ComputeSubTree(currChild, startColumnIndex + 2 * subTreeWidth, currChild->_age == element->_age, &currChildMinimumStartColumnIndex, element->_elementType);
+
+			// Calculate shift to the left
+			if(*minimumStartColumnIndex == -1)
+				*minimumStartColumnIndex = std::max(elementMinimumStartColumnIndex, currChildMinimumStartColumnIndex);
 
 			// Non-building child?
 			if(currChild->_elementType != TechTreeElement::ItemType::Building)
@@ -625,15 +694,9 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 			subTreeWidth += currChildSubTreeWidth;
 		}
 
-	// Get row index for this element
-	int rowIndex = 2 * element->_age + (secondInAge ? 1 : 0);
-
 	// If element has no children, the sub tree width is 1
 	if(subTreeWidth == 0)
 		subTreeWidth = 1;
-
-	if(element->_renderState == TechTreeElement::ItemRenderState::Hidden)
-		__asm int 3;
 
 	// Are there any non-building children?
 	if(firstNonBuildingChildPosX < 0)
@@ -646,6 +709,22 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 	// Center element above non-building subtree
 	element->_renderPosition = Point(firstNonBuildingChildPosX + nonBuildingChildSubTreeWidth - 1, rowIndex);
 	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = element;
+
+	// If minimum column index return value is not set, there were no children, so set it directly
+	if(*minimumStartColumnIndex == -1)
+		*minimumStartColumnIndex = std::max(elementMinimumStartColumnIndex, 0); // 0 if we already are on the very left
+
+	// If parent element is building, perform compactification
+	if(parentType == TechTreeElement::ItemType::Building && *minimumStartColumnIndex != startColumnIndex)
+	{
+		// Move whole subtree to the left
+		MoveTreeLeft(element, startColumnIndex - *minimumStartColumnIndex);
+
+		// Subtract shift amount from subtree width
+		subTreeWidth -= ((startColumnIndex - *minimumStartColumnIndex) / 2);
+	}
+
+	// Finish, return width of whole subtree
 	return subTreeWidth;
 }
 
@@ -722,7 +801,7 @@ TechTreeElement* VanillaTechTreeRenderer::GetElementAtPosition(int x, int y)
 	int treeX = (x / ((64 + ELEMENT_SPACING) / 2));
 
 	// Check for proper X values
-	if(x < 0 || treeX >= 2 * _treeWidth)
+	if(x < 0 || treeX >= 2 * _treeMatrixWidth)
 		return nullptr;
 
 	// Calculate tree Y position: Check whether element is on one of the draw offsets
@@ -793,4 +872,21 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 	for(TechTreeElement *currRoot : _staticNewTechTreeDataObject->GetRootElements())
 		if(getElementPathRecursively(currRoot))
 			break;
+}
+
+void VanillaTechTreeRenderer::MoveTreeLeft(TechTreeElement *element, int amount)
+{
+	// Move recursively
+	for(TechTreeElement *currChild : element->_children)
+		MoveTreeLeft(currChild, amount);
+
+	// Calculate now column index
+	int newDrawX = element->_renderPosition.X - amount;
+
+	// Update tree layout matrix
+	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = nullptr;
+	_treeLayoutMatrix[element->_renderPosition.Y][newDrawX] = element;
+
+	// Update position variable
+	element->_renderPosition.X = newDrawX;
 }

@@ -19,8 +19,11 @@ int(__cdecl *ReadDataFromCompressedFile)(int fileHandle, char *dataBuffer, unsig
 
 /* FUNCTIONS */
 
-TechTreeElement::TechTreeElement(int datFileHandle)
+TechTreeElement::TechTreeElement(int datFileHandle, TechTreeElement *parentBuilding)
 {
+	// Initialize parent building
+	_parentBuilding = parentBuilding;
+
 	// Read properties
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_elementType), 1);
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_elementObjectID), 2);
@@ -42,7 +45,7 @@ TechTreeElement::TechTreeElement(int datFileHandle)
 	short childElementCount;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&childElementCount), 2);
 	for(int i = 0; i < childElementCount; ++i)
-		_children.push_back(new TechTreeElement(datFileHandle));
+		_children.push_back(new TechTreeElement(datFileHandle, (_elementType == ItemType::Building ? this : parentBuilding)));
 
 	// Read required elements
 	short requiredCount;

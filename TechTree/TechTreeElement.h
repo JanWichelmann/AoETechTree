@@ -102,7 +102,7 @@ protected: // Member variables
 	std::vector<RequiredElement *> _requiredElements;
 
 	// The element render position (precomputed for performance reasons).
-	// It doesn't need to be a absolute pixel position; this depends on the renderer.
+	// This does not need to be a absolute pixel position; that depends on the renderer.
 	Point _renderPosition;
 
 	// The element name (white text on each element of the vanilla tech tree). Automatically set when updating the render state.
@@ -111,11 +111,16 @@ protected: // Member variables
 	// Optional. The second line of the element name.
 	char _elementNameSecondLine[256];
 
+	// A pointer to the parent building.
+	// Used by the compactification algorithm to prevent subtree collision.
+	TechTreeElement *_parentBuilding;
+
 public:
 	// Constructor. Reads the tech tree element data from the given DAT file handle.
 	// Parameters:
 	// -> datFileHandle: A handle to an uncompressed DAT file.
-	TechTreeElement(int datFileHandle);
+	// -> parentBuilding: A pointer to the nearest parent building element.
+	TechTreeElement(int datFileHandle, TechTreeElement *parentBuilding);
 
 	// Destructor.
 	~TechTreeElement();
