@@ -70,6 +70,9 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	// Cast virtual function table to be able to access all functions
 	PanelVTable *vTable = static_cast<PanelVTable *>(_VTable);
 
+	// Get design data
+	_designData = _staticNewTechTreeDataObject->GetDesignData();
+
 	// Load style file
 	DirectDrawBufferData *backBuffer = underlyingWindow->_VTable->GetBackBufferData(underlyingWindow);
 	if(!PrepareParentWindowAndLoadStyleData(backBuffer, "scr6", 50007, 1))
@@ -80,39 +83,39 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_verticalScrollOffset = 0;
 	_lastScrollActionTime = 0;
 
-	// Create tech tree renderer
-	// TODO: Hardcoded
+	// Create vanilla style tech tree renderer
+	// TODO: May be changed to allow various renderers using completely different layout approaches
 	_renderer = new VanillaTechTreeRenderer((*_staticGameObjectPointer)->GetGameDataHandler(), Size(_width1, _height1), unknownGameAndPlayerData);
 
 	// Get the renderer's age count
 	_ageCount = _renderer->GetAgeCount();
 
 	// Create close button and its buffer
-	static_cast<PanelVTable *>(_VTable)->CreateButtonWithOneFontWithTextFromDll(this, this, &_closeButton, 20101, 0, _width1 - 105, _height1 - 22, 100, 20, 9, 0, 0);
+	static_cast<PanelVTable *>(_VTable)->CreateButtonWithOneFontWithTextFromDll(this, this, &_closeButton, 20101, 0, _width1 - _designData->_closeButtonRelativeRectangle.X, _height1 - _designData->_closeButtonRelativeRectangle.Y, _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height, 9, 0, 0);
 	_closeButton->_VTable->InvalidateAndRedrawControl1(_closeButton, 1);
 	_closeButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_closeButton->SetHotKey(VK_ESCAPE, 0, 0, 0);
 	_closeButtonDrawBuffer = new DirectDrawBufferData("TechTree Close Button Buffer", 1);
-	_closeButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), 100, 20, 0, 0);
-	_closeButtonDrawBuffer->sub_5A30A0(0, 0, 100, 20);
+	_closeButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height, 0, 0);
+	_closeButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height);
 	UpdateSelectedSubControl(_closeButton);
 
 	// Create scroll buttons and their buffers
-	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollLeftButton, "<-", 0, _width1 - 280, _height1 - 22, 50, 20, 9, 0, 0);
+	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollLeftButton, "<-", 0, _width1 - _designData->_scrollLeftButtonRelativeRectangle.X, _height1 - _designData->_scrollLeftButtonRelativeRectangle.Y, _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height, 9, 0, 0);
 	_scrollLeftButton->_VTable->InvalidateAndRedrawControl1(_scrollLeftButton, 1);
 	_scrollLeftButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_scrollLeftButtonDrawBuffer = new DirectDrawBufferData("TechTree ScrollLeft Button Buffer", 1);
-	_scrollLeftButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), 50, 20, 0, 0);
-	_scrollLeftButtonDrawBuffer->sub_5A30A0(0, 0, 50, 20);
-	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollRightButton, "->", 0, _width1 - 220, _height1 - 22, 50, 20, 9, 0, 0);
+	_scrollLeftButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height, 0, 0);
+	_scrollLeftButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height);
+	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollRightButton, "->", 0, _width1 - _designData->_scrollRightButtonRelativeRectangle.X, _height1 - _designData->_scrollRightButtonRelativeRectangle.Y, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height, 9, 0, 0);
 	_scrollRightButton->_VTable->InvalidateAndRedrawControl1(_scrollRightButton, 1);
 	_scrollRightButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_scrollRightButtonDrawBuffer = new DirectDrawBufferData("TechTree ScrollRight Button Buffer", 1);
-	_scrollRightButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), 50, 20, 0, 0);
-	_scrollRightButtonDrawBuffer->sub_5A30A0(0, 0, 50, 20);
+	_scrollRightButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height, 0, 0);
+	_scrollRightButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height);
 
 	// Load arrow SLP for scroll buttons and assign frames to them
-	_arrowSlp = new SlpFileElement("arrows.slp", 53004);
+	_arrowSlp = new SlpFileElement(_designData->_scrollSlpFileName, _designData->_scrollSlpId);
 	_scrollLeftButton->SetBackgroundSlpAtIndex(0, _arrowSlp, 1);
 	_scrollLeftButton->SetDisplayMode(9);
 	_scrollLeftButton->AssignLabelString(0, "");
@@ -190,7 +193,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 				for(int p = 1; p < 9; ++p)
 					if(reinterpret_cast<char *>(_unknownGameAndPlayerData + 6458)[p] == 4 && reinterpret_cast<char *>(gdh->_dword4C[p])[349] == c)
 					{
-						//Get suffix and break
+						// Get suffix and break
 						(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(20127, civNameSuffixBuffer, sizeof(civNameSuffixBuffer));
 						break;
 					}
@@ -235,7 +238,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	popupLabelFonts[2] = (*_staticGameObjectPointer)->GetFontWithIndex(18)->GetFontHandle();
 	popupLabelFonts[3] = (*_staticGameObjectPointer)->GetFontWithIndex(19)->GetFontHandle();
 	_popupLabel = new LabelControl();
-	_popupLabel->sub_5444B0(_backBufferData, this, 0, 0, 340, 50, popupLabelFonts, _popupLabelBaseFont->GetAverageCharWidth(), _popupLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
+	_popupLabel->sub_5444B0(_backBufferData, this, 0, 0, _designData->_popupLabelWidth, 50, popupLabelFonts, _popupLabelBaseFont->GetAverageCharWidth(), _popupLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
 	_popupLabel->SetTextAlignment(3, 1);
 	_popupLabel->sub_545D50(1);
 	_popupLabel->sub_545D70(0);
@@ -374,26 +377,26 @@ int TechTreeWindow::HandleWindowsMessage(HWND hWnd, signed int msg, WPARAM wPara
 int TechTreeWindow::DoUpdate()
 {
 	// Set selected element if time has elapsed
-	if(_selectedElement != nullptr && timeGetTime() - _selectedElementChangedTime > ELEMENT_POPUP_DELAY)
+	if(_selectedElement != nullptr && timeGetTime() - _selectedElementChangedTime > _designData->_popupLabelDelay)
 	{
 		// Update selected element and redraw
 		ApplySelectedElementAndRedraw();
 	}
 
 	// Time again for scrolling?
-	if(timeGetTime() - _lastScrollActionTime > 30)
+	if(timeGetTime() - _lastScrollActionTime > _designData->_mouseScrollDelay)
 	{
 		// Calculate scroll offsets depending on current mouse cursor position
 		int scrollOffsetX = 0;
-		if(_mouseCursorPosition.X <= SCROLL_AREA)
-			scrollOffsetX = -15;
-		else if(_mouseCursorPosition.X > _width1 - SCROLL_AREA)
-			scrollOffsetX = 15;
+		if(_mouseCursorPosition.X <= _designData->_mouseScrollArea)
+			scrollOffsetX = -_designData->_mouseScrollOffset;
+		else if(_mouseCursorPosition.X > _width1 - _designData->_mouseScrollArea)
+			scrollOffsetX = _designData->_mouseScrollOffset;
 		int scrollOffsetY = 0;
-		if(_mouseCursorPosition.Y <= SCROLL_AREA)
-			scrollOffsetY = -15;
-		else if(_mouseCursorPosition.Y > _height1 - SCROLL_AREA)
-			scrollOffsetY = 15;
+		if(_mouseCursorPosition.Y <= _designData->_mouseScrollArea)
+			scrollOffsetY = -_designData->_mouseScrollOffset;
+		else if(_mouseCursorPosition.Y > _height1 - _designData->_mouseScrollArea)
+			scrollOffsetY = _designData->_mouseScrollOffset;
 
 		// => Scroll?
 		if(scrollOffsetX != 0 || scrollOffsetY != 0)
@@ -431,7 +434,7 @@ int TechTreeWindow::HandleMouseButtonDown(int buttonId, int cursorPosX, int curs
 			ApplySelectedElementAndRedraw();
 
 			// Element shouldn't be deselected even after another mouse move
-			_selectedElementChangedTime -= ELEMENT_POPUP_DELAY;
+			_selectedElementChangedTime -= _designData->_popupLabelDelay;
 		}
 	}
 
@@ -461,25 +464,25 @@ int TechTreeWindow::HandleKeyDown2(int keyDown, int lParam, int menuKeyDown, int
 	if(keyDown == VK_LEFT)
 	{
 		// Scroll left
-		ApplyScrollOffset(-100, 0);
+		ApplyScrollOffset(-_designData->_keyScrollOffset, 0);
 		return 1;
 	}
 	else if(keyDown == VK_RIGHT)
 	{
 		// Scroll right
-		ApplyScrollOffset(100, 0);
+		ApplyScrollOffset(_designData->_keyScrollOffset, 0);
 		return 1;
 	}
 	else if(keyDown == VK_PRIOR)
 	{
 		// Scroll up
-		ApplyScrollOffset(0, -100);
+		ApplyScrollOffset(0, -_designData->_keyScrollOffset);
 		return 1;
 	}
 	else if(keyDown == VK_NEXT)
 	{
 		// Scroll down
-		ApplyScrollOffset(0, 100);
+		ApplyScrollOffset(0, _designData->_keyScrollOffset);
 		return 1;
 	}
 

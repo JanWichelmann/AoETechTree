@@ -14,7 +14,7 @@
 
 /* DEFINITIONS */
 
-// Represents a renderer for the vanilla tech tree.
+// Represents a renderer using the vanilla tech tree layout.
 // This renderer assumes that there are at most two vertical elements per age!
 class VanillaTechTreeRenderer : public TechTreeRenderer
 {
@@ -26,10 +26,10 @@ private:
 	// WARNING: When you want to change this to an odd value, you have to use floating point division in the GetElementAtPosition function, else you'll get precision errors.
 	static const int ELEMENT_SPACING = 4;
 
-	// The inner padding of the popup label box.
-	static const int POPUP_LABEL_BOX_PADDING = 8;
-
 protected: // Member variables
+	// The tech tree design used.
+	const TechTreeDesign *_designData;
+
 	// The research icons.
 	SlpFileElement *_researchIcons;
 
@@ -127,9 +127,6 @@ protected: // Member variables
 
 	// The currently selected (or hovered) element's tree path (including the element itself).
 	std::vector<TechTreeElement *> _selectedElementPath;
-
-	// The bevel colors of the popup label box.
-	unsigned char _popupLabelBoxBevelColors[6];
 
 	// A temporary storage for the element captions to be drawn. This allows to do all TextOutA calls at once, saving a lot of context creations/deletions.
 	std::stack<std::tuple<int, int, char *, unsigned int>> _elementTextsForDrawRun;

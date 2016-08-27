@@ -205,7 +205,6 @@ TechTreeElement::RequiredElement::RequiredElement(int datFileHandle)
 	_elementNameSecondLine[0] = '\0';
 }
 
-// Destructor.
 TechTreeElement::RequiredElement::~RequiredElement()
 {
 	// Nothing to do here

@@ -15,155 +15,93 @@
 VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData)
 	: TechTreeRenderer(gameData, unknownGameAndPlayerData)
 {
+	// Get design data
+	_designData = _staticNewTechTreeDataObject->GetDesignData();
+
 	// Load icon SLPs
 	_researchIcons = new SlpFileElement("btntech.shp", 50729);
 	_creatableIcons = new SlpFileElement("ico_unit.shp", 50730);
 	_buildingIcons = new SlpFileElement("ico_bld2.shp", 50706);
 
 	// Load node SLP
-	_nodeGraphics = new SlpFileElement("technodex.slp", 53206);
+	_nodeGraphics = new SlpFileElement(_designData->_nodeSlpFileName, _designData->_nodeSlpId);
 
 	// Load legend SLP
-	_legendAndAgesSlp = new SlpFileElement("techages.slp", 50342);
+	_legendAndAgesSlp = new SlpFileElement(_designData->_legendAgesSlpFileName, _designData->_legendAgesSlpId);
 
 	// Load tile SLP
-	_tileSlp = new SlpFileElement("techback.slp", 50341);
+	_tileSlp = new SlpFileElement(_designData->_tileSlpFileName, _designData->_tileSlpId);
 
 	// Load legend "disable" SLP
-	_legendDisableSlp = new SlpFileElement("ttx.slp", 53211);
+	_legendDisableSlp = new SlpFileElement(_designData->_legendDisableSlpFileName, _designData->_legendDisableSlpId);
 
 	// Set resolution specific position values
 	_verticalDrawOffsets = new int[_ageCount * 2];
 	_ageLabelRectangles = new Rect[_ageCount][2][2];
 	_windowSize = windowSize;
-	if(windowSize.Y >= 1024)
+	int resHeight = 0;
 	{
+		// Find resolution entry with nearest minimum height
+		for(auto &rConf : _designData->_resolutionData)
+			if(rConf.first > resHeight && rConf.first <= _windowSize.Y)
+				resHeight = rConf.first;
+
 		// Frame indices
-		_legendFrameIndex = 1;
-		_agesFrameIndex = 8;
-		_tileFrameIndex = 1;
+		_legendFrameIndex = _designData->_resolutionData.at(resHeight)->_legendFrameIndex;
+		_agesFrameIndex = _designData->_resolutionData.at(resHeight)->_ageFrameIndex;
+		_tileFrameIndex = _designData->_resolutionData.at(resHeight)->_tileFrameIndex;
 
 		// Control draw positions
-		_legendDisableSlpDrawPosition = Point(121, 926);
-		_civBonusLabelRectangle = Rect(40, 125, 290, 660);
-		_civSelectionComboBoxRectangle = Rect(70, 90, 230, 25);
-		_gameCivsLabelRectangle = Rect(70, 70, 230, 25);
+		_legendDisableSlpDrawPosition = _designData->_resolutionData.at(resHeight)->_legendDisableSlpDrawPosition;
+		_civBonusLabelRectangle = _designData->_resolutionData.at(resHeight)->_civBonusLabelRectangle;
+		_civSelectionComboBoxRectangle = _designData->_resolutionData.at(resHeight)->_civSelectionComboBoxRectangle;
+		_gameCivsLabelRectangle = _designData->_resolutionData.at(resHeight)->_civSelectionTitleLabelRectangle;
 
 		// Legend labels
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(50, 814, 80, 40);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(50 + 100, 814, 80, 40);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(200, 855 + 0 * 23, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(200, 855 + 1 * 23, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(200, 855 + 2 * 23, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(200 - 45, 855 + 3 * 23 + 15, 160, 25);
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)];
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)];
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)];
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)];
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)];
+		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)];
 
 		// Age draw heights
-		_verticalDrawOffsets[0] = 10;
-		_verticalDrawOffsets[1] = 133;
-		_verticalDrawOffsets[2] = 267;
-		_verticalDrawOffsets[3] = 390;
-		_verticalDrawOffsets[4] = 525;
-		_verticalDrawOffsets[5] = 648;
-		_verticalDrawOffsets[6] = 783;
-		_verticalDrawOffsets[7] = 906;
+		for(int i = 0; i < std::min(_ageCount * 2, static_cast<int>(_designData->_resolutionData.at(resHeight)->_verticalDrawOffsets.size())); ++i)
+			_verticalDrawOffsets[i] = _designData->_resolutionData.at(resHeight)->_verticalDrawOffsets[i];
 
 		// Age labels
-		// Calculate left side rectangles, right side follows later when the tree width is known
-		// Bottom lines follow after resolution setting, they are always the same relative to the upper line labels
-		_ageLabelRectangles[0][0][0] = Rect(450, 140, 150, 25);
-		_ageLabelRectangles[1][0][0] = Rect(450, 420, 150, 25);
-		_ageLabelRectangles[2][0][0] = Rect(450, 660, 150, 25);
-		_ageLabelRectangles[3][0][0] = Rect(450, 920, 150, 25);
+		for(int i = 0; i < std::min(_ageCount * 2, static_cast<int>(_designData->_resolutionData.at(resHeight)->_ageLabelRectangles.size())); ++i)
+			_ageLabelRectangles[i / 2][0][i % 2] = _designData->_resolutionData.at(resHeight)->_ageLabelRectangles[i];
 	}
-	else if(windowSize.Y >= 768)
+
+	// Calculate missing age draw offsets
+	int definedDrawOffsetsCount = static_cast<int>(_designData->_resolutionData.at(resHeight)->_verticalDrawOffsets.size());
+	if(definedDrawOffsetsCount % 2 == 1)
 	{
-		// Frame indices
-		_legendFrameIndex = 0;
-		_agesFrameIndex = 7;
-		_tileFrameIndex = 0;
-
-		// Control draw positions
-		_legendDisableSlpDrawPosition = Point(113, 665);
-		_civBonusLabelRectangle = Rect(40, 120, 280, 430);
-		_civSelectionComboBoxRectangle = Rect(65, 85, 230, 25);
-		_gameCivsLabelRectangle = Rect(65, 65, 230, 25);
-
-		// Legend labels
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(45, 550, 80, 40);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(45 + 90, 550, 80, 40);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(188, 593 + 0 * 22, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(188, 593 + 1 * 22, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(188, 593 + 2 * 22, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(188 - 40, 593 + 3 * 22 + 15, 160, 25);
-
-		// Age draw heights
-		_verticalDrawOffsets[0] = 7;
-		_verticalDrawOffsets[1] = 99;
-		_verticalDrawOffsets[2] = 200;
-		_verticalDrawOffsets[3] = 292;
-		_verticalDrawOffsets[4] = 393;
-		_verticalDrawOffsets[5] = 485;
-		_verticalDrawOffsets[6] = 586;
-		_verticalDrawOffsets[7] = 678;
-
-		// Age labels
-		_ageLabelRectangles[0][0][0] = Rect(345, 131, 150, 25);
-		_ageLabelRectangles[1][0][0] = Rect(345, 324, 150, 25);
-		_ageLabelRectangles[2][0][0] = Rect(345, 517, 150, 25);
-		_ageLabelRectangles[3][0][0] = Rect(345, 711, 150, 25);
+		// Calculate second offset
+		_verticalDrawOffsets[definedDrawOffsetsCount] = _verticalDrawOffsets[definedDrawOffsetsCount - 1] + (_verticalDrawOffsets[definedDrawOffsetsCount - 2] - _verticalDrawOffsets[definedDrawOffsetsCount - 3]);
+		++definedDrawOffsetsCount;
 	}
-	else
-	{
-		// Frame indices
-		_legendFrameIndex = 2;
-		_agesFrameIndex = 17;
-		_tileFrameIndex = 2;
-
-		// Control draw positions
-		_legendDisableSlpDrawPosition = Point(102, 528);
-		_civBonusLabelRectangle = Rect(30, 115, 270, 300);
-		_civSelectionComboBoxRectangle = Rect(55, 80, 230, 25);
-		_gameCivsLabelRectangle = Rect(55, 60, 230, 25);
-
-		// Legend labels
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = Rect(35, 430, 80, 40);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = Rect(35 + 80, 430, 80, 40);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = Rect(167, 470 + 0 * 22, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = Rect(167, 470 + 1 * 22, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = Rect(167, 470 + 2 * 22, 160, 25);
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = Rect(167 - 30, 470 + 3 * 22 + 3, 160, 25);
-
-		// Age draw heights
-		_verticalDrawOffsets[0] = 6;
-		_verticalDrawOffsets[1] = 78;
-		_verticalDrawOffsets[2] = 157;
-		_verticalDrawOffsets[3] = 229;
-		_verticalDrawOffsets[4] = 308;
-		_verticalDrawOffsets[5] = 380;
-		_verticalDrawOffsets[6] = 459;
-		_verticalDrawOffsets[7] = 531;
-
-		// Age labels
-		_ageLabelRectangles[0][0][0] = Rect(340, 110, 150, 25);
-		_ageLabelRectangles[1][0][0] = Rect(340, 261, 150, 25);
-		_ageLabelRectangles[2][0][0] = Rect(340, 412, 150, 25);
-		_ageLabelRectangles[3][0][0] = Rect(340, 563, 150, 25);
-	}
-
-	// Set upper line position data according to difference of the last two age Y positions for all extra ages
-	for(int i = 4; i < _ageCount; ++i)
-		_ageLabelRectangles[i][0][0] = Rect(_ageLabelRectangles[3][0][0].X, _ageLabelRectangles[3][0][0].Y - _ageLabelRectangles[2][0][0].Y, _ageLabelRectangles[3][0][0].Width, _ageLabelRectangles[3][0][0].Height);
-
-	// Set second line age label parameters (they directly depend on first line label parameters)
-	for(int i = 0; i < _ageCount; ++i)
-		_ageLabelRectangles[i][0][1] = Rect(_ageLabelRectangles[i][0][0].X, _ageLabelRectangles[i][0][0].Y + 17, _ageLabelRectangles[i][0][0].Width, _ageLabelRectangles[i][0][0].Height);
-
-	// Initialize remaining age draw offsets of ages >= 4
-	for(int i = 4; i < _ageCount; ++i)
+	for(int i = definedDrawOffsetsCount / 2; i < _ageCount; ++i)
 	{
 		// Use difference values from age #3
-		_verticalDrawOffsets[2 * i] = _verticalDrawOffsets[7] + (_verticalDrawOffsets[6] - _verticalDrawOffsets[5]);
-		_verticalDrawOffsets[2 * i + 1] = _verticalDrawOffsets[2 * i] + (_verticalDrawOffsets[7] - _verticalDrawOffsets[6]);
+		_verticalDrawOffsets[2 * i] = _verticalDrawOffsets[2 * i - 1] + (_verticalDrawOffsets[definedDrawOffsetsCount - 2] - _verticalDrawOffsets[definedDrawOffsetsCount - 3]);
+		_verticalDrawOffsets[2 * i + 1] = _verticalDrawOffsets[2 * i] + (_verticalDrawOffsets[definedDrawOffsetsCount - 1] - _verticalDrawOffsets[definedDrawOffsetsCount - 2]);
+	}
+
+	// Calculate missing age label rectangles
+	int definedAgeLabelRectanglesCount = static_cast<int>(_designData->_resolutionData.at(resHeight)->_ageLabelRectangles.size());
+	if(definedAgeLabelRectanglesCount % 2 == 1)
+	{
+		// Calculate second label rectangle
+		_ageLabelRectangles[definedAgeLabelRectanglesCount / 2][0][1] = Rect(_ageLabelRectangles[definedAgeLabelRectanglesCount / 2 - 1][0][1].X, _ageLabelRectangles[definedAgeLabelRectanglesCount / 2][0][0].Y + (_ageLabelRectangles[definedAgeLabelRectanglesCount / 2 - 1][0][1].Y - _ageLabelRectangles[definedAgeLabelRectanglesCount / 2 - 1][0][0].Y), _ageLabelRectangles[definedAgeLabelRectanglesCount / 2 - 1][0][1].Width, _ageLabelRectangles[definedAgeLabelRectanglesCount / 2 - 1][0][1].Height);
+		++definedAgeLabelRectanglesCount;
+	}
+	for(int i = definedAgeLabelRectanglesCount / 2; i < _ageCount; ++i)
+	{
+		// Calculate rectangles
+		_ageLabelRectangles[i][0][0] = Rect(_ageLabelRectangles[i - 1][0][0].X, _ageLabelRectangles[i - 1][0][1].Y + (_ageLabelRectangles[i - 1][0][0].Y - _ageLabelRectangles[i - 2][0][1].Y), _ageLabelRectangles[i - 1][0][0].Width, _ageLabelRectangles[i - 1][0][0].Height);
+		_ageLabelRectangles[i][0][1] = Rect(_ageLabelRectangles[i - 1][0][1].X, _ageLabelRectangles[i][0][0].Y + (_ageLabelRectangles[i - 1][0][1].Y - _ageLabelRectangles[i - 1][0][0].Y), _ageLabelRectangles[i - 1][0][1].Width, _ageLabelRectangles[i - 1][0][1].Height);
 	}
 
 	// Get some SLP frame sizes
@@ -172,21 +110,12 @@ VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size
 	_legendAndAgesSlp->GetFrameSize(_legendFrameIndex, &_legendFrameWidth, &_legendFrameHeight);
 
 	// Load node caption font
-	_nodeFont = (*_staticGameObjectPointer)->GetFontWithIndex(12);
+	_nodeFont = (*_staticGameObjectPointer)->GetFontWithIndex(_designData->_nodeFontIndex);
 
 	// Initialize tree computation variables
 	_treeWidth = 0;
 	_treeMatrixWidth = 0;
 	_treeLayoutMatrix = new TechTreeElement**[_ageCount * 2](); // Filled later
-
-	// Set popup label box bevel colors
-	HPALETTE palette = (*_staticGameObjectPointer)->GetDirectDrawHandler()->GetMainPalette();
-	_popupLabelBoxBevelColors[0] = GetNearestPaletteIndex(palette, 0xCFCFCFu);
-	_popupLabelBoxBevelColors[1] = GetNearestPaletteIndex(palette, 0xB9B9B9u);
-	_popupLabelBoxBevelColors[2] = GetNearestPaletteIndex(palette, 0xA3A3A3u);
-	_popupLabelBoxBevelColors[3] = GetNearestPaletteIndex(palette, 0x606060u);
-	_popupLabelBoxBevelColors[4] = GetNearestPaletteIndex(palette, 0x767676u);
-	_popupLabelBoxBevelColors[5] = GetNearestPaletteIndex(palette, 0x8C8C8Cu);
 }
 
 VanillaTechTreeRenderer::~VanillaTechTreeRenderer()
@@ -279,28 +208,28 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 	drawBuffer->DrawFilledRectangle(x + 0, y + 0, x + _popupLabelBoxSize.X, y + _popupLabelBoxSize.Y, 255);
 
 	// Draw top bevels
-	drawBuffer->DrawFilledRectangle(x + 1, y + 0, x + _popupLabelBoxSize.X - 0, y + 0, _popupLabelBoxBevelColors[0]);
-	drawBuffer->DrawFilledRectangle(x + 2, y + 1, x + _popupLabelBoxSize.X - 1, y + 1, _popupLabelBoxBevelColors[1]);
-	drawBuffer->DrawFilledRectangle(x + 3, y + 2, x + _popupLabelBoxSize.X - 2, y + 2, _popupLabelBoxBevelColors[2]);
+	drawBuffer->DrawFilledRectangle(x + 1, y + 0, x + _popupLabelBoxSize.X - 0, y + 0, _designData->_popupBoxBevelColorIndices[0]);
+	drawBuffer->DrawFilledRectangle(x + 2, y + 1, x + _popupLabelBoxSize.X - 1, y + 1, _designData->_popupBoxBevelColorIndices[1]);
+	drawBuffer->DrawFilledRectangle(x + 3, y + 2, x + _popupLabelBoxSize.X - 2, y + 2, _designData->_popupBoxBevelColorIndices[2]);
 
 	// Draw right bevels
-	drawBuffer->DrawFilledRectangle(x + _popupLabelBoxSize.X - 0, y + 0, x + _popupLabelBoxSize.X - 0, y + _popupLabelBoxSize.Y - 0, _popupLabelBoxBevelColors[0]);
-	drawBuffer->DrawFilledRectangle(x + _popupLabelBoxSize.X - 1, y + 1, x + _popupLabelBoxSize.X - 1, y + _popupLabelBoxSize.Y - 1, _popupLabelBoxBevelColors[1]);
-	drawBuffer->DrawFilledRectangle(x + _popupLabelBoxSize.X - 2, y + 2, x + _popupLabelBoxSize.X - 2, y + _popupLabelBoxSize.Y - 2, _popupLabelBoxBevelColors[2]);
+	drawBuffer->DrawFilledRectangle(x + _popupLabelBoxSize.X - 0, y + 0, x + _popupLabelBoxSize.X - 0, y + _popupLabelBoxSize.Y - 0, _designData->_popupBoxBevelColorIndices[0]);
+	drawBuffer->DrawFilledRectangle(x + _popupLabelBoxSize.X - 1, y + 1, x + _popupLabelBoxSize.X - 1, y + _popupLabelBoxSize.Y - 1, _designData->_popupBoxBevelColorIndices[1]);
+	drawBuffer->DrawFilledRectangle(x + _popupLabelBoxSize.X - 2, y + 2, x + _popupLabelBoxSize.X - 2, y + _popupLabelBoxSize.Y - 2, _designData->_popupBoxBevelColorIndices[2]);
 
 	// Draw left bevels
-	drawBuffer->DrawFilledRectangle(x + 0, y + 0, x + 0, y + _popupLabelBoxSize.Y - 0, _popupLabelBoxBevelColors[3]);
-	drawBuffer->DrawFilledRectangle(x + 1, y + 1, x + 1, y + _popupLabelBoxSize.Y - 1, _popupLabelBoxBevelColors[4]);
-	drawBuffer->DrawFilledRectangle(x + 2, y + 2, x + 2, y + _popupLabelBoxSize.Y - 2, _popupLabelBoxBevelColors[5]);
+	drawBuffer->DrawFilledRectangle(x + 0, y + 0, x + 0, y + _popupLabelBoxSize.Y - 0, _designData->_popupBoxBevelColorIndices[3]);
+	drawBuffer->DrawFilledRectangle(x + 1, y + 1, x + 1, y + _popupLabelBoxSize.Y - 1, _designData->_popupBoxBevelColorIndices[4]);
+	drawBuffer->DrawFilledRectangle(x + 2, y + 2, x + 2, y + _popupLabelBoxSize.Y - 2, _designData->_popupBoxBevelColorIndices[5]);
 
 	// Draw bottom bevels
-	drawBuffer->DrawFilledRectangle(x + 0, y + _popupLabelBoxSize.Y - 0, x + _popupLabelBoxSize.X - 0, y + _popupLabelBoxSize.Y - 0, _popupLabelBoxBevelColors[3]);
-	drawBuffer->DrawFilledRectangle(x + 1, y + _popupLabelBoxSize.Y - 1, x + _popupLabelBoxSize.X - 1, y + _popupLabelBoxSize.Y - 1, _popupLabelBoxBevelColors[4]);
-	drawBuffer->DrawFilledRectangle(x + 2, y + _popupLabelBoxSize.Y - 2, x + _popupLabelBoxSize.X - 2, y + _popupLabelBoxSize.Y - 2, _popupLabelBoxBevelColors[5]);
+	drawBuffer->DrawFilledRectangle(x + 0, y + _popupLabelBoxSize.Y - 0, x + _popupLabelBoxSize.X - 0, y + _popupLabelBoxSize.Y - 0, _designData->_popupBoxBevelColorIndices[3]);
+	drawBuffer->DrawFilledRectangle(x + 1, y + _popupLabelBoxSize.Y - 1, x + _popupLabelBoxSize.X - 1, y + _popupLabelBoxSize.Y - 1, _designData->_popupBoxBevelColorIndices[4]);
+	drawBuffer->DrawFilledRectangle(x + 2, y + _popupLabelBoxSize.Y - 2, x + _popupLabelBoxSize.X - 2, y + _popupLabelBoxSize.Y - 2, _designData->_popupBoxBevelColorIndices[5]);
 
 	// Draw required elements
-	int currX = x + 3 + POPUP_LABEL_BOX_PADDING;
-	int currY = y + _popupLabelBoxSize.Y - 64 - POPUP_LABEL_BOX_PADDING - 3;
+	int currX = x + 3 + _designData->_popupInnerPadding;
+	int currY = y + _popupLabelBoxSize.Y - 64 - _designData->_popupInnerPadding - 3;
 	for(TechTreeElement::RequiredElement *currReq : _selectedElement->_requiredElements)
 	{
 		// Get graphics
@@ -345,7 +274,7 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 	SetTextColor(gdiContext, 0xFFFFFF);
 
 	// Draw required element captions
-	currX = x + 3 + POPUP_LABEL_BOX_PADDING;
+	currX = x + 3 + _designData->_popupInnerPadding;
 	for(TechTreeElement::RequiredElement *currReq : _selectedElement->_requiredElements)
 	{
 		// Draw text
@@ -782,14 +711,14 @@ Rect VanillaTechTreeRenderer::UpdateAndGetPopupLabelBoxDrawData(Size &popupLabel
 	int contentWidth = std::max(popupLabelSize.X, static_cast<int>(_selectedElement->_requiredElements.size() * (64 + ELEMENT_SPACING)) - ELEMENT_SPACING);
 
 	// The size is simply the sum of bevels, paddings and the content width
-	_popupLabelBoxSize = Size(3 + POPUP_LABEL_BOX_PADDING + contentWidth + POPUP_LABEL_BOX_PADDING + 3, 3 + POPUP_LABEL_BOX_PADDING + popupLabelSize.Y + POPUP_LABEL_BOX_PADDING + 3);
+	_popupLabelBoxSize = Size(3 + _designData->_popupInnerPadding + contentWidth + _designData->_popupInnerPadding + 3, 3 + _designData->_popupInnerPadding + popupLabelSize.Y + _designData->_popupInnerPadding + 3);
 
 	// If there are requirements, reserve space for them
 	if(_selectedElement->_requiredElements.size() > 0)
 		_popupLabelBoxSize.Y += 64;
 
 	// Return size
-	return Rect(3 + POPUP_LABEL_BOX_PADDING, 3 + POPUP_LABEL_BOX_PADDING, _popupLabelBoxSize.X, _popupLabelBoxSize.Y);
+	return Rect(3 + _designData->_popupInnerPadding, 3 + _designData->_popupInnerPadding, _popupLabelBoxSize.X, _popupLabelBoxSize.Y);
 }
 
 TechTreeElement* VanillaTechTreeRenderer::GetElementAtPosition(int x, int y)
@@ -851,7 +780,7 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 
 	// Compute parent elements of selected element to draw the selection path
 	std::function<bool(TechTreeElement *)> getElementPathRecursively;
-	getElementPathRecursively = [this, element, &getElementPathRecursively] (TechTreeElement *currElement)
+	getElementPathRecursively = [this, element, &getElementPathRecursively](TechTreeElement *currElement)
 	{
 		// Push onto the path stack
 		_selectedElementPath.push_back(currElement);

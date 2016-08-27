@@ -4,10 +4,15 @@
 #define CLASS TechTreeData
 #include "TechTreeData.h"
 
+// C++ string class
+#include <string>
+
+
 /* STATIC WRAPPER FUNCTIONS */
 
 STATIC_WRAPPER(Constructor, void, int)
 STATIC_WRAPPER(Destructor, void)
+
 
 /* FUNCTIONS */
 
@@ -34,7 +39,8 @@ void TechTreeData::__Install()
 	INSTALL_WRAPPER_DIRECT(Constructor, 0x004268ED);
 
 	// Patch version number (no page protection change needed)
-	*reinterpret_cast<char *>(0x0066B15A) = 'T';
+	// NOTE: Replaced by special marker string after regular tech tree data to maintain compability with unpatched game versions
+	//*reinterpret_cast<char *>(0x0066B15A) = 'T';
 
 	// Install destructor (overwrite VTable address assignment as that isn't neccessary)
 	BYTE patch2[] =
@@ -55,11 +61,26 @@ TechTreeData::TechTreeData(int datFileHandle)
 	// -> dataBufferSize: The size of the data buffer.
 	int(__cdecl *ReadDataFromCompressedFile)(int fileHandle, char *dataBuffer, unsigned int dataBufferSize) = reinterpret_cast<int(__cdecl *)(int, char *, unsigned int)>(0x00542850);
 
+	// Read version marker
+	char techTreeVersionMarker[5];
+	ReadDataFromCompressedFile(datFileHandle, techTreeVersionMarker, 4);
+	techTreeVersionMarker[4] = '\0';
+	if(std::string("NTT1").compare(techTreeVersionMarker) != 0)
+	{
+		// Malformed data file, exit process with error message and let the OS do the cleanup (the game would have crashed anyway...)
+		std::string errorMessage = "Invalid tech tree version marker (expected NTT1): ";
+		MessageBoxA(NULL, (errorMessage + techTreeVersionMarker).c_str(), "Error reading DAT file", MB_OK | MB_ICONERROR);
+		ExitProcess(1);
+	}
+
 	// Read root elements
 	short rootElementCount;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&rootElementCount), 2);
 	for(int i = 0; i < rootElementCount; ++i)
 		_rootElements.push_back(new TechTreeElement(datFileHandle, nullptr));
+
+	// Read design
+	_design = new TechTreeDesign(datFileHandle);
 }
 
 void TechTreeData::Constructor(int datFileHandle)
@@ -95,4 +116,10 @@ const std::vector<TechTreeElement *> &TechTreeData::GetRootElements()
 {
 	// Return root elements
 	return _rootElements;
+}
+
+const TechTreeDesign *TechTreeData::GetDesignData()
+{
+	// Return design data
+	return _design;
 }

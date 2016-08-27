@@ -7,6 +7,7 @@
 
 // Other includes
 #include "TechTreeElement.h"
+#include "TechTreeDesign.h"
 #include <vector>
 
 /* DEFINITIONS */
@@ -20,6 +21,9 @@ private:
 protected: // Member variables
 	// The root elements of the tech tree.
 	std::vector<TechTreeElement *> _rootElements;
+
+	// The design data of the tech tree.
+	TechTreeDesign *_design;
 
 public:
 	// Hide base class install function.
@@ -43,6 +47,9 @@ public:
 
 	// Returns the root elements of the tech tree.
 	const std::vector<TechTreeElement *> &GetRootElements();
+
+	// Returns the design data of the tech tree.
+	const TechTreeDesign *GetDesignData();
 };
 
 // The data of the new tech tree. This variable is initialized when the game data is loaded, else its value is nullptr.

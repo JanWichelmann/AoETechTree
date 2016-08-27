@@ -126,6 +126,9 @@
     <ClCompile Include="ResearchDataItem.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="TechTreeDesign.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functions.h">
@@ -243,6 +246,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="DrawUtilities.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="TechTreeDesign.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

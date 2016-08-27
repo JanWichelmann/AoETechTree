@@ -2,9 +2,9 @@
 
 This is a new implementation of the ingame tech tree view (F2) completely replacing the old one. It is much easier moddable, as there are no hardcoded elements. Basically each element only requires its ID, type, age and rendering mode. The positioning is done by the rendering algorithm completely.
 
-At the moment there is only one renderer, the "vanilla renderer". It uses the original tech tree SLPs, hence has hardcoded resolutions and age count. It is planned to add another renderer that uses modular graphics, so the tree appearance is more customizable.
+At the moment there is only one renderer, the "vanilla renderer". It uses the original tech tree node placement (including compression using spare place in subtrees of the same parent building), everything else like background graphics, control positions and sizes, age count and much more is completely customizable. This design data is also stored in the DAT file.
 
-As a consequence, the DAT tech tree structure used by this implementation is incompatible with the original one.
+As a consequence, the DAT tech tree structure used by this implementation is incompatible with the original one (but an unmodified game executable will still work with the new DAT file format, because the old tech tree data persists).
 You can edit it with this tool: https://github.com/Janworks/AoETechTreeTool
 If you want to do more modding than just changing the tech tree view itself, use the TechTreeEditor, which also exports the new tech tree format: https://github.com/Janworks/TechTreeEditor
 

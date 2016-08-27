@@ -115,6 +115,7 @@
     <ClCompile Include="functions.cpp" />
     <ClCompile Include="ControlListElement.cpp" />
     <ClCompile Include="TechTreeData.cpp" />
+    <ClCompile Include="TechTreeDesign.cpp" />
     <ClCompile Include="TechTreeElement.cpp" />
     <ClCompile Include="TechTreeRenderer.cpp" />
     <ClCompile Include="TechTreeWindow.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="ControlListElement.h" />
     <ClInclude Include="StaticControlContainer.h" />
     <ClInclude Include="TechTreeData.h" />
+    <ClInclude Include="TechTreeDesign.h" />
     <ClInclude Include="TechTreeElement.h" />
     <ClInclude Include="TechTreeRenderer.h" />
     <ClInclude Include="TechTreeWindow.h" />

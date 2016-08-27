@@ -12,6 +12,7 @@
 #include "DirectDrawBufferData.h"
 #include "TechTreeRenderer.h"
 #include "ComboBoxControl.h"
+#include "TechTreeDesign.h"
 #include "TechTreeElement.h"
 #include "FontData.h"
 
@@ -23,13 +24,6 @@ class TechTreeWindow : public Window
 {
 private:
 	typedef Window base;
-
-private:
-	// The area at the window borders where the mouse cursor triggers scrolling.
-	static const int SCROLL_AREA = 15;
-
-	// The time in milliseconds that has to elapse before the popup window is shown (when hovering an element).
-	static const int ELEMENT_POPUP_DELAY = 500;
 
 protected: // Member variables
 	// The underlying window (that called the tech tree screen).
@@ -46,6 +40,9 @@ protected: // Member variables
 
 	// The tech tree renderer used.
 	TechTreeRenderer *_renderer;
+
+	// The tech tree design used.
+	const TechTreeDesign *_designData;
 
 	// Close button and its buffer.
 	ButtonControl *_closeButton;
