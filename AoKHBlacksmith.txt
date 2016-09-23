@@ -1,6 +1,6 @@
 Tracking Number: 12694
 Title: New Ingame Tech Tree View
-Short description: A new implementation for the ingame tech tree view, making modding easier while keeping the original graphics.
+Short description: A new implementation for the ingame tech tree view, making modding of the tree and its design easier.
 
 Long description:
 
@@ -9,9 +9,7 @@ Please post your comments, questions and feedback into the [url=http://aok.heave
 [b]Introduction[/b]
 This is a new implementation of the ingame tech tree view (F2) completely replacing the old one. It is much easier moddable, as there are absolutely no hardcoded elements. Basically each element only requires its ID, type, age and rendering mode. The positioning is done by the rendering algorithm completely.
 
-The current renderer uses the vanilla graphics, so you won't see any differences, except some improvements in navigation, trying to make it feel more natural.
-
-In the future a second renderer will be implemented; this will depend on a set of custom SLP files allowing much more flexibility when redesigning the tech tree graphics (e.g. adding a fifth age). Currently the vanilla renderer only supports two levels per age, and a maximum of four ages. You may add data for more than four ages, but probably that won't look very pretty for now, as the background frames are too small.
+The current renderer uses the vanilla tree node positioning, but the whole remaining design is completely customizable, including the change of background graphics, control positions and sizes, age count and much more.
 
 A little warning at this place: The tech tree replacement seems to be pretty stable by now, but anyway there may still be random bugs difficult to spot. If you encounter a crash that was caused by the new tech tree, let me know. It will help if you can give a short description of the steps leading to the crash, as this will make it easier to fix it.
 
@@ -30,7 +28,7 @@ A modded sample empires2_x1_p1.dat is in the "DATA" folder. "Editor" contains a 
 
 "NewTechTree\Inject": Unpack the EXE and DLL files to the age2_x1 folder of Age of Empires II. If you haven't already created a custom empires2_x1_p1.dat with the new tech tree, you can unpack the empires2_x1_p1.dat from the archive into your DATA folder, replacing the old one (do not forget a backup!). Start the game by clicking on the AoETechTree.exe that you've put into the age2_x1 folder.
 
-"Editor": Unpack all files into an arbitrary folder and run the EXE file. You're prompted to specify a DAT file to edit (use the one from the "NewTechTree" folder for testing), and some language DLL files for proper name display. After that you can add, edit and delete tree nodes, import/export the tech tree data and save your changes into a new DAT file.
+"Editor": Unpack all files into an arbitrary folder and run the EXE file. You're prompted to specify a DAT file to edit (use the one from the "NewTechTree" folder for testing), and some language DLL files for proper name display. After that you can add, edit and delete tree nodes, import/export the tech tree data, modify the design, and save your changes into a new DAT file.
 
 
 [b]Requirements[/b]
@@ -42,5 +40,10 @@ To find out if all requirements are installed just start the programs, they will
 
 
 [b]Legal Info & Credits[/b]
-
 This software is published under the MIT/X11 license. Please read the LICENSE for further information.
+
+
+[b]Updates[/b]
+
+[u]1.1.0[/u]
+Implemented customizable designs and tree compression.

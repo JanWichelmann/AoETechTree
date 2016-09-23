@@ -153,6 +153,19 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 		// Get DLL string
 		(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(dllIndex, elementNameBuffer, sizeof(elementNameBuffer));
 
+		// If no entry is found, use name instead
+		if(elementNameBuffer[0] == '\0')
+		{
+			// Determine ID
+			if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable)
+				dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_civs[selectedCivId]->_units[_elementObjectID]->_languageDllNameId;
+			else if(_elementType == TechTreeElement::ItemType::Research)
+				dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_researches->_researches[_elementObjectID]._languageDLLName1;
+
+			// Get DLL string
+			(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(dllIndex, elementNameBuffer, sizeof(elementNameBuffer));
+		}
+
 		// Find position of line break
 		// We deal with multibyte strings, so use _mbsinc to go to the next character
 		char *elementNameBufferCurrPos = elementNameBuffer;
