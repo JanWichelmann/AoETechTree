@@ -592,6 +592,10 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 		--elementMinimumStartColumnIndex;
 	}
 
+	// Minimum Start Column Index 1 => there must be still space on the left
+	if(elementMinimumStartColumnIndex == 1)
+		elementMinimumStartColumnIndex = 0;
+
 	// Compute children sub trees
 	// If possible, center element above non-building subtree
 	int subTreeWidth = 0;
@@ -651,6 +655,8 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 
 		// Subtract shift amount from subtree width
 		subTreeWidth -= ((startColumnIndex - *minimumStartColumnIndex) / 2);
+		if(subTreeWidth < 0)
+			subTreeWidth = 0;
 	}
 
 	// Finish, return width of whole subtree
