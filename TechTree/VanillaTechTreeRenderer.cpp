@@ -375,9 +375,6 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	// Need to draw lines below?
 	if(element->_children.size() > 0)
 	{
-		// Draw vertical line
-		drawBuffer->DrawFilledRectangle(drawX + 31, drawY + 64, drawX + 32, drawY + 67, (elementIsSelectionPathElement && nextSelectionPathElementDirectlyReachable ? 255 : 0));
-
 		// Draw vertical line for each child and store left most / right most child coordinates
 		int leftMostChildDrawX = INT32_MIN;
 		int rightMostChildDrawX = INT32_MIN;
@@ -439,9 +436,15 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 				drawBuffer->DrawFilledRectangle(childDrawX + 31, drawY + 68, childDrawX + 32, childDrawY, 0);
 		}
 
-		// Draw horizontal connection from the left most child to the right most child
+		// Draw vertical line from the parent, and horizontal line from the left most child to the right most child
 		if(leftMostChildDrawX != INT32_MIN && rightMostChildDrawX != INT32_MIN)
+		{
+			// Draw vertical line
+			drawBuffer->DrawFilledRectangle(drawX + 31, drawY + 64, drawX + 32, drawY + 67, (elementIsSelectionPathElement && nextSelectionPathElementDirectlyReachable ? 255 : 0));
+
+			// Draw horicontal line 
 			drawBuffer->DrawFilledRectangle(leftMostChildDrawX + 31, drawY + 68, rightMostChildDrawX + 32, drawY + 69, 0);
+		}
 
 		// If the element is part of a selection path, draw horizontal line along path
 		if(elementIsSelectionPathElement && nextSelectionPathElementDirectlyReachable)
@@ -526,7 +529,7 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 		if(!enabledChildExists && currElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
 			++_treeMatrixWidth;
 	}
-
+	
 	// Free tree layout matrix rows if neccessary
 	for(int i = 0; i < _ageCount * 2; ++i)
 		if(_treeLayoutMatrix[i])
@@ -577,14 +580,15 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 			}
 
 		// Check whether there are now collisions with subtrees of different buildings
-		for(int y = rowIndex - 1; y >= 0; --y)
-			if(_treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2] != nullptr
-				&& _treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2]->_parentBuilding != element->_parentBuilding)
-			{
-				// Conflict found
-				conflict = true;
-				break;
-			}
+		if(!conflict)
+			for(int y = rowIndex - 1; y >= 0; --y)
+				if(_treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2] != nullptr
+					&& _treeLayoutMatrix[y][elementMinimumStartColumnIndex - 2]->_parentBuilding != element->_parentBuilding)
+				{
+					// Conflict found
+					conflict = true;
+					break;
+				}
 
 		// No conflict? => Next position
 		if(conflict)
@@ -811,12 +815,15 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 
 void VanillaTechTreeRenderer::MoveTreeLeft(TechTreeElement *element, int amount)
 {
-	// Move recursively
+	// Move non-hidden items recursively
 	for(TechTreeElement *currChild : element->_children)
+		if(currChild->_renderState != TechTreeElement::ItemRenderState::Hidden)
 		MoveTreeLeft(currChild, amount);
 
-	// Calculate now column index
+	// Calculate new column index
 	int newDrawX = element->_renderPosition.X - amount;
+	if(newDrawX < 0)
+		__asm int 3; // Should never happen
 
 	// Update tree layout matrix
 	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = nullptr;
