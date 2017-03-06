@@ -148,6 +148,15 @@ void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX
 	// Lock surface of draw buffer
 	drawBuffer->LockAssociatedSurface(1);
 
+	// Clear area that is probably not filled by background graphics (else there may be ridiculously looking parts of previously drawn elements)
+	if(_legendFrameHeight - offsetY < _windowSize.Y)
+	{
+		// Get full tree height and determine size of area to be cleared
+		int fullTreeHeight = GetFullHeight();
+		if(fullTreeHeight - _legendFrameHeight > 0)
+			drawBuffer->DrawFilledRectangle(0, _legendFrameHeight - offsetY, _windowSize.X, _windowSize.Y, 125); // Clear area
+	}
+
 	// Draw background tiles (only for visible area)
 	int treeWidthInPixels = _treeWidth * (64 + ELEMENT_SPACING);
 	int tileCount = treeWidthInPixels / _tileFrameWidth;
@@ -681,8 +690,8 @@ int VanillaTechTreeRenderer::GetFullWidth()
 
 int VanillaTechTreeRenderer::GetFullHeight()
 {
-	// TODO
-	return _legendFrameHeight;
+	// Calculate estimated tree height
+	return std::max(_legendFrameHeight, _verticalDrawOffsets[_ageCount * 2 - 1] + 64 + ELEMENT_SPACING);
 }
 
 const Rect* VanillaTechTreeRenderer::GetCivBonusLabelRectangle()
@@ -790,7 +799,7 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 
 	// Compute parent elements of selected element to draw the selection path
 	std::function<bool(TechTreeElement *)> getElementPathRecursively;
-	getElementPathRecursively = [this, element, &getElementPathRecursively](TechTreeElement *currElement)
+	getElementPathRecursively = [this, element, &getElementPathRecursively] (TechTreeElement *currElement)
 	{
 		// Push onto the path stack
 		_selectedElementPath.push_back(currElement);
