@@ -245,13 +245,13 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 		int boxSlpFrameIndex = 0;
 		SlpFileElement *iconSlp = nullptr;
 		int iconId = -1;
-		if(currReq->_elementType == TechTreeElement::ItemType::Building)
+		if(currReq->_elementType == TechTreeElement::ItemType::Building || currReq->_elementType == TechTreeElement::ItemType::UniqueBuilding || currReq->_elementType == TechTreeElement::ItemType::SupportBuilding)
 		{
 			boxSlpFrameIndex = 0;
 			iconSlp = _buildingIcons;
 			iconId = _gameData->_civs[_selectedCivId]->_units[currReq->_elementObjectID]->_iconID;
 		}
-		else if(currReq->_elementType == TechTreeElement::ItemType::Creatable)
+		else if(currReq->_elementType == TechTreeElement::ItemType::Creatable || (currReq->_elementType >= TechTreeElement::ItemType::UniqueUnit && currReq->_elementType <= TechTreeElement::ItemType::MercenaryUnit))
 		{
 			boxSlpFrameIndex = 2;
 			iconSlp = _creatableIcons;
@@ -376,6 +376,42 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		iconSlp = _researchIcons;
 		iconId = _gameData->_researches->_researches[element->_elementObjectID]._iconID;
 	}
+    else if(element->_elementType == TechTreeElement::ItemType::UniqueUnit)
+	{
+		boxSlpFrameIndex = 6;
+		iconSlp = _creatableIcons;
+		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
+	}
+    else if(element->_elementType == TechTreeElement::ItemType::SupportUnit)
+	{
+		boxSlpFrameIndex = 8;
+		iconSlp = _creatableIcons;
+		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
+	}
+    else if(element->_elementType == TechTreeElement::ItemType::RaiderUnit)
+	{
+		boxSlpFrameIndex = 10;
+		iconSlp = _creatableIcons;
+		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
+	}
+    else if(element->_elementType == TechTreeElement::ItemType::MercenaryUnit)
+	{
+		boxSlpFrameIndex = 12;
+		iconSlp = _creatableIcons;
+		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
+	}
+    if(element->_elementType == TechTreeElement::ItemType::UniqueBuilding)
+	{
+		boxSlpFrameIndex = 14;
+		iconSlp = _buildingIcons;
+		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
+	}
+    if(element->_elementType == TechTreeElement::ItemType::SupportBuilding)
+	{
+		boxSlpFrameIndex = 16;
+		iconSlp = _buildingIcons;
+		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
+	}
 
 	// Item not researched or disabled? => Darker Box
 	if(element->_renderState == TechTreeElement::ItemRenderState::NotResearched || element->_renderState == TechTreeElement::ItemRenderState::Disabled)
@@ -488,7 +524,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		{
 			// Draw node disable graphic (frame #6)
 			// Per default this graphic consists only of one transparent pixel, so it could as well be omitted. Kept here for possible modding purposes.
-			_nodeGraphics->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX, drawY, 6, 0);
+			// _nodeGraphics->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX, drawY, 6, 0);
 
 			// Draw icon disable graphic (frame #117 in research icon SLP)
 			_researchIcons->DrawFrameIntoDirectDrawBuffer(drawBuffer, drawX + 14, drawY + 3, 117, 0);
@@ -626,7 +662,7 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 				*minimumStartColumnIndex = std::max(elementMinimumStartColumnIndex, currChildMinimumStartColumnIndex);
 
 			// Non-building child?
-			if(currChild->_elementType != TechTreeElement::ItemType::Building)
+			if(currChild->_elementType != TechTreeElement::ItemType::Building || currChild->_elementType != TechTreeElement::ItemType::UniqueBuilding || currChild->_elementType != TechTreeElement::ItemType::SupportBuilding)
 			{
 				// Is this the first non-building child?
 				if(firstNonBuildingChildPosX < 0)
@@ -661,7 +697,7 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 		*minimumStartColumnIndex = std::max(elementMinimumStartColumnIndex, 0); // 0 if we already are on the very left
 
 	// If parent element is building, perform compactification
-	if(parentType == TechTreeElement::ItemType::Building && *minimumStartColumnIndex != startColumnIndex)
+	if((parentType == TechTreeElement::ItemType::Building || parentType == TechTreeElement::ItemType::UniqueBuilding || parentType == TechTreeElement::ItemType::SupportBuilding) && *minimumStartColumnIndex != startColumnIndex)
 	{
 		// Move whole subtree to the left
 		MoveTreeLeft(element, startColumnIndex - *minimumStartColumnIndex);
