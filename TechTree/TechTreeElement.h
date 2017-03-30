@@ -22,7 +22,13 @@ public:
 	{
 		Research = 0,
 		Creatable = 1,
-		Building = 2
+		Building = 2,
+        UniqueUnit = 3,
+        SupportUnit = 4,
+        RaiderUnit = 5,
+        MercenaryUnit = 6,
+        UniqueBuilding = 7,
+        SupportBuilding = 8
 	};
 
 	// The possible tech tree element render modes.
