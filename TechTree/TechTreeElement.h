@@ -22,13 +22,7 @@ public:
 	{
 		Research = 0,
 		Creatable = 1,
-		Building = 2,
-        UniqueUnit = 3,
-        SupportUnit = 4,
-        RaiderUnit = 5,
-        MercenaryUnit = 6,
-        UniqueBuilding = 7,
-        SupportBuilding = 8
+		Building = 2
 	};
 
 	// The possible tech tree element render modes.
@@ -106,6 +100,9 @@ protected: // Member variables
 
 	// The types and IDs of required elements. These don't need to be real tree elements.
 	std::vector<RequiredElement *> _requiredElements;
+
+	// The element render background index.
+	int _backgroundIndex;
 
 	// The element render position (precomputed for performance reasons).
 	// This does not need to be a absolute pixel position; that depends on the renderer.

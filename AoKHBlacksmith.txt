@@ -34,7 +34,7 @@ A modded sample empires2_x1_p1.dat is in the "DATA" folder. "Editor" contains a 
 [b]Requirements[/b]
 The tech tree view itself was built with Microsoft Visual Studio 2015, so you'll need [url=https://www.microsoft.com/de-de/download/details.aspx?id=48145]the appropiate Visual C++ redistributable[/url].
 
-The editor depends on the .NET Framework 4.0. It should already be installed on current windows systems; if not, you can find it [url=https://www.microsoft.com/en-us/download/details.aspx?id=17718]here[/url].
+The editor depends on the .NET Framework 4.5. It should already be installed on current windows systems; if not, you can find it [url=https://www.microsoft.com/en-us/download/details.aspx?id=30653]here[/url].
 
 To find out if all requirements are installed just start the programs, they will tell you when some dependencies are not found.
 
@@ -45,5 +45,16 @@ This software is published under the MIT/X11 license. Please read the LICENSE fo
 
 [b]Updates[/b]
 
+[u]1.2.0[/u]
+- Added support for custom tree element backgrounds
+- Upgraded editor to .NET 4.5
+
+[u]1.1.1[/u]
+View:
+- Fixed crash when switching civs in the tech tree view
+- Removed leftover vertical line below elements with hidden children
+Editor:
+- Fixed a few crashes when copying, pasting, moving and deleting nodes
+
 [u]1.1.0[/u]
-Implemented customizable designs and tree compression.
+Implemented customizable designs and tree compression

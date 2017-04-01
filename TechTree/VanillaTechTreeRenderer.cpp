@@ -242,24 +242,21 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 	for(TechTreeElement::RequiredElement *currReq : _selectedElement->_requiredElements)
 	{
 		// Get graphics
-		int boxSlpFrameIndex = 0;
+		int boxSlpFrameIndex = _designData->_nodeBackgrounds[(int)currReq->_elementType];
 		SlpFileElement *iconSlp = nullptr;
 		int iconId = -1;
-		if(currReq->_elementType == TechTreeElement::ItemType::Building || currReq->_elementType == TechTreeElement::ItemType::UniqueBuilding || currReq->_elementType == TechTreeElement::ItemType::SupportBuilding)
+		if(currReq->_elementType == TechTreeElement::ItemType::Building)
 		{
-			boxSlpFrameIndex = 0;
 			iconSlp = _buildingIcons;
 			iconId = _gameData->_civs[_selectedCivId]->_units[currReq->_elementObjectID]->_iconID;
 		}
-		else if(currReq->_elementType == TechTreeElement::ItemType::Creatable || (currReq->_elementType >= TechTreeElement::ItemType::UniqueUnit && currReq->_elementType <= TechTreeElement::ItemType::MercenaryUnit))
+		else if(currReq->_elementType == TechTreeElement::ItemType::Creatable)
 		{
-			boxSlpFrameIndex = 2;
 			iconSlp = _creatableIcons;
 			iconId = _gameData->_civs[_selectedCivId]->_units[currReq->_elementObjectID]->_iconID;
 		}
 		else if(currReq->_elementType == TechTreeElement::ItemType::Research)
 		{
-			boxSlpFrameIndex = 4;
 			iconSlp = _researchIcons;
 			iconId = _gameData->_researches->_researches[currReq->_elementObjectID]._iconID;
 		}
@@ -355,62 +352,25 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		}
 
 	// Select graphics
-	int boxSlpFrameIndex = 0;
+	int boxSlpFrameIndex = _designData->_nodeBackgrounds[(int)element->_elementType];
+	if(element->_backgroundIndex < _designData->_nodeBackgrounds.size())
+		boxSlpFrameIndex = _designData->_nodeBackgrounds[element->_backgroundIndex];
 	SlpFileElement *iconSlp = nullptr;
 	int iconId = -1;
 	if(element->_elementType == TechTreeElement::ItemType::Building)
 	{
-		boxSlpFrameIndex = 0;
 		iconSlp = _buildingIcons;
 		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
 	}
 	else if(element->_elementType == TechTreeElement::ItemType::Creatable)
 	{
-		boxSlpFrameIndex = 2;
 		iconSlp = _creatableIcons;
 		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
 	}
 	else if(element->_elementType == TechTreeElement::ItemType::Research)
 	{
-		boxSlpFrameIndex = 4;
 		iconSlp = _researchIcons;
 		iconId = _gameData->_researches->_researches[element->_elementObjectID]._iconID;
-	}
-    else if(element->_elementType == TechTreeElement::ItemType::UniqueUnit)
-	{
-		boxSlpFrameIndex = 6;
-		iconSlp = _creatableIcons;
-		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
-	}
-    else if(element->_elementType == TechTreeElement::ItemType::SupportUnit)
-	{
-		boxSlpFrameIndex = 8;
-		iconSlp = _creatableIcons;
-		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
-	}
-    else if(element->_elementType == TechTreeElement::ItemType::RaiderUnit)
-	{
-		boxSlpFrameIndex = 10;
-		iconSlp = _creatableIcons;
-		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
-	}
-    else if(element->_elementType == TechTreeElement::ItemType::MercenaryUnit)
-	{
-		boxSlpFrameIndex = 12;
-		iconSlp = _creatableIcons;
-		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
-	}
-    if(element->_elementType == TechTreeElement::ItemType::UniqueBuilding)
-	{
-		boxSlpFrameIndex = 14;
-		iconSlp = _buildingIcons;
-		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
-	}
-    if(element->_elementType == TechTreeElement::ItemType::SupportBuilding)
-	{
-		boxSlpFrameIndex = 16;
-		iconSlp = _buildingIcons;
-		iconId = _gameData->_civs[_selectedCivId]->_units[element->_elementObjectID]->_iconID;
 	}
 
 	// Item not researched or disabled? => Darker Box
@@ -574,7 +534,7 @@ void VanillaTechTreeRenderer::SetCurrentCiv(int civId)
 		if(!enabledChildExists && currElement->_renderState != TechTreeElement::ItemRenderState::Hidden)
 			++_treeMatrixWidth;
 	}
-	
+
 	// Free tree layout matrix rows if neccessary
 	for(int i = 0; i < _ageCount * 2; ++i)
 		if(_treeLayoutMatrix[i])
@@ -662,7 +622,7 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 				*minimumStartColumnIndex = std::max(elementMinimumStartColumnIndex, currChildMinimumStartColumnIndex);
 
 			// Non-building child?
-			if(currChild->_elementType != TechTreeElement::ItemType::Building || currChild->_elementType != TechTreeElement::ItemType::UniqueBuilding || currChild->_elementType != TechTreeElement::ItemType::SupportBuilding)
+			if(currChild->_elementType != TechTreeElement::ItemType::Building)
 			{
 				// Is this the first non-building child?
 				if(firstNonBuildingChildPosX < 0)
@@ -697,7 +657,7 @@ int VanillaTechTreeRenderer::ComputeSubTree(TechTreeElement *element, int startC
 		*minimumStartColumnIndex = std::max(elementMinimumStartColumnIndex, 0); // 0 if we already are on the very left
 
 	// If parent element is building, perform compactification
-	if((parentType == TechTreeElement::ItemType::Building || parentType == TechTreeElement::ItemType::UniqueBuilding || parentType == TechTreeElement::ItemType::SupportBuilding) && *minimumStartColumnIndex != startColumnIndex)
+	if(parentType == TechTreeElement::ItemType::Building && *minimumStartColumnIndex != startColumnIndex)
 	{
 		// Move whole subtree to the left
 		MoveTreeLeft(element, startColumnIndex - *minimumStartColumnIndex);
@@ -835,7 +795,7 @@ void VanillaTechTreeRenderer::SetSelectedElement(TechTreeElement *element)
 
 	// Compute parent elements of selected element to draw the selection path
 	std::function<bool(TechTreeElement *)> getElementPathRecursively;
-	getElementPathRecursively = [this, element, &getElementPathRecursively] (TechTreeElement *currElement)
+	getElementPathRecursively = [this, element, &getElementPathRecursively](TechTreeElement *currElement)
 	{
 		// Push onto the path stack
 		_selectedElementPath.push_back(currElement);
@@ -863,7 +823,7 @@ void VanillaTechTreeRenderer::MoveTreeLeft(TechTreeElement *element, int amount)
 	// Move non-hidden items recursively
 	for(TechTreeElement *currChild : element->_children)
 		if(currChild->_renderState != TechTreeElement::ItemRenderState::Hidden)
-		MoveTreeLeft(currChild, amount);
+			MoveTreeLeft(currChild, amount);
 
 	// Calculate new column index
 	int newDrawX = element->_renderPosition.X - amount;

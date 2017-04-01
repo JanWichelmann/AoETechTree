@@ -224,9 +224,9 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 		}
 
 		// Set label texts
-		static_cast<LabelControlVTable *>(_ageLabels[i][0][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][0], 11265 + i);
+		static_cast<LabelControlVTable *>(_ageLabels[i][0][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][0], 20110 + i);
 		static_cast<LabelControlVTable *>(_ageLabels[i][0][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][1], 20114);
-		static_cast<LabelControlVTable *>(_ageLabels[i][1][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][0], 11265 + i);
+		static_cast<LabelControlVTable *>(_ageLabels[i][1][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][0], 20110 + i);
 		static_cast<LabelControlVTable *>(_ageLabels[i][1][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][1], 20114);
 	}
 
@@ -654,7 +654,7 @@ void TechTreeWindow::ApplySelectedElementAndRedraw()
 
 	// Get description text
 	int dllIndex = -1;
-	if(_selectedElement->_elementType == TechTreeElement::ItemType::Building || _selectedElement->_elementType == TechTreeElement::ItemType::Creatable || (_selectedElement->_elementType >= TechTreeElement::ItemType::UniqueUnit && _selectedElement->_elementType <= TechTreeElement::ItemType::MercenaryUnit) || _selectedElement->_elementType == TechTreeElement::ItemType::UniqueBuilding || _selectedElement->_elementType == TechTreeElement::ItemType::SupportBuilding)
+	if(_selectedElement->_elementType == TechTreeElement::ItemType::Building || _selectedElement->_elementType == TechTreeElement::ItemType::Creatable)
 		dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_civs[_currentCivId]->_units[_selectedElement->_elementObjectID]->_languageDllNameId + 21000;
 	else if(_selectedElement->_elementType == TechTreeElement::ItemType::Research)
 		dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_researches->_researches[_selectedElement->_elementObjectID]._languageDLLName1 + 21000;

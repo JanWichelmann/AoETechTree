@@ -131,8 +131,12 @@ protected: // Member variables
 	// The bevel (border) colors of the popup box.
 	unsigned char _popupBoxBevelColorIndices[6];
 
-	// The Index
+	// The font index of the tree node labels.
 	unsigned char _nodeFontIndex;
+
+	// The different node backgrounds; here only the frame indices for the node SLP are needed.
+	// The first three indices match the TechTreeElement::ItemType members, so each node type has a default background design.
+	std::vector<int> _nodeBackgrounds;
 
 public:
 	// Constructor. Reads the tech tree element data from the given DAT file handle.

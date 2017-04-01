@@ -89,8 +89,23 @@ TechTreeDesign::TechTreeDesign(int datFileHandle)
 	// Read popup bevel data
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(_popupBoxBevelColorIndices), 6);
 	
-	// Read remaining data
+	// Read node data
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_nodeFontIndex), 1);
+	int nodeBackgroundCount;
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&nodeBackgroundCount), 4);
+	for(int i = 0; i < nodeBackgroundCount; i++)
+	{
+		// Read and discard name
+		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&len), 4);
+		char *garbage = new char[len];
+		ReadDataFromCompressedFile(datFileHandle, garbage, len);
+		delete[] garbage;
+
+		// Read and save frame index
+		int frameIndex;
+		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&frameIndex), 4);
+		_nodeBackgrounds.push_back(frameIndex);
+	}
 }
 
 TechTreeDesign::~TechTreeDesign()

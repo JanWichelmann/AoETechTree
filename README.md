@@ -8,13 +8,14 @@ As a consequence, the DAT tech tree structure used by this implementation is inc
 You can edit it with this tool: https://github.com/Janworks/AoETechTreeTool
 If you want to do more modding than just changing the tech tree view itself, use the TechTreeEditor, which also exports the new tech tree format: https://github.com/Janworks/TechTreeEditor
 
+I created this software while working on the (german) Agearena AddOn (http://www.agearena.de/forum/index.php?mode=viewforum&forum_id=7) and will update it periodically.
+
 
 ## USAGE
 
 Unpack the EXE and DLL files to the age2_x1 folder of Age of Empires II. If you haven't already created a custom empires2_x1_p1.dat with the new tech tree, you can unpack the empires2_x1_p1.dat of the archive into the DATA folder, replacing the old one (do not forget a backup!).
 
 The launcher starts the age2_x1.exe process and injects the TechTree.dll containing the code changes to add a new age.
-I created this software while working on the (german) Agearena AddOn (http://www.agearena.de/forum/index.php?mode=viewforum&forum_id=7) and will update it periodically.
 
 > AoETechTree.exe PARAMS
 
@@ -30,12 +31,7 @@ As this software is build with Microsoft Visual Studio 2015, you'll need the app
 
 This software was tested with the UserPatch v1.4 installed, so there should be no incompabilities.
 
-Also some virus scanners may have problems with this software, as it uses DLL injection to patch the running Age of Empires II process. This method is also used by many viruses, so some virus scanners block it by default. If you have problems running this software, try to create an exception in the scanners filter rules.
-
-
-## TODO
-
-* Add another renderer that is easier moddable and less hardcoded than the vanilla one in terms of age count, resolution and background images.
+Also some virus scanners may have problems with this software, as it uses DLL injection to patch the running Age of Empires II process. This method is also used by many viruses, so some virus scanners block it by default. If you have problems running this software, try to create an exception in the scanner's filter rules.
 
 
 ## LEGAL INFO & CREDITS

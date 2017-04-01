@@ -45,13 +45,16 @@ TechTreeElement::TechTreeElement(int datFileHandle, TechTreeElement *parentBuild
 	short childElementCount;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&childElementCount), 2);
 	for(int i = 0; i < childElementCount; ++i)
-		_children.push_back(new TechTreeElement(datFileHandle, ((_elementType == ItemType::Building || _elementType == ItemType::UniqueBuilding || _elementType == ItemType::SupportBuilding) ? this : parentBuilding)));
+		_children.push_back(new TechTreeElement(datFileHandle, (_elementType == ItemType::Building ? this : parentBuilding)));
 
 	// Read required elements
 	short requiredCount;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&requiredCount), 2);
 	for(int i = 0; i < requiredCount; ++i)
 		_requiredElements.push_back(new RequiredElement(datFileHandle));
+
+	// Read background index
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_backgroundIndex), 4);
 
 	// Initialize name variables
 	_elementNameFirstLine[0] = '\0';
@@ -145,7 +148,7 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 
 		// Calculate DLL index
 		int dllIndex = -1;
-		if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable || (_elementType >= ItemType::UniqueUnit && _elementType <= ItemType::MercenaryUnit) || _elementType == ItemType::UniqueBuilding || _elementType == ItemType::SupportBuilding)
+		if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable)
 			dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_civs[selectedCivId]->_units[_elementObjectID]->_languageDllNameId + 9000;
 		else if(_elementType == TechTreeElement::ItemType::Research)
 			dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_researches->_researches[_elementObjectID]._languageDLLName1 + 10000;
@@ -157,7 +160,7 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 		if(elementNameBuffer[0] == '\0')
 		{
 			// Determine ID
-			if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable || (_elementType >= ItemType::UniqueUnit && _elementType <= ItemType::MercenaryUnit) || _elementType == ItemType::UniqueBuilding || _elementType == ItemType::SupportBuilding)
+			if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable)
 				dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_civs[selectedCivId]->_units[_elementObjectID]->_languageDllNameId;
 			else if(_elementType == TechTreeElement::ItemType::Research)
 				dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_researches->_researches[_elementObjectID]._languageDLLName1;
@@ -234,7 +237,7 @@ void TechTreeElement::RequiredElement::UpdateDisplayName(char selectedCivId)
 
 		// Calculate DLL index
 		int dllIndex = -1;
-		if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable || (_elementType >= ItemType::UniqueUnit && _elementType <= ItemType::MercenaryUnit) || _elementType == ItemType::UniqueBuilding || _elementType == ItemType::SupportBuilding)
+		if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable)
 			dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_civs[selectedCivId]->_units[_elementObjectID]->_languageDllNameId + 9000;
 		else if(_elementType == TechTreeElement::ItemType::Research)
 			dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_researches->_researches[_elementObjectID]._languageDLLName1 + 10000;
@@ -246,7 +249,7 @@ void TechTreeElement::RequiredElement::UpdateDisplayName(char selectedCivId)
 		if(elementNameBuffer[0] == '\0')
 		{
 			// Determine ID
-			if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable || (_elementType >= ItemType::UniqueUnit && _elementType <= ItemType::MercenaryUnit) || _elementType == ItemType::UniqueBuilding || _elementType == ItemType::SupportBuilding)
+			if(_elementType == TechTreeElement::ItemType::Building || _elementType == TechTreeElement::ItemType::Creatable)
 				dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_civs[selectedCivId]->_units[_elementObjectID]->_languageDllNameId;
 			else if(_elementType == TechTreeElement::ItemType::Research)
 				dllIndex = (*_staticGameObjectPointer)->GetGameDataHandler()->_researches->_researches[_elementObjectID]._languageDLLName1;
