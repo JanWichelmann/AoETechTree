@@ -124,11 +124,23 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_scrollRightButton->AssignLabelString(0, "");
 
 	// Create civ bonus label
-	static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_civBonusLabel, 0, 2, 20, 100, 20, 10, 0, 0, 1);
+	/*static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_civBonusLabel, 0, 2, 20, 100, 20, 10, 0, 0, 1);
 	_civBonusLabel->_VTable->InvalidateAndRedrawControl1(_civBonusLabel, 0);
 	_civBonusLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_civBonusLabel->SetStyleText2Colors(0, 0);
+	_civBonusLabel->sub_545D70(0);*/
+	FontData *civBonusLabelBaseFont = (*_staticGameObjectPointer)->GetFontWithIndex(10);
+	HFONT civBonusLabelFonts[4];
+	civBonusLabelFonts[0] = civBonusLabelBaseFont->GetFontHandle();
+	civBonusLabelFonts[1] = (*_staticGameObjectPointer)->GetFontWithIndex(17)->GetFontHandle();
+	civBonusLabelFonts[2] = (*_staticGameObjectPointer)->GetFontWithIndex(18)->GetFontHandle();
+	civBonusLabelFonts[3] = (*_staticGameObjectPointer)->GetFontWithIndex(19)->GetFontHandle();
+	_civBonusLabel = new LabelControl();
+	_civBonusLabel->sub_5444B0(_backBufferData, this, 2, 20, 100, 20, civBonusLabelFonts, civBonusLabelBaseFont->GetAverageCharWidth(), civBonusLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
+	_civBonusLabel->SetTextAlignment(3, 1);
+	_civBonusLabel->sub_545D50(1);
 	_civBonusLabel->sub_545D70(0);
+	_civBonusLabel->SetStyleText2Colors(0x000000, 0x00E7E7);
 
 	// Create civ selection combo box
 	static_cast<PanelVTable *>(_VTable)->CreateComboBox(this, this, &_civSelectionComboBox, 230, 0, 2, 20, 200, 25, 10);
@@ -615,7 +627,7 @@ void TechTreeWindow::SetCurrentCiv(int civId)
 	// Update description label
 	char civString[2048];
 	(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(20149 + _currentCivId, civString, sizeof(civString));
-	_civBonusLabel->InterpreteTextFormatCodesAndComputeWordWrap(civString, 0, 0);
+	_civBonusLabel->InterpreteTextFormatCodesAndComputeWordWrap(civString, -1, 0);
 
 	// Redraw
 	_VTable->InvalidateAndRedrawControl2(this, 1);
