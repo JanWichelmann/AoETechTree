@@ -646,6 +646,7 @@ void TechTreeWindow::UpdatePopupBoxVisibility()
 		// Hide label
 		_drawPopupLabelBox = false;
 		_renderer->SetSelectedElement(nullptr);
+		_currPopupBoxElement = nullptr;
 		static_cast<LabelControlVTable *>(_popupLabel->_VTable)->InterpreteTextFormatCodesAndComputeWordWrap(_popupLabel, " ", 0, 0);
 	}
 
@@ -661,6 +662,12 @@ void TechTreeWindow::UpdatePopupBoxVisibility()
 
 void TechTreeWindow::ApplySelectedElementAndRedraw()
 {
+	// Element changed?
+	// If not, no (expensive) update is necessary
+	if(_currPopupBoxElement == _selectedElement)
+		return;
+	_currPopupBoxElement = _selectedElement;
+	
 	// Update selected element in renderer
 	_renderer->SetSelectedElement(_selectedElement);
 
