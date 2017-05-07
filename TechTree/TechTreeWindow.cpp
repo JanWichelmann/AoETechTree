@@ -695,7 +695,7 @@ void TechTreeWindow::ApplySelectedElementAndRedraw()
 	static_cast<LabelControlVTable *>(_popupLabel->_VTable)->InterpreteTextFormatCodesAndComputeWordWrap(_popupLabel, descriptionTextBuffer, _selectedElement->_elementObjectID, (_selectedElement->_elementType == TechTreeElement::ItemType::Research ? 1 : 0));
 
 	// Calculate and apply popup label size
-	Size popupLabelSize(_popupLabel->GetWidth(), _popupLabel->GetLineCount() * _popupLabelBaseFont->GetCharHeightWithRowSpace() + 25);
+	Size popupLabelSize(_popupLabel->GetWidth(), _popupLabel->GetLineCount() * _popupLabelBaseFont->GetCharHeightWithRowSpace() + 30);
 	_popupLabel->_VTable->UpdatePositionAndSizeAndOtherData(_popupLabel, 0, 0, 0, 0, 0, popupLabelSize.X, popupLabelSize.X, popupLabelSize.Y, popupLabelSize.Y, 0, 0, 0, 0);
 
 	// Calculate popup label box size
