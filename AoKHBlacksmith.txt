@@ -45,8 +45,16 @@ This software is published under the MIT/X11 license. Please read the LICENSE fo
 
 [b]Updates[/b]
 
+[u]1.2.2[/u]
+- Added configurable legend labels for the recently introduced custom node background types (thanks to Bala Arizalu for the idea!)
+
+[u]1.2.1[/u]
+Editor:
+- Fixed a crash when opening old design files
+- Updated the included tree data und design files
+
 [u]1.2.0[/u]
-- Added support for custom tree element backgrounds
+- Added support for custom tree element backgrounds (thanks to danielpereira for the idea and for providing a rough implementation!)
 - Upgraded editor to .NET 4.5
 
 [u]1.1.1[/u]
@@ -57,4 +65,4 @@ Editor:
 - Fixed a few crashes when copying, pasting, moving and deleting nodes
 
 [u]1.1.0[/u]
-Implemented customizable designs and tree compression
+- Implemented customizable designs and tree compression

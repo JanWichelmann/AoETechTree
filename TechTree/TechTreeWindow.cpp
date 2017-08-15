@@ -160,24 +160,44 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_gameCivsLabel->sub_545D70(0);
 	static_cast<LabelControlVTable *>(_gameCivsLabel->_VTable)->AssignTextFromLanguageDlls(_gameCivsLabel, 20125);
 
-	// Create legend labels
-	for(int i = 0; i < 6; ++i)
+	// Create "Not researched" label
+	static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_legendNotResearchedLabel, 0, 2, 2, 160, 25, 13, 0, 0, 0);
+	_legendNotResearchedLabel->_VTable->InvalidateAndRedrawControl1(_legendNotResearchedLabel, 0);
+	_legendNotResearchedLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
+	_legendNotResearchedLabel->SetStyleText2Colors(0, 0);
+	_legendNotResearchedLabel->sub_545D70(0);
+	static_cast<LabelControlVTable *>(_legendNotResearchedLabel->_VTable)->AssignTextFromLanguageDlls(_legendNotResearchedLabel, 20124);
+
+	// Create "Researched" label
+	static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_legendResearchedLabel, 0, 2, 2, 160, 25, 13, 0, 0, 0);
+	_legendResearchedLabel->_VTable->InvalidateAndRedrawControl1(_legendResearchedLabel, 0);
+	_legendResearchedLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
+	_legendResearchedLabel->SetStyleText2Colors(0, 0);
+	_legendResearchedLabel->sub_545D70(0);
+	static_cast<LabelControlVTable *>(_legendResearchedLabel->_VTable)->AssignTextFromLanguageDlls(_legendResearchedLabel, 20128);
+
+	// Create node type labels
+	int nodeTypeLabelCount = _renderer->GetLegendNodeTypeCount();
+	for(int i = 0; i < nodeTypeLabelCount; ++i)
 	{
 		// Create label
-		static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_legendLabels[i], 0, 2, 2, 160, 25, 13, 0, 0, 0);
-		_legendLabels[i]->_VTable->InvalidateAndRedrawControl1(_legendLabels[i], 0);
-		_legendLabels[i]->AssignIdToControlAndMoveInParentChildrenList(1, 0);
-		_legendLabels[i]->SetStyleText2Colors(0, 0);
-		_legendLabels[i]->sub_545D70(0);
+		LabelControl *legendNodeTypeLabel;
+		static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &legendNodeTypeLabel, 0, 2, 2, 160, 25, 13, 0, 0, 0);
+		legendNodeTypeLabel->_VTable->InvalidateAndRedrawControl1(legendNodeTypeLabel, 0);
+		legendNodeTypeLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
+		legendNodeTypeLabel->SetStyleText2Colors(0, 0);
+		legendNodeTypeLabel->sub_545D70(0);
+		static_cast<LabelControlVTable *>(legendNodeTypeLabel->_VTable)->AssignTextFromLanguageDlls(legendNodeTypeLabel, _renderer->GetLegendNodeTypeLabelDllId(i));
+		_legendNodeTypeLabels.push_back(legendNodeTypeLabel);
 	}
 
-	// Assign text to legend labels
-	static_cast<LabelControlVTable *>(_legendLabels[0]->_VTable)->AssignTextFromLanguageDlls(_legendLabels[0], 20124);
-	static_cast<LabelControlVTable *>(_legendLabels[1]->_VTable)->AssignTextFromLanguageDlls(_legendLabels[1], 20128);
-	static_cast<LabelControlVTable *>(_legendLabels[2]->_VTable)->AssignTextFromLanguageDlls(_legendLabels[2], 20121);
-	static_cast<LabelControlVTable *>(_legendLabels[3]->_VTable)->AssignTextFromLanguageDlls(_legendLabels[3], 20122);
-	static_cast<LabelControlVTable *>(_legendLabels[4]->_VTable)->AssignTextFromLanguageDlls(_legendLabels[4], 20120);
-	static_cast<LabelControlVTable *>(_legendLabels[5]->_VTable)->AssignTextFromLanguageDlls(_legendLabels[5], 20119);
+	// Create "Disabled" label
+	static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_legendDisabledLabel, 0, 2, 2, 160, 25, 13, 0, 0, 0);
+	_legendDisabledLabel->_VTable->InvalidateAndRedrawControl1(_legendDisabledLabel, 0);
+	_legendDisabledLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
+	_legendDisabledLabel->SetStyleText2Colors(0, 0);
+	_legendDisabledLabel->sub_545D70(0);
+	static_cast<LabelControlVTable *>(_legendDisabledLabel->_VTable)->AssignTextFromLanguageDlls(_legendDisabledLabel, 20119);
 
 	// Fill civ selection combo box
 	int civCount = (*_staticGameObjectPointer)->GetGameDataHandler()->_civCount;
@@ -586,17 +606,41 @@ void TechTreeWindow::ApplyScrollOffset(int horizontalScrollOffset, int verticalS
 		gameCivsLabelRectangle->Width,
 		gameCivsLabelRectangle->Height);
 
+	// Update "not researched" label position
+	const Rect *legendNotResearchedLabelRectangle = _renderer->GetLegendNotResearchedLabelRectangle();
+	_legendNotResearchedLabel->UpdatePositionAndSizeData(
+		legendNotResearchedLabelRectangle->X - _horizontalScrollOffset,
+		legendNotResearchedLabelRectangle->Y - _verticalScrollOffset,
+		legendNotResearchedLabelRectangle->Width,
+		legendNotResearchedLabelRectangle->Height);
+
+	// Update "researched" label position
+	const Rect *legendResearchedLabelRectangle = _renderer->GetLegendResearchedLabelRectangle();
+	_legendResearchedLabel->UpdatePositionAndSizeData(
+		legendResearchedLabelRectangle->X - _horizontalScrollOffset,
+		legendResearchedLabelRectangle->Y - _verticalScrollOffset,
+		legendResearchedLabelRectangle->Width,
+		legendResearchedLabelRectangle->Height);
+
 	// Update legend label positions
-	for(int i = 0; i < 6; ++i)
+	for(int i = 0; i < _legendNodeTypeLabels.size(); ++i)
 	{
 		// Get rectangle and update position
-		const Rect *currLegendLabelRectangle = _renderer->GetLegendLabelRectangle(static_cast<TechTreeRenderer::LegendLabelIndices>(i));
-		_legendLabels[i]->UpdatePositionAndSizeData(
+		const Rect *currLegendLabelRectangle = _renderer->GetLegendNodeTypeLabelRectangle(i);
+		_legendNodeTypeLabels[i]->UpdatePositionAndSizeData(
 			currLegendLabelRectangle->X - _horizontalScrollOffset,
 			currLegendLabelRectangle->Y - _verticalScrollOffset,
 			currLegendLabelRectangle->Width,
 			currLegendLabelRectangle->Height);
 	}
+
+	// Update "disabled" label position
+	const Rect *legendDisabledLabelRectangle = _renderer->GetLegendDisabledLabelRectangle();
+	_legendDisabledLabel->UpdatePositionAndSizeData(
+		legendDisabledLabelRectangle->X - _horizontalScrollOffset,
+		legendDisabledLabelRectangle->Y - _verticalScrollOffset,
+		legendDisabledLabelRectangle->Width,
+		legendDisabledLabelRectangle->Height);
 
 	// Update age label positions
 	for(int i = 0; i < _ageCount; ++i)

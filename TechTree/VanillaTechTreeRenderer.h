@@ -116,8 +116,18 @@ protected: // Member variables
 	// The rectangle of the "game civs" label above the civ selection combo box.
 	Rect _gameCivsLabelRectangle;
 
-	// The legend label rectangles.
-	Rect _legendLabelRectangles[6];
+	// The rectangle of the "Not researched" legend label.
+	Rect _legendNotResearchedLabelRectangle;
+
+	// The rectangle of the "Researched" legend label.
+	Rect _legendResearchedLabelRectangle;
+
+	// The rectangles of the node type legend labels.
+	// Must have at least three entries.
+	std::vector<Rect> _legendNodeTypeLabelRectangles;
+
+	// The rectangle of the "Disabled" legend label.
+	Rect _legendDisabledLabelRectangle;
 
 	// The popup label box size.
 	Size _popupLabelBoxSize;
@@ -191,10 +201,27 @@ public:
 	// Returns the position and size of the "game civs" label above the civ selection combobox.
 	virtual const Rect* GetGameCivsLabelRectangle();
 
-	// Returns the position and size of the legend label with the given ID.
+	// Returns the position and size of the "Not Researched" legend label.
+	virtual const Rect* GetLegendNotResearchedLabelRectangle();
+
+	// Returns the position and size of the "Researched" legend label.
+	virtual const Rect* GetLegendResearchedLabelRectangle();
+
+	// Returns the count of the node type labels in the legend.
+	virtual const int GetLegendNodeTypeCount();
+
+	// Returns the position and size of the legend node type label with the given index.
 	// Parameters:
-	// -> labelIndex: The label ID.
-	virtual const Rect* GetLegendLabelRectangle(LegendLabelIndices labelIndex);
+	// -> labelIndex: The label index.
+	virtual const Rect* GetLegendNodeTypeLabelRectangle(int labelIndex);
+
+	// Returns the DLL string ID of the legend node type label with the given index.
+	// Parameters:
+	// -> labelIndex: The label index.
+	virtual const int GetLegendNodeTypeLabelDllId(int labelIndex);
+
+	// Returns the position and size of the "Disabled" legend label.
+	virtual const Rect* GetLegendDisabledLabelRectangle();
 
 	// Returns the position of the age label rectangle for the given age, line and side.
 	// Parameters:

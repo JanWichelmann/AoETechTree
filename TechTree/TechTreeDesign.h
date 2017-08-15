@@ -43,8 +43,18 @@ private:
 		// The rectangle of the civ selection label.
 		Rect _civSelectionTitleLabelRectangle;
 
-		// The rectangles of various legend labels.
-		Rect _legendLabelRectangles[6];
+		// The rectangle of the "Not researched" legend label.
+		Rect _legendNotResearchedLabelRectangle;
+
+		// The rectangle of the "Researched" legend label.
+		Rect _legendResearchedLabelRectangle;
+
+		// The rectangles of the node type legend labels.
+		// Must have at least three entries.
+		std::vector<Rect> _legendNodeTypeLabelRectangles;
+
+		// The rectangle of the "Disabled" legend label.
+		Rect _legendDisabledLabelRectangle;
 
 		// The rectangles of the age name labels on the left side. There are always two per age: First the upper line, then the lower line.
 		// Must have at least three entries.
@@ -62,6 +72,26 @@ private:
 
 		// Destructor.
 		~ResolutionConfiguration();
+	};
+
+	// Defines a node type.
+	class NodeType
+	{
+	public:
+		// The frame index in the node SLP.
+		int _frameIndex;
+
+		// The DLL ID of the legend label string.
+		int _dllId;
+
+	public:
+		// Constructor. Reads the node type data from the given DAT file handle.
+		// Parameters:
+		// -> datFileHandle: A handle to an uncompressed DAT file.
+		NodeType(int datFileHandle);
+
+		// Destructor.
+		~NodeType();
 	};
 
 protected: // Member variables
@@ -136,7 +166,7 @@ protected: // Member variables
 
 	// The different node backgrounds; here only the frame indices for the node SLP are needed.
 	// The first three indices match the TechTreeElement::ItemType members, so each node type has a default background design.
-	std::vector<int> _nodeBackgrounds;
+	std::vector<NodeType *> _nodeTypes;
 
 public:
 	// Constructor. Reads the tech tree element data from the given DAT file handle.

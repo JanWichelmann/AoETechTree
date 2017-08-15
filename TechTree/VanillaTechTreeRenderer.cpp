@@ -58,12 +58,11 @@ VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size
 		_gameCivsLabelRectangle = _designData->_resolutionData.at(resHeight)->_civSelectionTitleLabelRectangle;
 
 		// Legend labels
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotResearched)];
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researched)];
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Units)];
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Buildings)];
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::Researches)];
-		_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)] = _designData->_resolutionData.at(resHeight)->_legendLabelRectangles[static_cast<int>(LegendLabelIndices::NotAvailable)];
+		_legendNotResearchedLabelRectangle = _designData->_resolutionData.at(resHeight)->_legendNotResearchedLabelRectangle;
+		_legendResearchedLabelRectangle = _designData->_resolutionData.at(resHeight)->_legendResearchedLabelRectangle;
+		for(Rect &r : _designData->_resolutionData.at(resHeight)->_legendNodeTypeLabelRectangles)
+			_legendNodeTypeLabelRectangles.push_back(r);
+		_legendDisabledLabelRectangle = _designData->_resolutionData.at(resHeight)->_legendDisabledLabelRectangle;
 
 		// Age draw heights
 		for(int i = 0; i < std::min(_ageCount * 2, static_cast<int>(_designData->_resolutionData.at(resHeight)->_verticalDrawOffsets.size())); ++i)
@@ -242,7 +241,7 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 	for(TechTreeElement::RequiredElement *currReq : _selectedElement->_requiredElements)
 	{
 		// Get graphics
-		int boxSlpFrameIndex = _designData->_nodeBackgrounds[(int)currReq->_elementType];
+		int boxSlpFrameIndex = _designData->_nodeTypes[(int)currReq->_elementType]->_frameIndex;
 		SlpFileElement *iconSlp = nullptr;
 		int iconId = -1;
 		if(currReq->_elementType == TechTreeElement::ItemType::Building)
@@ -352,9 +351,9 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 		}
 
 	// Select graphics
-	int boxSlpFrameIndex = _designData->_nodeBackgrounds[(int)element->_elementType];
-	if(element->_backgroundIndex < _designData->_nodeBackgrounds.size())
-		boxSlpFrameIndex = _designData->_nodeBackgrounds[element->_backgroundIndex];
+	int boxSlpFrameIndex = _designData->_nodeTypes[(int)element->_elementType]->_frameIndex;
+	if(element->_backgroundIndex < _designData->_nodeTypes.size())
+		boxSlpFrameIndex = _designData->_nodeTypes[element->_backgroundIndex]->_frameIndex;
 	SlpFileElement *iconSlp = nullptr;
 	int iconId = -1;
 	if(element->_elementType == TechTreeElement::ItemType::Building)
@@ -708,10 +707,40 @@ const Rect* VanillaTechTreeRenderer::GetGameCivsLabelRectangle()
 	return &_gameCivsLabelRectangle;
 }
 
-const Rect* VanillaTechTreeRenderer::GetLegendLabelRectangle(LegendLabelIndices labelIndex)
+const Rect* VanillaTechTreeRenderer::GetLegendNotResearchedLabelRectangle()
 {
 	// Return rectangle
-	return &_legendLabelRectangles[static_cast<int>(labelIndex)];
+	return &_legendNotResearchedLabelRectangle;
+}
+
+const Rect* VanillaTechTreeRenderer::GetLegendResearchedLabelRectangle()
+{
+	// Return rectangle
+	return &_legendResearchedLabelRectangle;
+}
+
+const int VanillaTechTreeRenderer::GetLegendNodeTypeCount()
+{
+	// Ensure full data is present for each node type
+	return std::min(_legendNodeTypeLabelRectangles.size(), _designData->_nodeTypes.size());
+}
+
+const Rect* VanillaTechTreeRenderer::GetLegendNodeTypeLabelRectangle(int labelIndex)
+{
+	// Return rectangle
+	return &_legendNodeTypeLabelRectangles[static_cast<int>(labelIndex)];
+}
+
+const int VanillaTechTreeRenderer::GetLegendNodeTypeLabelDllId(int labelIndex)
+{
+	// Return ID
+	return _designData->_nodeTypes[labelIndex]->_dllId;
+}
+
+const Rect* VanillaTechTreeRenderer::GetLegendDisabledLabelRectangle()
+{
+	// Return rectangle
+	return &_legendDisabledLabelRectangle;
 }
 
 const Rect* VanillaTechTreeRenderer::GetAgeLabelRectangle(int age, bool side, bool line)

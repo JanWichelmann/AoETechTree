@@ -14,19 +14,6 @@
 // Represents an abstract tech tree renderer.
 class TechTreeRenderer
 {
-public:
-	// Defines the different legend label IDs.
-	// This enum is only for readability, DO NOT CHANGE IT! These IDs may be used to access rectangle arrays.
-	enum class LegendLabelIndices : int
-	{
-		NotResearched = 0,
-		Researched = 1,
-		Units = 2,
-		Buildings = 3,
-		Researches = 4,
-		NotAvailable = 5
-	};
-
 protected: // Member variables
 	// The game data.
 	GameDataHandler *_gameData;
@@ -79,10 +66,27 @@ public:
 	// Returns the position and size of the "game civs" label above the civ selection combobox.
 	virtual const Rect* GetGameCivsLabelRectangle() = 0;
 
-	// Returns the position and size of the legend label with the given ID.
+	// Returns the position and size of the "Not Researched" legend label.
+	virtual const Rect* GetLegendNotResearchedLabelRectangle() = 0;
+
+	// Returns the position and size of the "Researched" legend label.
+	virtual const Rect* GetLegendResearchedLabelRectangle() = 0;
+
+	// Returns the count of the node type labels in the legend.
+	virtual const int GetLegendNodeTypeCount() = 0;
+
+	// Returns the position and size of the legend node type label with the given index.
 	// Parameters:
-	// -> labelIndex: The label ID.
-	virtual const Rect* GetLegendLabelRectangle(LegendLabelIndices labelIndex) = 0;
+	// -> labelIndex: The label index.
+	virtual const Rect* GetLegendNodeTypeLabelRectangle(int labelIndex) = 0;
+
+	// Returns the DLL string ID of the legend node type label with the given index.
+	// Parameters:
+	// -> labelIndex: The label index.
+	virtual const int GetLegendNodeTypeLabelDllId(int labelIndex) = 0;
+
+	// Returns the position and size of the "Disabled" legend label.
+	virtual const Rect* GetLegendDisabledLabelRectangle() = 0;
 
 	// Returns the position of the age label rectangle for the given age, line and side.
 	// Parameters:

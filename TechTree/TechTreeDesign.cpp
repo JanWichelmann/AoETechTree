@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "Game.h"
 #include <mbstring.h>
+#include <string>
 
 /* DEFINITIONS */
 
@@ -17,6 +18,18 @@ extern int(__cdecl *ReadDataFromCompressedFile)(int fileHandle, char *dataBuffer
 
 TechTreeDesign::TechTreeDesign(int datFileHandle)
 {
+	// Read and check version marker
+	const unsigned char TECH_TREE_DESIGN_VERSION = 1;
+	unsigned char techTreeDesignVersion;
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&techTreeDesignVersion), 1);
+	if(techTreeDesignVersion != TECH_TREE_DESIGN_VERSION)
+	{
+		// Malformed data file, exit process with error message and let the OS do the cleanup (the game would have crashed anyway...)
+		std::string errorMessage = "Invalid tech tree design version (expected version " + std::to_string(TECH_TREE_DESIGN_VERSION) + "): version " + std::to_string(techTreeDesignVersion);
+		MessageBoxA(NULL, errorMessage.c_str(), "Error reading DAT file", MB_OK | MB_ICONERROR);
+		ExitProcess(1);
+	}
+
 	// Read SLPs
 	int len;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&len), 4);
@@ -94,18 +107,7 @@ TechTreeDesign::TechTreeDesign(int datFileHandle)
 	int nodeBackgroundCount;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&nodeBackgroundCount), 4);
 	for(int i = 0; i < nodeBackgroundCount; i++)
-	{
-		// Read and discard name
-		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&len), 4);
-		char *garbage = new char[len];
-		ReadDataFromCompressedFile(datFileHandle, garbage, len);
-		delete[] garbage;
-
-		// Read and save frame index
-		int frameIndex;
-		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&frameIndex), 4);
-		_nodeBackgrounds.push_back(frameIndex);
-	}
+		_nodeTypes.push_back(new NodeType(datFileHandle));
 }
 
 TechTreeDesign::~TechTreeDesign()
@@ -120,6 +122,10 @@ TechTreeDesign::~TechTreeDesign()
 	// Delete resolution list
 	for(auto &rc : _resolutionData)
 		delete rc.second;
+
+	// Delete node type list
+	for(NodeType *nt : _nodeTypes)
+		delete nt;
 }
 
 TechTreeDesign::ResolutionConfiguration::ResolutionConfiguration(int datFileHandle)
@@ -148,16 +154,35 @@ TechTreeDesign::ResolutionConfiguration::ResolutionConfiguration(int datFileHand
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_civSelectionTitleLabelRectangle.Height), 4);
 	
 	// Read rectangles
-	for(int i = 0; i < 6; ++i)
-	{
-		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendLabelRectangles[i].X), 4);
-		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendLabelRectangles[i].Y), 4);
-		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendLabelRectangles[i].Width), 4);
-		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendLabelRectangles[i].Height), 4);
-	}
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendNotResearchedLabelRectangle.X), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendNotResearchedLabelRectangle.Y), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendNotResearchedLabelRectangle.Width), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendNotResearchedLabelRectangle.Height), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendResearchedLabelRectangle.X), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendResearchedLabelRectangle.Y), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendResearchedLabelRectangle.Width), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendResearchedLabelRectangle.Height), 4);
 
 	// Read rectangles
 	int len;
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&len), 4);
+	for(int i = 0; i < len; ++i)
+	{
+		Rect lNTLR;
+		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&lNTLR.X), 4);
+		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&lNTLR.Y), 4);
+		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&lNTLR.Width), 4);
+		ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&lNTLR.Height), 4);
+		_legendNodeTypeLabelRectangles.push_back(lNTLR);
+	}
+
+	// Read rectangle
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendDisabledLabelRectangle.X), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendDisabledLabelRectangle.Y), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendDisabledLabelRectangle.Width), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_legendDisabledLabelRectangle.Height), 4);
+
+	// Read rectangles
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&len), 4);
 	for(int i = 0; i < len; ++i)
 	{
@@ -180,6 +205,25 @@ TechTreeDesign::ResolutionConfiguration::ResolutionConfiguration(int datFileHand
 }
 
 TechTreeDesign::ResolutionConfiguration::~ResolutionConfiguration()
+{
+	// Nothing to do here
+}
+
+TechTreeDesign::NodeType::NodeType(int datFileHandle)
+{
+	// Read and discard name
+	int len;
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&len), 4);
+	char *garbage = new char[len];
+	ReadDataFromCompressedFile(datFileHandle, garbage, len);
+	delete[] garbage;
+
+	// Read values
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_frameIndex), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_dllId), 4);
+}
+
+TechTreeDesign::NodeType::~NodeType()
 {
 	// Nothing to do here
 }

@@ -68,8 +68,17 @@ protected: // Member variables
 	// The "game civs" label above the civ selection combo box.
 	LabelControl *_gameCivsLabel;
 
-	// The legend labels.
-	LabelControl *_legendLabels[6];
+	// The "Not researched" legend label.
+	LabelControl *_legendNotResearchedLabel;
+
+	// The "Researched" legend label.
+	LabelControl *_legendResearchedLabel;
+
+	// The node type legend labels.
+	std::vector<LabelControl *> _legendNodeTypeLabels;
+
+	// The "Disabled" legend label.
+	LabelControl *_legendDisabledLabel;
 
 	// The age count.
 	int _ageCount;
