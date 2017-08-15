@@ -95,6 +95,10 @@ protected: // Member variables
 	// The currently selected (or hovered) element.
 	TechTreeElement *_selectedElement;
 
+	// The element which is currently shown in the popup box.
+	// Stored only for performance reasons.
+	TechTreeElement *_currPopupBoxElement;
+
 	// The time when the selected element changed.
 	int _selectedElementChangedTime;
 
