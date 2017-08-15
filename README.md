@@ -6,6 +6,7 @@ At the moment there is only one renderer, the "vanilla renderer". It uses the or
 
 As a consequence, the DAT tech tree structure used by this implementation is incompatible with the original one (but an unmodified game executable will still work with the new DAT file format, because the old tech tree data persists).
 You can edit it with this tool: https://github.com/Janworks/AoETechTreeTool
+
 If you want to do more modding than just changing the tech tree view itself, use the TechTreeEditor, which also exports the new tech tree format: https://github.com/Janworks/TechTreeEditor
 
 I created this software while working on the (german) Agearena AddOn (http://www.agearena.de/forum/index.php?mode=viewforum&forum_id=7) and will update it periodically.
