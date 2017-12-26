@@ -177,6 +177,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	static_cast<LabelControlVTable *>(_legendResearchedLabel->_VTable)->AssignTextFromLanguageDlls(_legendResearchedLabel, 20128);
 
 	// Create node type labels
+	_legendNodeTypeLabels = new std::vector<LabelControl *>();
 	int nodeTypeLabelCount = _renderer->GetLegendNodeTypeCount();
 	for(int i = 0; i < nodeTypeLabelCount; ++i)
 	{
@@ -188,7 +189,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 		legendNodeTypeLabel->SetStyleText2Colors(0, 0);
 		legendNodeTypeLabel->sub_545D70(0);
 		static_cast<LabelControlVTable *>(legendNodeTypeLabel->_VTable)->AssignTextFromLanguageDlls(legendNodeTypeLabel, _renderer->GetLegendNodeTypeLabelDllId(i));
-		_legendNodeTypeLabels.push_back(legendNodeTypeLabel);
+		_legendNodeTypeLabels->push_back(legendNodeTypeLabel);
 	}
 
 	// Create "Disabled" label
@@ -330,10 +331,27 @@ void TechTreeWindow::Destructor()
 	_scrollRightButton = nullptr;
 	delete _arrowSlp;
 
-	// Destroy various labels
+	// Delete node type legend labels
+	int nodeTypeLabelCount = _legendNodeTypeLabels->size();
+	for(int i = 0; i < nodeTypeLabelCount; ++i)
+		delete _legendNodeTypeLabels->at(i);
+	delete _legendNodeTypeLabels;
+
+	// Destroy various controls
 	delete _civBonusLabel;
 	_civBonusLabel = nullptr;
-	// TODO A few are missing...
+	delete _civSelectionComboBox;
+	_civSelectionComboBox = nullptr;
+	delete _gameCivsLabel;
+	_gameCivsLabel = nullptr;
+	delete _legendNotResearchedLabel;
+	_legendNotResearchedLabel = nullptr;
+	delete _legendResearchedLabel;
+	_legendResearchedLabel = nullptr;
+	delete _legendDisabledLabel;
+	_legendDisabledLabel = nullptr;
+	delete _popupLabel;
+	_popupLabel = nullptr;
 
 	// Remove underlying window reference
 	_underlyingWindow = nullptr;
@@ -623,11 +641,11 @@ void TechTreeWindow::ApplyScrollOffset(int horizontalScrollOffset, int verticalS
 		legendResearchedLabelRectangle->Height);
 
 	// Update legend label positions
-	for(int i = 0; i < _legendNodeTypeLabels.size(); ++i)
+	for(int i = 0; i < _legendNodeTypeLabels->size(); ++i)
 	{
 		// Get rectangle and update position
 		const Rect *currLegendLabelRectangle = _renderer->GetLegendNodeTypeLabelRectangle(i);
-		_legendNodeTypeLabels[i]->UpdatePositionAndSizeData(
+		_legendNodeTypeLabels->at(i)->UpdatePositionAndSizeData(
 			currLegendLabelRectangle->X - _horizontalScrollOffset,
 			currLegendLabelRectangle->Y - _verticalScrollOffset,
 			currLegendLabelRectangle->Width,

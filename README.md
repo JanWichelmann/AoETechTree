@@ -9,7 +9,7 @@ You can edit it with this tool: https://github.com/Janworks/AoETechTreeTool
 
 If you want to do more modding than just changing the tech tree view itself, use the TechTreeEditor, which also exports the new tech tree format: https://github.com/Janworks/TechTreeEditor
 
-I created this software while working on the (german) Agearena AddOn (http://www.agearena.de/forum/index.php?mode=viewforum&forum_id=7) and will update it periodically.
+I created this software while working on the (german) Agearena AddOn (https://agearena.de/forum/viewtopic.php?f=6&t=1014) and will update it periodically.
 
 
 ## USAGE
@@ -28,9 +28,9 @@ For mod developers using their own Games/[MODNAME] subfolder, the call may be:
 
 ## SYSTEM REQUIREMENTS
 
-As this software is build with Microsoft Visual Studio 2015, you'll need the appropiate Visual C++ redistributable: (https://www.microsoft.com/de-de/download/details.aspx?id=48145)
+As this software is build with Microsoft Visual Studio 2017, you'll need the appropiate Visual C++ redistributable: (https://go.microsoft.com/fwlink/?LinkId=746572)
 
-This software was tested with the UserPatch v1.4 installed, so there should be no incompabilities.
+This software was tested with the UserPatch v1.4 installed, so there should not be any incompabilities.
 
 Also some virus scanners may have problems with this software, as it uses DLL injection to patch the running Age of Empires II process. This method is also used by many viruses, so some virus scanners block it by default. If you have problems running this software, try to create an exception in the scanner's filter rules.
 
@@ -39,5 +39,5 @@ Also some virus scanners may have problems with this software, as it uses DLL in
 
 This software is published under the MIT/X11 license. Please read the LICENSE for further information.
 
-The general approach to do a DLL injection ist based on the Code-Project article "A More Complete DLL Injection Solution Using CreateRemoteThread" (http://www.codeproject.com/Articles/20084/A-More-Complete-DLL-Injection-Solution-Using-Creat).
+The general approach to do a DLL injection is based on the Code-Project article "A More Complete DLL Injection Solution Using CreateRemoteThread" (http://www.codeproject.com/Articles/20084/A-More-Complete-DLL-Injection-Solution-Using-Creat).
 I would like to thank the author for his detailed explanations and examples and recommend this article to everybody who wants to get a deeper understanding of how a DLL injection is performed.

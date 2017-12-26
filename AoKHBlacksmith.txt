@@ -32,7 +32,7 @@ A modded sample empires2_x1_p1.dat is in the "DATA" folder. "Editor" contains a 
 
 
 [b]Requirements[/b]
-The tech tree view itself was built with Microsoft Visual Studio 2015, so you'll need [url=https://www.microsoft.com/de-de/download/details.aspx?id=48145]the appropiate Visual C++ redistributable[/url].
+The tech tree view itself was built with Microsoft Visual Studio 2017, so you'll need [url=https://go.microsoft.com/fwlink/?LinkId=746572]the appropiate Visual C++ redistributable[/url].
 
 The editor depends on the .NET Framework 4.5. It should already be installed on current windows systems; if not, you can find it [url=https://www.microsoft.com/en-us/download/details.aspx?id=30653]here[/url].
 
@@ -44,6 +44,15 @@ This software is published under the MIT/X11 license. Please read the LICENSE fo
 
 
 [b]Updates[/b]
+
+[u]1.2.4[/u]
+View:
+- Fixed crash when opening the tech tree during a game (thanks to danielpereira for reporting it and providing test data)
+- Updated to Visual Studio 2017 -> the required redistributable changed, see above for a link
+
+[u]1.2.3[/u]
+Editor:
+- Fixed a crash when opening DAT files with modified terrain data
 
 [u]1.2.2[/u]
 - Added configurable legend labels for the recently introduced custom node background types (thanks to Bala Arizalu for the idea!)

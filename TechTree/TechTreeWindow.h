@@ -75,7 +75,8 @@ protected: // Member variables
 	LabelControl *_legendResearchedLabel;
 
 	// The node type legend labels.
-	std::vector<LabelControl *> _legendNodeTypeLabels;
+	// Is allocated on the heap, since this class is derived from an ingame object -> no stack allocation of complex types.
+	std::vector<LabelControl *> *_legendNodeTypeLabels;
 
 	// The "Disabled" legend label.
 	LabelControl *_legendDisabledLabel;
