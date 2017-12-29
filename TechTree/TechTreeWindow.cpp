@@ -257,10 +257,10 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 		}
 
 		// Set label texts
-		static_cast<LabelControlVTable *>(_ageLabels[i][0][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][0], 20110 + i);
-		static_cast<LabelControlVTable *>(_ageLabels[i][0][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][1], 20114);
-		static_cast<LabelControlVTable *>(_ageLabels[i][1][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][0], 20110 + i);
-		static_cast<LabelControlVTable *>(_ageLabels[i][1][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][1], 20114);
+		static_cast<LabelControlVTable *>(_ageLabels[i][0][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][0], _designData->_firstLineBaseDllId + i);
+		static_cast<LabelControlVTable *>(_ageLabels[i][0][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][1], _designData->_secondLineDllId + (_designData->_incrementSecondLineDllId ? i : 0));
+		static_cast<LabelControlVTable *>(_ageLabels[i][1][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][0], _designData->_firstLineBaseDllId + i);
+		static_cast<LabelControlVTable *>(_ageLabels[i][1][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][1], _designData->_secondLineDllId + (_designData->_incrementSecondLineDllId ? i : 0));
 	}
 
 	// Create popup label

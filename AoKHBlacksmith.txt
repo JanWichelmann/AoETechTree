@@ -45,6 +45,10 @@ This software is published under the MIT/X11 license. Please read the LICENSE fo
 
 [b]Updates[/b]
 
+[u]1.2.5[/u]
+- The DLL-IDs of the labels below the age emblems are no longer hardcoded (useful for mods that change age names to something that doesn't end with "Age", like "Renaissance")
+Note: This update breaks compatibility with files that were created with a version prior to 1.2.2; use one of the versions 1.2.2-1.2.4 to convert those files first!
+
 [u]1.2.4[/u]
 View:
 - Fixed crash when opening the tech tree during a game (thanks to danielpereira for reporting it and providing test data)

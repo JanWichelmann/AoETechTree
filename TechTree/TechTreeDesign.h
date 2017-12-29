@@ -168,6 +168,15 @@ protected: // Member variables
 	// The first three indices match the TechTreeElement::ItemType members, so each node type has a default background design.
 	std::vector<NodeType *> _nodeTypes;
 
+	// The base DLL ID of the first line of the age labels.
+	int _firstLineBaseDllId;
+
+	// The DLL ID of the second line of the age labels.
+	int _secondLineDllId;
+
+	// Determines whether the DLL ID of the second line of the age labels should be incremented for each age (like the first line ID)
+	bool _incrementSecondLineDllId;
+
 public:
 	// Constructor. Reads the tech tree element data from the given DAT file handle.
 	// Parameters:

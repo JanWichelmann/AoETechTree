@@ -19,7 +19,7 @@ extern int(__cdecl *ReadDataFromCompressedFile)(int fileHandle, char *dataBuffer
 TechTreeDesign::TechTreeDesign(int datFileHandle)
 {
 	// Read and check version marker
-	const unsigned char TECH_TREE_DESIGN_VERSION = 1;
+	const unsigned char TECH_TREE_DESIGN_VERSION = 2;
 	unsigned char techTreeDesignVersion;
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&techTreeDesignVersion), 1);
 	if(techTreeDesignVersion != TECH_TREE_DESIGN_VERSION)
@@ -108,6 +108,13 @@ TechTreeDesign::TechTreeDesign(int datFileHandle)
 	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&nodeBackgroundCount), 4);
 	for(int i = 0; i < nodeBackgroundCount; i++)
 		_nodeTypes.push_back(new NodeType(datFileHandle));
+
+	// Read age label data
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_firstLineBaseDllId), 4);
+	ReadDataFromCompressedFile(datFileHandle, reinterpret_cast<char *>(&_secondLineDllId), 4);
+	char tmp;
+	ReadDataFromCompressedFile(datFileHandle, &tmp, 1);
+	_incrementSecondLineDllId = tmp > 0;
 }
 
 TechTreeDesign::~TechTreeDesign()
