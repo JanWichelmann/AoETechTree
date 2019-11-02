@@ -53,10 +53,10 @@ void LabelControl::SetBackgroundSlp(char *slpFileName, int slpResId)
 	((void(__thiscall *)(LabelControl *, char *, int))0x00545E10)(this, slpFileName, slpResId);
 }
 
-int LabelControl::sub_5444B0(DirectDrawBufferData *parentControlBackBuffer, Control *parentControl, int posX, int posY, int width, int height, HFONT *fonts, int maximumCharWidth, int maximumCharHeight, char *slpFileName, int unknown1, char unknown2, int unknown3, char unknown4, short maxLineLength, char *text)
+int LabelControl::sub_5444B0(DirectDrawArea *parentControlBackBuffer, Control *parentControl, int posX, int posY, int width, int height, HFONT *fonts, int maximumCharWidth, int maximumCharHeight, char *slpFileName, int unknown1, char unknown2, int unknown3, char unknown4, short maxLineLength, char *text)
 {
 	// Call original function
-	return ((int(__thiscall *)(LabelControl *, DirectDrawBufferData *, Control *, int, int, int, int, HFONT *, int, int, char *, int, char, int, char, short, char *))0x005444B0)(this, parentControlBackBuffer, parentControl, posX, posY, width, height, fonts, maximumCharWidth, maximumCharHeight, slpFileName, unknown1, unknown2, unknown3, unknown4, maxLineLength, text);
+	return ((int(__thiscall *)(LabelControl *, DirectDrawArea *, Control *, int, int, int, int, HFONT *, int, int, char *, int, char, int, char, short, char *))0x005444B0)(this, parentControlBackBuffer, parentControl, posX, posY, width, height, fonts, maximumCharWidth, maximumCharHeight, slpFileName, unknown1, unknown2, unknown3, unknown4, maxLineLength, text);
 }
 
 void LabelControl::SetTextAlignment(int horizontalAlignment, int verticalAlignment)

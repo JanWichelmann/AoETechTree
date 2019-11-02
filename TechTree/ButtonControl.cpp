@@ -26,10 +26,10 @@ void ButtonControl::SetHotKey(int hotKey, int shiftKeyModifierNeeded, int contro
 	_menuKeyModifierNeeded = menuKeyModifierNeeded;
 }
 
-void ButtonControl::SetBackgroundSlpAtIndex(short backgroundIndex, SlpFileElement *backgroundSlp, short frameId)
+void ButtonControl::SetBackgroundSlpAtIndex(short backgroundIndex, Shape *backgroundSlp, short frameId)
 {
 	// Call original function
-	((void(__thiscall *)(ButtonControl *, short, SlpFileElement *, short))0x00551350)(this, backgroundIndex, backgroundSlp, frameId);
+	((void(__thiscall *)(ButtonControl *, short, Shape *, short))0x00551350)(this, backgroundIndex, backgroundSlp, frameId);
 }
 
 void ButtonControl::SetDisplayMode(int mode)

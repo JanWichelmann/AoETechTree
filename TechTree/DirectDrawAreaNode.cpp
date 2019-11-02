@@ -1,6 +1,6 @@
 /* INCLUDES */
 
 // Class header
-#include "AnotherControlRelatedClass.h"
+#include "DirectDrawAreaNode.h"
 
 /* FUNCTIONS */

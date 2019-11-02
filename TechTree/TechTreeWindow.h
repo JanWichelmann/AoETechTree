@@ -9,7 +9,7 @@
 #include "ButtonControl.h"
 #include "LabelControl.h"
 #include "StaticControlContainer.h"
-#include "DirectDrawBufferData.h"
+#include "DirectDrawArea.h"
 #include "TechTreeRenderer.h"
 #include "ComboBoxControl.h"
 #include "TechTreeDesign.h"
@@ -46,18 +46,18 @@ protected: // Member variables
 
 	// Close button and its buffer.
 	ButtonControl *_closeButton;
-	DirectDrawBufferData *_closeButtonDrawBuffer;
+	DirectDrawArea *_closeButtonDrawBuffer;
 
 	// Left scroll button and its buffer.
 	ButtonControl *_scrollLeftButton;
-	DirectDrawBufferData *_scrollLeftButtonDrawBuffer;
+	DirectDrawArea *_scrollLeftButtonDrawBuffer;
 
 	// Left scroll button and its buffer.
 	ButtonControl *_scrollRightButton;
-	DirectDrawBufferData *_scrollRightButtonDrawBuffer;
+	DirectDrawArea *_scrollRightButtonDrawBuffer;
 
 	// The arrow SLP for the scroll buttons.
-	SlpFileElement *_arrowSlp;
+	Shape *_arrowSlp;
 
 	// The label where the civ information and bonuses are shown.
 	LabelControl *_civBonusLabel;

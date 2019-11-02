@@ -95,7 +95,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_designData = _staticNewTechTreeDataObject->GetDesignData();
 
 	// Load style file
-	DirectDrawBufferData *backBuffer = underlyingWindow->_VTable->GetBackBufferData(underlyingWindow);
+	DirectDrawArea *backBuffer = underlyingWindow->_VTable->GetBackBufferData(underlyingWindow);
 	if(!PrepareParentWindowAndLoadStyleData(backBuffer, "scr6", 50007, 1))
 		_initializationError = 1;
 
@@ -116,7 +116,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_closeButton->_VTable->InvalidateAndRedrawControl1(_closeButton, 1);
 	_closeButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_closeButton->SetHotKey(VK_ESCAPE, 0, 0, 0);
-	_closeButtonDrawBuffer = new DirectDrawBufferData("TechTree Close Button Buffer", 1);
+	_closeButtonDrawBuffer = new DirectDrawArea("TechTree Close Button Buffer", 1);
 	_closeButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height, 0, 0);
 	_closeButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height);
 	UpdateSelectedSubControl(_closeButton);
@@ -125,18 +125,18 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollLeftButton, "<-", 0, _width1 - _designData->_scrollLeftButtonRelativeRectangle.X, _height1 - _designData->_scrollLeftButtonRelativeRectangle.Y, _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height, 9, 0, 0);
 	_scrollLeftButton->_VTable->InvalidateAndRedrawControl1(_scrollLeftButton, 1);
 	_scrollLeftButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
-	_scrollLeftButtonDrawBuffer = new DirectDrawBufferData("TechTree ScrollLeft Button Buffer", 1);
+	_scrollLeftButtonDrawBuffer = new DirectDrawArea("TechTree ScrollLeft Button Buffer", 1);
 	_scrollLeftButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height, 0, 0);
 	_scrollLeftButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height);
 	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollRightButton, "->", 0, _width1 - _designData->_scrollRightButtonRelativeRectangle.X, _height1 - _designData->_scrollRightButtonRelativeRectangle.Y, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height, 9, 0, 0);
 	_scrollRightButton->_VTable->InvalidateAndRedrawControl1(_scrollRightButton, 1);
 	_scrollRightButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
-	_scrollRightButtonDrawBuffer = new DirectDrawBufferData("TechTree ScrollRight Button Buffer", 1);
+	_scrollRightButtonDrawBuffer = new DirectDrawArea("TechTree ScrollRight Button Buffer", 1);
 	_scrollRightButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height, 0, 0);
 	_scrollRightButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height);
 
 	// Load arrow SLP for scroll buttons and assign frames to them
-	_arrowSlp = new SlpFileElement(_designData->_scrollSlpFileName, _designData->_scrollSlpId);
+	_arrowSlp = new Shape(_designData->_scrollSlpFileName, _designData->_scrollSlpId);
 	_scrollLeftButton->SetBackgroundSlpAtIndex(0, _arrowSlp, 1);
 	_scrollLeftButton->SetDisplayMode(9);
 	_scrollLeftButton->AssignLabelString(0, "");

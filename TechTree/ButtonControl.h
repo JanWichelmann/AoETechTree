@@ -6,8 +6,7 @@
 #include "Control.h"
 
 // Other includes
-#include "SlpFileElement.h"
-#include "UnknownPaletteRelatedClass.h"
+#include "Shape.h"
 #include "LabelControl.h"
 
 /* DEFINITIONS */
@@ -26,7 +25,7 @@ protected: // Member variables
 	int _displayMode;
 	char _unknown100a2[4];
 	int _sound;
-	SlpFileElement *_backgroundSlps[9];
+	Shape *_backgroundSlps[9];
 	__int16 _backgroundSlpFrameIndices[9];
 	char _unknown100b1[2];
 	int _unknownValue100bBackgroundSlpRelated1;
@@ -86,7 +85,7 @@ public:
 	// -> backgroundIndex: The background display index.
 	// -> backgroundSlp: The corresponding SLP.
 	// -> frameId: The ID of the frame to be used as background.
-	void SetBackgroundSlpAtIndex(short backgroundIndex, SlpFileElement *backgroundSlp, short frameId);
+	void SetBackgroundSlpAtIndex(short backgroundIndex, Shape *backgroundSlp, short frameId);
 
 	// Sets some display mode. This controls the draw behaviour when clicked, hovered etc.
 	// Parameters:

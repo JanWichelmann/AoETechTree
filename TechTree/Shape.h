@@ -8,13 +8,13 @@
 // Other includes
 #include "SlpFile.h"
 #include "SlpFrameHeader.h"
-#include "DirectDrawBufferData.h"
+#include "DirectDrawArea.h"
 
 /* DEFINITIONS */
 
 #pragma pack(push, 1)
 // Represents an SLP file element.
-class SlpFileElement : public GameType
+class Shape : public GameType
 {
 protected: // Member variables
 	int SlpDataArrayWasAllocated;
@@ -30,10 +30,10 @@ public:
 	// Parameters:
 	// -> slpName: The name of the SLP file (usually optional).
 	// -> slpId: The resource ID of the SLP file.
-	SlpFileElement(const char *slpName, int slpId);
+	Shape(const char *slpName, int slpId);
 
 	// Destructor.
-	~SlpFileElement();
+	~Shape();
 
 	// Gets the size of the frame with the given index.
 	// Parameter:
@@ -49,6 +49,6 @@ public:
 	// -> anchorY: The buffer Y position where the frame anchor point should be.
 	// -> frameId: The ID of the frame.
 	// -> unknown: Unknown.
-	bool DrawFrameIntoDirectDrawBuffer(DirectDrawBufferData *directDrawBufferData, int anchorX, int anchorY, int frameId, int unknown);
+	bool DrawFrameIntoDirectDrawBuffer(DirectDrawArea *directDrawBufferData, int anchorX, int anchorY, int frameId, int unknown);
 };
 #pragma pack(pop)
