@@ -67,12 +67,12 @@ public:
 	// Sets an unknown flag and issues a redraw.
 	// Parameters:
 	// -> unknown: Unknown.
-	int sub_545D50(int unknown);
+	int SetWordWrap(int unknown);
 
 	// Sets an unknown text color and issues a redraw.
 	// Parameters:
 	// -> unknown: Unknown.
-	int sub_545D70(int unknown);
+	int SetStyle(int unknown);
 
 	// Sets text colors.
 	// Parameters:
@@ -88,13 +88,13 @@ public:
 	// -> unformattedText: The plain text.
 	// -> id: The id to be assigned to the text.
 	// -> isResearch: Neccessary to decide if e.g. the <cost> tag applies to a unit or a research.
-	void InterpreteTextFormatCodesAndComputeWordWrap(char *unformattedText, int id, int isResearch);
+	void SetTextFormat(char *unformattedText, int id, int isResearch);
 
 	// Does unknown things, but seems to be text color related.
 	// Parameters:
 	// -> unknown1: Unknown.
 	// -> unknown2: Unknown.
-	int sub_545DF0(int unknown1, char unknown2);
+	int SetFillBackground(int unknown1, char unknown2);
 
 	// Sets the tiled background image.
 	// Parameters:
@@ -120,7 +120,7 @@ public:
 	// -> unknown4: Unknown.
 	// -> maxLineLength: The maximum allowed line length (else force word wrap).
 	// -> text: Initial text.
-	int sub_5444B0(DirectDrawArea *parentControlBackBuffer, Control *parentControl, int posX, int posY, int width, int height, HFONT *fonts, int maximumCharWidth, int maximumCharHeight, char *slpFileName, int unknown1, char unknown2, int unknown3, char unknown4, short maxLineLength, char *text);
+	int Setup(DirectDrawArea *parentControlBackBuffer, Control *parentControl, int posX, int posY, int width, int height, HFONT *fonts, int maximumCharWidth, int maximumCharHeight, char *slpFileName, int unknown1, char unknown2, int unknown3, char unknown4, short maxLineLength, char *text);
 
 	// Sets the text alignment.
 	// Parameters:
@@ -139,10 +139,10 @@ class LabelControlVTable : public ControlVTable
 {
 public: // Function pointers
 	int unknown1;
-	void(__thiscall *AssignTextFromLanguageDlls)(LabelControl *, int);
+	void(__thiscall *SetText)(LabelControl *, int);
 	void(__thiscall *ComputeWordWrap)(LabelControl *, char *, TextFormatData *);
 	int unknown2[2];
-	void(__thiscall *InterpreteTextFormatCodesAndComputeWordWrap)(LabelControl *, char *, int, int);
+	void(__thiscall *SetTextFormat)(LabelControl *, char *, int, int);
 	int(__thiscall *SetBevelColors)(LabelControl *, int, char, char, char, char, char, char);
 	int unknown3[2];
 	bool(__thiscall *AddLineToLineList)(LabelControl *, int, char *, char *, int, TextFormatData *);

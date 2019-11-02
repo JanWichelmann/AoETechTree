@@ -217,7 +217,7 @@ public: // Function pointers
 	bool(__thiscall *LoadInterfaceSounds)(Game *);
 	int(__thiscall *LoadSpecialSymbols)(Game *);
 	bool(__thiscall *CreateBlankScreenWindow)(Game *);
-	void(__thiscall *sub_5E6970)(Game *);
+	void(__thiscall *SetupTimings)(Game *);
 	int functionPointers3b2[4];
 	GameDataHandler *(__thiscall *CreateGameDataHandler)(Game *);
 	int functionPointers3b3a;
@@ -226,7 +226,7 @@ public: // Function pointers
 	bool(__thiscall *EmptyMessageHandlerAlwaysTrue)(Game *, HWND, UINT, WPARAM, LPARAM);
 	bool(__thiscall *HandlePaintEvent)(Game *, HWND, UINT, WPARAM, LPARAM);
 	int functionPointers3c1[3];
-	bool(__thiscall *sub_5E8960)(Game *, HWND, int, int, int);
+	bool(__thiscall *HandleSizeChange)(Game *, HWND, int, int, int);
 	int functionPointers3c2[4];
 	int(__stdcall *AlwaysOne1)();
 	int functionPointers3d[4];

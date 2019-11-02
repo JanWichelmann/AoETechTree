@@ -118,7 +118,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_closeButton->SetHotKey(VK_ESCAPE, 0, 0, 0);
 	_closeButtonDrawBuffer = new DirectDrawArea("TechTree Close Button Buffer", 1);
 	_closeButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height, 0, 0);
-	_closeButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height);
+	_closeButtonDrawBuffer->SetClipRect2(0, 0, _designData->_closeButtonRelativeRectangle.Width, _designData->_closeButtonRelativeRectangle.Height);
 	UpdateSelectedSubControl(_closeButton);
 
 	// Create scroll buttons and their buffers
@@ -127,13 +127,13 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_scrollLeftButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_scrollLeftButtonDrawBuffer = new DirectDrawArea("TechTree ScrollLeft Button Buffer", 1);
 	_scrollLeftButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height, 0, 0);
-	_scrollLeftButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height);
+	_scrollLeftButtonDrawBuffer->SetClipRect2(0, 0, _designData->_scrollLeftButtonRelativeRectangle.Width, _designData->_scrollLeftButtonRelativeRectangle.Height);
 	static_cast<PanelVTable *>(_VTable)->CreateButton(this, this, &_scrollRightButton, "->", 0, _width1 - _designData->_scrollRightButtonRelativeRectangle.X, _height1 - _designData->_scrollRightButtonRelativeRectangle.Y, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height, 9, 0, 0);
 	_scrollRightButton->_VTable->InvalidateAndRedrawControl1(_scrollRightButton, 1);
 	_scrollRightButton->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_scrollRightButtonDrawBuffer = new DirectDrawArea("TechTree ScrollRight Button Buffer", 1);
 	_scrollRightButtonDrawBuffer->InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(_backBufferData->GetDirectDrawHandler(), _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height, 0, 0);
-	_scrollRightButtonDrawBuffer->sub_5A30A0(0, 0, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height);
+	_scrollRightButtonDrawBuffer->SetClipRect2(0, 0, _designData->_scrollRightButtonRelativeRectangle.Width, _designData->_scrollRightButtonRelativeRectangle.Height);
 
 	// Load arrow SLP for scroll buttons and assign frames to them
 	_arrowSlp = new Shape(_designData->_scrollSlpFileName, _designData->_scrollSlpId);
@@ -149,7 +149,7 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_civBonusLabel->_VTable->InvalidateAndRedrawControl1(_civBonusLabel, 0);
 	_civBonusLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_civBonusLabel->SetStyleText2Colors(0, 0);
-	_civBonusLabel->sub_545D70(0);*/
+	_civBonusLabel->SetStyle(0);*/
 	FontData *civBonusLabelBaseFont = (*_staticGameObjectPointer)->GetFontWithIndex(10);
 	HFONT civBonusLabelFonts[4];
 	civBonusLabelFonts[0] = civBonusLabelBaseFont->GetFontHandle();
@@ -157,10 +157,10 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	civBonusLabelFonts[2] = (*_staticGameObjectPointer)->GetFontWithIndex(18)->GetFontHandle();
 	civBonusLabelFonts[3] = (*_staticGameObjectPointer)->GetFontWithIndex(19)->GetFontHandle();
 	_civBonusLabel = new LabelControl();
-	_civBonusLabel->sub_5444B0(_backBufferData, this, 2, 20, 100, 20, civBonusLabelFonts, civBonusLabelBaseFont->GetAverageCharWidth(), civBonusLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
+	_civBonusLabel->Setup(_backBufferData, this, 2, 20, 100, 20, civBonusLabelFonts, civBonusLabelBaseFont->GetAverageCharWidth(), civBonusLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
 	_civBonusLabel->SetTextAlignment(3, 1);
-	_civBonusLabel->sub_545D50(1);
-	_civBonusLabel->sub_545D70(0);
+	_civBonusLabel->SetWordWrap(1);
+	_civBonusLabel->SetStyle(0);
 	_civBonusLabel->SetStyleText2Colors(0x000000, 0x00E7E7);
 
 	// Create civ selection combo box
@@ -178,24 +178,24 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_gameCivsLabel->_VTable->InvalidateAndRedrawControl1(_gameCivsLabel, 0);
 	_gameCivsLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_gameCivsLabel->SetStyleText2Colors(0, 0);
-	_gameCivsLabel->sub_545D70(0);
-	static_cast<LabelControlVTable *>(_gameCivsLabel->_VTable)->AssignTextFromLanguageDlls(_gameCivsLabel, 20125);
+	_gameCivsLabel->SetStyle(0);
+	static_cast<LabelControlVTable *>(_gameCivsLabel->_VTable)->SetText(_gameCivsLabel, 20125);
 
 	// Create "Not researched" label
 	static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_legendNotResearchedLabel, 0, 2, 2, 160, 25, 13, 0, 0, 0);
 	_legendNotResearchedLabel->_VTable->InvalidateAndRedrawControl1(_legendNotResearchedLabel, 0);
 	_legendNotResearchedLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_legendNotResearchedLabel->SetStyleText2Colors(0, 0);
-	_legendNotResearchedLabel->sub_545D70(0);
-	static_cast<LabelControlVTable *>(_legendNotResearchedLabel->_VTable)->AssignTextFromLanguageDlls(_legendNotResearchedLabel, 20124);
+	_legendNotResearchedLabel->SetStyle(0);
+	static_cast<LabelControlVTable *>(_legendNotResearchedLabel->_VTable)->SetText(_legendNotResearchedLabel, 20124);
 
 	// Create "Researched" label
 	static_cast<PanelVTable *>(_VTable)->CreateLabelWithOneFontWithTextFromDll(this, this, &_legendResearchedLabel, 0, 2, 2, 160, 25, 13, 0, 0, 0);
 	_legendResearchedLabel->_VTable->InvalidateAndRedrawControl1(_legendResearchedLabel, 0);
 	_legendResearchedLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_legendResearchedLabel->SetStyleText2Colors(0, 0);
-	_legendResearchedLabel->sub_545D70(0);
-	static_cast<LabelControlVTable *>(_legendResearchedLabel->_VTable)->AssignTextFromLanguageDlls(_legendResearchedLabel, 20128);
+	_legendResearchedLabel->SetStyle(0);
+	static_cast<LabelControlVTable *>(_legendResearchedLabel->_VTable)->SetText(_legendResearchedLabel, 20128);
 
 	// Create node type labels
 	_legendNodeTypeLabels = new std::vector<LabelControl *>();
@@ -208,8 +208,8 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 		legendNodeTypeLabel->_VTable->InvalidateAndRedrawControl1(legendNodeTypeLabel, 0);
 		legendNodeTypeLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 		legendNodeTypeLabel->SetStyleText2Colors(0, 0);
-		legendNodeTypeLabel->sub_545D70(0);
-		static_cast<LabelControlVTable *>(legendNodeTypeLabel->_VTable)->AssignTextFromLanguageDlls(legendNodeTypeLabel, _renderer->GetLegendNodeTypeLabelDllId(i));
+		legendNodeTypeLabel->SetStyle(0);
+		static_cast<LabelControlVTable *>(legendNodeTypeLabel->_VTable)->SetText(legendNodeTypeLabel, _renderer->GetLegendNodeTypeLabelDllId(i));
 		_legendNodeTypeLabels->push_back(legendNodeTypeLabel);
 	}
 
@@ -218,8 +218,8 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	_legendDisabledLabel->_VTable->InvalidateAndRedrawControl1(_legendDisabledLabel, 0);
 	_legendDisabledLabel->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 	_legendDisabledLabel->SetStyleText2Colors(0, 0);
-	_legendDisabledLabel->sub_545D70(0);
-	static_cast<LabelControlVTable *>(_legendDisabledLabel->_VTable)->AssignTextFromLanguageDlls(_legendDisabledLabel, 20119);
+	_legendDisabledLabel->SetStyle(0);
+	static_cast<LabelControlVTable *>(_legendDisabledLabel->_VTable)->SetText(_legendDisabledLabel, 20119);
 
 	// Fill civ selection combo box
 	int civCount = (*_staticGameObjectPointer)->GetGameDataHandler()->_civCount;
@@ -274,14 +274,14 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 			(*currAgeLabelPointer)->_VTable->InvalidateAndRedrawControl1(*currAgeLabelPointer, 0);
 			(*currAgeLabelPointer)->AssignIdToControlAndMoveInParentChildrenList(1, 0);
 			(*currAgeLabelPointer)->SetStyleText2Colors(0, 0);
-			(*currAgeLabelPointer)->sub_545D70(0);
+			(*currAgeLabelPointer)->SetStyle(0);
 		}
 
 		// Set label texts
-		static_cast<LabelControlVTable *>(_ageLabels[i][0][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][0], _designData->_firstLineBaseDllId + i);
-		static_cast<LabelControlVTable *>(_ageLabels[i][0][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][0][1], _designData->_secondLineDllId + (_designData->_incrementSecondLineDllId ? i : 0));
-		static_cast<LabelControlVTable *>(_ageLabels[i][1][0]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][0], _designData->_firstLineBaseDllId + i);
-		static_cast<LabelControlVTable *>(_ageLabels[i][1][1]->_VTable)->AssignTextFromLanguageDlls(_ageLabels[i][1][1], _designData->_secondLineDllId + (_designData->_incrementSecondLineDllId ? i : 0));
+		static_cast<LabelControlVTable *>(_ageLabels[i][0][0]->_VTable)->SetText(_ageLabels[i][0][0], _designData->_firstLineBaseDllId + i);
+		static_cast<LabelControlVTable *>(_ageLabels[i][0][1]->_VTable)->SetText(_ageLabels[i][0][1], _designData->_secondLineDllId + (_designData->_incrementSecondLineDllId ? i : 0));
+		static_cast<LabelControlVTable *>(_ageLabels[i][1][0]->_VTable)->SetText(_ageLabels[i][1][0], _designData->_firstLineBaseDllId + i);
+		static_cast<LabelControlVTable *>(_ageLabels[i][1][1]->_VTable)->SetText(_ageLabels[i][1][1], _designData->_secondLineDllId + (_designData->_incrementSecondLineDllId ? i : 0));
 	}
 
 	// Create popup label
@@ -292,10 +292,10 @@ TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknow
 	popupLabelFonts[2] = (*_staticGameObjectPointer)->GetFontWithIndex(18)->GetFontHandle();
 	popupLabelFonts[3] = (*_staticGameObjectPointer)->GetFontWithIndex(19)->GetFontHandle();
 	_popupLabel = new LabelControl();
-	_popupLabel->sub_5444B0(_backBufferData, this, 0, 0, _designData->_popupLabelWidth, 50, popupLabelFonts, _popupLabelBaseFont->GetAverageCharWidth(), _popupLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
+	_popupLabel->Setup(_backBufferData, this, 0, 0, _designData->_popupLabelWidth, 50, popupLabelFonts, _popupLabelBaseFont->GetAverageCharWidth(), _popupLabelBaseFont->GetCharHeightWithRowSpace(), nullptr, 0, 0, 0, 0, 0, nullptr);
 	_popupLabel->SetTextAlignment(3, 1);
-	_popupLabel->sub_545D50(1);
-	_popupLabel->sub_545D70(0);
+	_popupLabel->SetWordWrap(1);
+	_popupLabel->SetStyle(0);
 	_popupLabel->SetStyleText2Colors(0x000000, 0x00E7E7);
 
 	// Set current civ
@@ -392,15 +392,15 @@ void TechTreeWindow::Draw()
 	{
 		// Close button
 		RECT closeButtonRect = _closeButton->GetClientRectangle();
-		_closeButtonDrawBuffer->sub_5A31E0(_backBufferData, 0, 0, &closeButtonRect, 0);
+		_closeButtonDrawBuffer->Copy(_backBufferData, 0, 0, &closeButtonRect, 0);
 		_closeButton->DrawSingle();
 
 		// Scroll buttons
 		RECT scrollLeftButtonRect = _scrollLeftButton->GetClientRectangle();
-		_scrollLeftButtonDrawBuffer->sub_5A31E0(_backBufferData, 0, 0, &scrollLeftButtonRect, 0);
+		_scrollLeftButtonDrawBuffer->Copy(_backBufferData, 0, 0, &scrollLeftButtonRect, 0);
 		_scrollLeftButton->DrawSingle();
 		RECT scrollRightButtonRect = _scrollRightButton->GetClientRectangle();
-		_scrollRightButtonDrawBuffer->sub_5A31E0(_backBufferData, 0, 0, &scrollRightButtonRect, 0);
+		_scrollRightButtonDrawBuffer->Copy(_backBufferData, 0, 0, &scrollRightButtonRect, 0);
 		_scrollRightButton->DrawSingle();
 
 		// Labels (iterate through child control list and draw each label)
@@ -710,7 +710,7 @@ void TechTreeWindow::SetCurrentCiv(int civId)
 	// Update description label
 	char civString[2048];
 	(*_staticGameObjectPointer)->GetStringFromLanguageDllsWithBuffer(20149 + _currentCivId, civString, sizeof(civString));
-	_civBonusLabel->InterpreteTextFormatCodesAndComputeWordWrap(civString, -1, 0);
+	_civBonusLabel->SetTextFormat(civString, -1, 0);
 
 	// Redraw
 	_VTable->InvalidateAndRedrawControl2(this, 1);
@@ -730,7 +730,7 @@ void TechTreeWindow::UpdatePopupBoxVisibility()
 		_drawPopupLabelBox = false;
 		_renderer->SetSelectedElement(nullptr);
 		_currPopupBoxElement = nullptr;
-		static_cast<LabelControlVTable *>(_popupLabel->_VTable)->InterpreteTextFormatCodesAndComputeWordWrap(_popupLabel, " ", 0, 0);
+		static_cast<LabelControlVTable *>(_popupLabel->_VTable)->SetTextFormat(_popupLabel, " ", 0, 0);
 	}
 
 	// Update selected element
@@ -775,7 +775,7 @@ void TechTreeWindow::ApplySelectedElementAndRedraw()
 	}
 
 	// Pass text to popup label
-	static_cast<LabelControlVTable *>(_popupLabel->_VTable)->InterpreteTextFormatCodesAndComputeWordWrap(_popupLabel, descriptionTextBuffer, _selectedElement->_elementObjectID, (_selectedElement->_elementType == TechTreeElement::ItemType::Research ? 1 : 0));
+	static_cast<LabelControlVTable *>(_popupLabel->_VTable)->SetTextFormat(_popupLabel, descriptionTextBuffer, _selectedElement->_elementObjectID, (_selectedElement->_elementType == TechTreeElement::ItemType::Research ? 1 : 0));
 
 	// Calculate and apply popup label size
 	Size popupLabelSize(_popupLabel->GetWidth(), _popupLabel->GetLineCount() * _popupLabelBaseFont->GetCharHeightWithRowSpace() + 30);

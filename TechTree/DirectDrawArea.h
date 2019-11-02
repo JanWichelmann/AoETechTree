@@ -101,7 +101,7 @@ public:
 	// -> right: Right coordinate of a rectangle.
 	// -> top: Top coordinate of a rectangle.
 	// -> bottom: Bottom coordinate of a rectangle.
-	int sub_5A30A0(int left, int right, int top, int bottom);
+	int SetClipRect2(int left, int right, int top, int bottom);
 
 	// Returns the direct draw handler associated with this object.
 	DirectDrawHandler *GetDirectDrawHandler();
@@ -113,7 +113,7 @@ public:
 	// -> yTop: Unknown.
 	// -> childRect: Unknown.
 	// -> unknown: Unknown.
-	void sub_5A31E0(DirectDrawArea *backBuffer, int xLeft, int yTop, RECT *childRect, int unknown);
+	void Copy(DirectDrawArea *backBuffer, int xLeft, int yTop, RECT *childRect, int unknown);
 
 	// Gets the associated GDI context.
 	HDC CreateGdiContext();

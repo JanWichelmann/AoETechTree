@@ -41,7 +41,7 @@ bool DirectDrawArea::InsertIntoBufferListAndCreateSurfaceAndDoUnknownStuff(Direc
 	return ((bool(__thiscall *)(DirectDrawArea*, DirectDrawHandler *, int, int, int, int))0x005A24D0)(this, directDrawHandler, clientWidth, clientHeight, unknown, isPrimaryScreenBuffer);
 }
 
-int DirectDrawArea::sub_5A30A0(int left, int right, int top, int bottom)
+int DirectDrawArea::SetClipRect2(int left, int right, int top, int bottom)
 {
 	// Call original function
 	return ((int(__thiscall *)(DirectDrawArea*, int, int, int, int))0x005A30A0)(this, left, right, top, bottom);
@@ -53,7 +53,7 @@ DirectDrawHandler *DirectDrawArea::GetDirectDrawHandler()
 	return _directDrawHandler;
 }
 
-void DirectDrawArea::sub_5A31E0(DirectDrawArea *backBuffer, int xLeft, int yTop, RECT *childRect, int unknown)
+void DirectDrawArea::Copy(DirectDrawArea *backBuffer, int xLeft, int yTop, RECT *childRect, int unknown)
 {
 	// Call original function
 	((void(__thiscall *)(DirectDrawArea*, DirectDrawArea *, int, int, RECT *, int))0x005A31E0)(this, backBuffer, xLeft, yTop, childRect, unknown);
