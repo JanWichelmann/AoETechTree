@@ -134,7 +134,7 @@ public:
 	ControlType GetTypeIdentifier();
 
 	// Returns the position and size data of the control.
-	Rect& GetPositionAndSizeData();
+	Rect GetPositionAndSizeData();
 
 	// Sets the background fill mode.
 	// Parameters:

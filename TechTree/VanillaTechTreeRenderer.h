@@ -147,7 +147,7 @@ public:
 	// -> gameData: The game data.
 	// -> windowSize: The size of the render window.
 	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
-	VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData);
+	VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, int unknownGameAndPlayerData);
 
 	// Destructor.
 	~VanillaTechTreeRenderer();

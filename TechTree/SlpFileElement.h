@@ -30,7 +30,7 @@ public:
 	// Parameters:
 	// -> slpName: The name of the SLP file (usually optional).
 	// -> slpId: The resource ID of the SLP file.
-	SlpFileElement(char *slpName, int slpId);
+	SlpFileElement(const char *slpName, int slpId);
 
 	// Destructor.
 	~SlpFileElement();

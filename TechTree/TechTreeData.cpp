@@ -1,8 +1,8 @@
 /* INCLUDES */
 
 // Class header
-#define CLASS TechTreeData
 #include "TechTreeData.h"
+#include "call_conventions.h"
 
 // C++ string class
 #include <string>
@@ -10,9 +10,12 @@
 
 /* STATIC WRAPPER FUNCTIONS */
 
-STATIC_WRAPPER(Constructor, void, int)
-STATIC_WRAPPER(Destructor, void)
-
+static void THISCALL(TechTreeData_Constructor, TechTreeData *self, int datFileHandle) {
+  return self->Constructor(datFileHandle);
+}
+static void THISCALL(TechTreeData_Destructor, TechTreeData *self) {
+  return self->Destructor();
+}
 
 /* FUNCTIONS */
 
@@ -36,7 +39,7 @@ void TechTreeData::__Install()
 		0xE8, 0x00, 0x00, 0x00, 0x00  // call TechTreeData::Constructor (address will be inserted in the next step)
 	};
 	CopyBytesToAddr(0x004268DD, patch1, sizeof(patch1));
-	INSTALL_WRAPPER_DIRECT(Constructor, 0x004268ED);
+   CreateCodecave(0x004268ED, reinterpret_cast<void(*)()>(TechTreeData_Constructor));
 
 	// Install destructor (overwrite VTable address assignment as that isn't neccessary)
 	BYTE patch2[] =
@@ -45,7 +48,7 @@ void TechTreeData::__Install()
 		0xE8, 0x00, 0x00, 0x00, 0x00  // call TechTreeData::Destructor (address will be inserted in the next step)
 	};
 	CopyBytesToAddr(0x00425F9F, patch2, sizeof(patch2));
-	INSTALL_WRAPPER_DIRECT(Destructor, 0x00425FA0);
+   CreateCodecave(0x00425FA0, reinterpret_cast<void(*)()>(TechTreeData_Destructor));
 }
 
 TechTreeData::TechTreeData(int datFileHandle)

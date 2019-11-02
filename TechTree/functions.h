@@ -6,8 +6,13 @@
 /* INCLUDES */
 
 // Windows definitions
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#endif
+#include <windows.h>
 
 // C standard I/O functions
 #include <cstdio>
@@ -46,4 +51,4 @@ DWORD ReadVTableEntry(DWORD addr);
 // -> destAddr: The address where the codecave call should be performed.
 // -> func: The codecave function to be called.
 // -> nopCount: The count of the NOPs to be inserted after the 5 CALL bytes.
-void CreateCodecave(DWORD destAddr, void(*func)(void), size_t nopCount);
+void CreateCodecave(DWORD destAddr, void(*func)(void), size_t nopCount = 0);

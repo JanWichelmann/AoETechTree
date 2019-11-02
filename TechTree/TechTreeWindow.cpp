@@ -1,26 +1,47 @@
 /* INCLUDES */
 
 // Class header
-#define CLASS TechTreeWindow
 #include "TechTreeWindow.h"
 
 // Other includes
+#include <mmsystem.h>
 #include "Game.h"
 #include "VanillaTechTreeRenderer.h"
 #include "GameDataHandler.h"
+#include "call_conventions.h"
 
 /* STATIC WRAPPER FUNCTIONS */
 
-STATIC_WRAPPER(Constructor, TechTreeWindow *, Window *, int, int)
-STATIC_WRAPPER(ScalarDeletingDestructor, void, char)
-STATIC_WRAPPER(Draw, void)
-STATIC_WRAPPER(HandleWindowsMessage, int, HWND, signed int, WPARAM, LPARAM)
-STATIC_WRAPPER(DoUpdate, int)
-STATIC_WRAPPER(HandleUserMessage, int, WPARAM, LPARAM)
-STATIC_WRAPPER(HandleMouseButtonDown, int, int, int, int, int, int)
-STATIC_WRAPPER(HandleMouseMove, int, int, int, int, int)
-STATIC_WRAPPER(HandleKeyDown2, int, int, int, int, int, int)
-STATIC_WRAPPER(HandleChildControlEvent, int, Control *, int, int, int)
+static TechTreeWindow *THISCALL(TechTreeWindow_Constructor, TechTreeWindow *self, Window *underlyingWindow, int unknownGameAndPlayerData, int selectedCivId) {
+  return self->Constructor(underlyingWindow, unknownGameAndPlayerData, selectedCivId);
+}
+static void THISCALL(TechTreeWindow_ScalarDeletingDestructor, TechTreeWindow *self, char mode) {
+  return self->ScalarDeletingDestructor(mode);
+}
+static void THISCALL(TechTreeWindow_Draw, TechTreeWindow *self) {
+  return self->Draw();
+}
+static int THISCALL(TechTreeWindow_HandleWindowsMessage, TechTreeWindow *self, HWND hWnd, signed int msg, WPARAM wParam, LPARAM lParam) {
+  return self->HandleWindowsMessage(hWnd, msg, wParam, lParam);
+}
+static int THISCALL(TechTreeWindow_DoUpdate, TechTreeWindow *self) {
+  return self->DoUpdate();
+}
+static int THISCALL(TechTreeWindow_HandleUserMessage, TechTreeWindow *self, WPARAM wParam, LPARAM lParam) {
+  return self->HandleUserMessage(wParam, lParam);
+}
+static int THISCALL(TechTreeWindow_HandleMouseButtonDown, TechTreeWindow *self, int buttonId, int cursorPosX, int cursorPosY, int controlKeyPressed, int shiftKeyPressed) {
+  return self->HandleMouseButtonDown(buttonId, cursorPosX, cursorPosY, controlKeyPressed, shiftKeyPressed);
+}
+static int THISCALL(TechTreeWindow_HandleMouseMove, TechTreeWindow *self, int cursorPosX, int cursorPosY, int controlKeyPressed, int shiftKeyPressed) {
+  return self->HandleMouseMove(cursorPosX, cursorPosY, controlKeyPressed, shiftKeyPressed);
+}
+static int THISCALL(TechTreeWindow_HandleKeyDown2, TechTreeWindow *self, int keyDown, int lParam, int menuKeyDown, int controlKeyDown, int shiftKeyDown) {
+  return self->HandleKeyDown2(keyDown, lParam, menuKeyDown, controlKeyDown, shiftKeyDown);
+}
+static int THISCALL(TechTreeWindow_HandleChildControlEvent, TechTreeWindow *self, Control *triggeringControl, int code, int data1, int data2) {
+  return self->HandleChildControlEvent(triggeringControl, code, data1, data2);
+}
 
 /* VARIABLES */
 
@@ -38,19 +59,19 @@ void TechTreeWindow::__Install()
 	int size = sizeof(TechTreeWindow);
 	CopyBytesToAddr(0x004FDC45, reinterpret_cast<void *>(&size), 4);
 	CopyBytesToAddr(0x00529318, reinterpret_cast<void *>(&size), 4);
-	INSTALL_WRAPPER_DIRECT(Constructor, 0x004FDC6A);
-	INSTALL_WRAPPER_DIRECT(Constructor, 0x00529347);
+   CreateCodecave(0x004FDC6A, reinterpret_cast<void(*)()>(TechTreeWindow_Constructor));
+   CreateCodecave(0x00529347, reinterpret_cast<void(*)()>(TechTreeWindow_Constructor));
 
 	// Install virtual function table entries
-	INSTALL_WRAPPER_VIRTUAL(ScalarDeletingDestructor, 0x00645118);
-	INSTALL_WRAPPER_VIRTUAL(Draw, 0x00645148);
-	INSTALL_WRAPPER_VIRTUAL(HandleWindowsMessage, 0x00645160);
-	INSTALL_WRAPPER_VIRTUAL(DoUpdate, 0x00645164);
-	INSTALL_WRAPPER_VIRTUAL(HandleUserMessage, 0x0064517C);
-	INSTALL_WRAPPER_VIRTUAL(HandleMouseButtonDown, 0x00645188);
-	INSTALL_WRAPPER_VIRTUAL(HandleMouseMove, 0x0064518C);
-	INSTALL_WRAPPER_VIRTUAL(HandleKeyDown2, 0x006451D4);
-	INSTALL_WRAPPER_VIRTUAL(HandleChildControlEvent, 0x006451DC);
+	CreateVTableEntry(0x00645118, reinterpret_cast<void(*)()>(TechTreeWindow_ScalarDeletingDestructor));
+	CreateVTableEntry(0x00645148, reinterpret_cast<void(*)()>(TechTreeWindow_Draw));
+	CreateVTableEntry(0x00645160, reinterpret_cast<void(*)()>(TechTreeWindow_HandleWindowsMessage));
+	CreateVTableEntry(0x00645164, reinterpret_cast<void(*)()>(TechTreeWindow_DoUpdate));
+	CreateVTableEntry(0x0064517C, reinterpret_cast<void(*)()>(TechTreeWindow_HandleUserMessage));
+	CreateVTableEntry(0x00645188, reinterpret_cast<void(*)()>(TechTreeWindow_HandleMouseButtonDown));
+	CreateVTableEntry(0x0064518C, reinterpret_cast<void(*)()>(TechTreeWindow_HandleMouseMove));
+	CreateVTableEntry(0x006451D4, reinterpret_cast<void(*)()>(TechTreeWindow_HandleKeyDown2));
+	CreateVTableEntry(0x006451DC, reinterpret_cast<void(*)()>(TechTreeWindow_HandleChildControlEvent));
 }
 
 TechTreeWindow *TechTreeWindow::Constructor(Window *underlyingWindow, int unknownGameAndPlayerData, int selectedCivId)

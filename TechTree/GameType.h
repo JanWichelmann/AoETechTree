@@ -3,30 +3,16 @@
 /* INCLUDES */
 
 // Windows main header
+#ifndef NOMINMAX
 #define NOMINMAX
-#include <Windows.h>
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
 
 // Code cave functions
 #include "functions.h"
-
-/* MACROS */
-
-// Creates a static wrapper function for the given virtual function table method METHOD.
-// It has to be installed in the __Install function of the corresponding class using the second macro.
-#define CONCATSUB(x, y) x ## _ ## y
-#define CONCAT(x, y) CONCATSUB(x, y)
-#define STATIC_WRAPPER(METHOD, RETURNTYPE, ...)	typedef RETURNTYPE(__thiscall CLASS::*CONCAT(FuncPtrType, CONCAT(CLASS, METHOD)))(##__VA_ARGS__);\
-							typedef RETURNTYPE(__thiscall *CONCAT(FreeFuncPtrType, CONCAT(CLASS, METHOD)))(CLASS *, ##__VA_ARGS__);\
-							CONCAT(FuncPtrType, CONCAT(CLASS, METHOD)) CONCAT(FuncPtr, CONCAT(CLASS, METHOD)) = &##CLASS##::##METHOD;\
-							CONCAT(FreeFuncPtrType, CONCAT(CLASS, METHOD)) CONCAT(CLASS, METHOD);\
-							__declspec(naked) void CONCAT(StaticWrapper, CONCAT(CLASS, METHOD))()\
-							{\
-								__asm jmp CONCAT(FuncPtr, CONCAT(CLASS, METHOD))\
-							}
-#define INSTALL_WRAPPER_VIRTUAL(METHOD, ADDRESS) CONCAT(CLASS, METHOD) = (CONCAT(FreeFuncPtrType, CONCAT(CLASS, METHOD)))ReadVTableEntry(ADDRESS);\
-							CreateVTableEntry(ADDRESS, CONCAT(StaticWrapper, CONCAT(CLASS, METHOD)));
-#define INSTALL_WRAPPER_DIRECT(METHOD, ADDRESS) CONCAT(CLASS, METHOD) = nullptr;\
-                            CreateCodecave(ADDRESS, CONCAT(StaticWrapper, CONCAT(CLASS, METHOD)), 0);
 
 /* DEFINITIONS */
 

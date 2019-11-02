@@ -5,6 +5,7 @@
 
 // Other includes
 #include <algorithm>
+#include <cassert>
 #include <functional>
 #include "Game.h"
 #include "DirectDrawHandler.h"
@@ -12,7 +13,7 @@
 
 /* FUNCTIONS */
 
-VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData)
+VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, int unknownGameAndPlayerData)
 	: TechTreeRenderer(gameData, unknownGameAndPlayerData)
 {
 	// Get design data
@@ -856,8 +857,7 @@ void VanillaTechTreeRenderer::MoveTreeLeft(TechTreeElement *element, int amount)
 
 	// Calculate new column index
 	int newDrawX = element->_renderPosition.X - amount;
-	if(newDrawX < 0)
-		__asm int 3; // Should never happen
+   assert(newDrawX >= 0);
 
 	// Update tree layout matrix
 	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = nullptr;

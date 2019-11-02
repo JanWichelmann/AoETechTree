@@ -5,10 +5,10 @@
 
 /* FUNCTIONS */
 
-SlpFileElement::SlpFileElement(char *slpName, int slpId)
+SlpFileElement::SlpFileElement(const char *slpName, int slpId)
 {
 	// Call original function
-	((SlpFileElement *(__thiscall *)(SlpFileElement *, char *, int))0x004DAE00)(this, slpName, slpId);
+	((SlpFileElement *(__thiscall *)(SlpFileElement *, const char *, int))0x004DAE00)(this, slpName, slpId);
 }
 
 SlpFileElement::~SlpFileElement()
