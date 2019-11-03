@@ -13,23 +13,24 @@ class ColorTable : public GameType
 {
 protected: // Member variables
 	DWORD _VTable;
-	int resource_id_;
-	int type_;
-	char* table_;
-	int color_transform_base_;
-	int unit_outline_color_;
-	int selection_color_1_;
-	int selection_color_2_;
-	int minimap_color_1_;
-	int minimap_color_2_;
-	int minimap_color_3_;
-	int text_color1_;
-	int text_color2_;
-	char text_color_r_;
-	char text_color_g_;
-	char text_color_b_;
-	char reserved_;
 
 public:
+	int ResourceId;
+	int Type;
+	char* Table;
+	int ColorTransformBase;
+	int UnitOutlineColor;
+	int SelectionColor1;
+	int SelectionColor2;
+	int MinimapColor1;
+	int MinimapColor2;
+	int MinimapColor3;
+	int TextColor1;
+	int TextColor2;
+	char TextColorR;
+	char TextColorG;
+	char TextColorB;
+private:
+	char reserved_;
 };
 #pragma pack(pop)

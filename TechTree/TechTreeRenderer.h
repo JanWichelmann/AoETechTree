@@ -5,6 +5,7 @@
 // Other includes
 #include "DirectDrawArea.h"
 #include "GameDataHandler.h"
+#include "Player.h"
 #include "TechTreeElement.h"
 #include <vector>
 #include "DrawUtilities.h"
@@ -19,7 +20,7 @@ protected: // Member variables
 	GameDataHandler *_gameData;
 
 	// Pointer to a large chunk of game and player data, containing information about player colors, diplomacy, researched items etc.
-	int _unknownGameAndPlayerData;
+	Player *_player;
 
 	// The ID of the currently selected civ.
 	int _selectedCivId;
@@ -31,8 +32,8 @@ public:
 	// Creates a new tech tree renderer for the given tech tree.
 	// Parameteres:
 	// -> gameData: The game data.
-	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
-	TechTreeRenderer(GameDataHandler *gameData, int unknownGameAndPlayerData);
+	// -> player: Data given ingame to highlight currently available units and researches.
+	TechTreeRenderer(GameDataHandler *gameData, Player *player);
 
 	// Draws the tree with the given offset for the current civ.
 	// Parameters:

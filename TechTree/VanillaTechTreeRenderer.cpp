@@ -13,8 +13,8 @@
 
 /* FUNCTIONS */
 
-VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, int unknownGameAndPlayerData)
-	: TechTreeRenderer(gameData, unknownGameAndPlayerData)
+VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, Player *player)
+	: TechTreeRenderer(gameData, player)
 {
 	// Get design data
 	_designData = _staticNewTechTreeDataObject->GetDesignData();
@@ -143,7 +143,7 @@ void VanillaTechTreeRenderer::Draw(DirectDrawArea *drawBuffer, int offsetX, int 
 {
 	// Set player color palette offset (16 + x, where x is 0, 16, 32, 48, 64, 80, 96 or 112)
 	// Default is blue (16)
-	((void(__cdecl *)(int))0x00632860)(_unknownGameAndPlayerData != 0 ? reinterpret_cast<int **>(_unknownGameAndPlayerData)[88][4] : 16);
+	((void(__cdecl *)(int))0x00632860)(_player != nullptr ? _player->GetColorTable()->ColorTransformBase : 16);
 
 	// Lock surface of draw buffer
 	drawBuffer->LockAssociatedSurface(1);
@@ -857,7 +857,7 @@ void VanillaTechTreeRenderer::MoveTreeLeft(TechTreeElement *element, int amount)
 
 	// Calculate new column index
 	int newDrawX = element->_renderPosition.X - amount;
-   assert(newDrawX >= 0);
+	 assert(newDrawX >= 0);
 
 	// Update tree layout matrix
 	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = nullptr;

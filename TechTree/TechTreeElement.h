@@ -5,6 +5,7 @@
 // Other includes
 #include <vector>
 #include "DrawUtilities.h"
+#include "Player.h"
 
 /* DEFINITIONS */
 
@@ -131,7 +132,7 @@ public:
 	// Updates the render state for the selected civ.
 	// Parameters:
 	// -> selectedCivId: The ID of the selected civ.
-	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
+	// -> player: Data given ingame to highlight currently available units and researches.
 	// -> forceNotResearched: Optional. When set, all child elements are marked as not researched recursively.
-	void UpdateRenderState(char selectedCivId, int unknownGameAndPlayerData, bool forceNotResearched = false);
+	void UpdateRenderState(char selectedCivId, Player *player, bool forceNotResearched = false);
 };

@@ -72,7 +72,7 @@ TechTreeElement::~TechTreeElement()
 		delete req;
 }
 
-void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPlayerData, bool forceNotResearched)
+void TechTreeElement::UpdateRenderState(char selectedCivId, Player *player, bool forceNotResearched)
 {
 	// Is the civ disabling this element?
 	_renderState = ItemRenderState::Visible;
@@ -84,25 +84,25 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 		else
 			_renderState = ItemRenderState::Disabled;
 	}
-	else if(unknownGameAndPlayerData != 0 && selectedCivId == reinterpret_cast<char *>(unknownGameAndPlayerData)[349]) // Player-Civ? => Mark researched/not researched elements
+	else if(player != nullptr && selectedCivId == player->GetCivId()) // Player-Civ? => Mark researched/not researched elements
 	{
 		// Helper function to check whether research is done (parameters: some data object, research ID)
 		short(__thiscall *CheckResearchIsDone)(int, short) = reinterpret_cast<short(__thiscall *)(int, short)>(0x0040231B);
 
 		// Check if element is researched
-		if(forceNotResearched || (_age != 0 && CheckResearchIsDone(reinterpret_cast<int *>(unknownGameAndPlayerData)[1192], 100 + _age) != 3))
+		if(forceNotResearched || (_age != 0 && CheckResearchIsDone(reinterpret_cast<int *>(player)[1192], 100 + _age) != 3))
 			_renderState = ItemRenderState::NotResearched;
 		else if(_elementType == ItemType::Building)
 		{
 			// Check if building is researched
-			char *buildingData = reinterpret_cast<char ***>(unknownGameAndPlayerData)[29][_elementObjectID];
+			char *buildingData = reinterpret_cast<char ***>(player)[29][_elementObjectID];
 			if(buildingData == nullptr || buildingData[90] != 1)
 			{
 				// Check whether there is one required research that is completed
 				// One is enough - this way we don't have to hardcode anything, although there may be inaccuracies
 				bool researched = _requiredElements.empty();
 				for(TechTreeElement::RequiredElement *req : _requiredElements)
-					if(req->_elementType == TechTreeElement::ItemType::Research && CheckResearchIsDone(reinterpret_cast<int *>(unknownGameAndPlayerData)[1192], req->_elementObjectID) == 3)
+					if(req->_elementType == TechTreeElement::ItemType::Research && CheckResearchIsDone(reinterpret_cast<int *>(player)[1192], req->_elementObjectID) == 3)
 					{
 						// Found
 						researched = true;
@@ -115,13 +115,13 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 		else if(_elementType == ItemType::Creatable)
 		{
 			// Check if unit is researched
-			char *unitData = reinterpret_cast<char ***>(unknownGameAndPlayerData)[29][_elementObjectID];
+			char *unitData = reinterpret_cast<char ***>(player)[29][_elementObjectID];
 			if(unitData == nullptr || unitData[90] != 1)
 			{
 				// Check whether there is one required research that is completed
 				bool researched = _requiredElements.empty();
 				for(TechTreeElement::RequiredElement *req : _requiredElements)
-					if(req->_elementType == TechTreeElement::ItemType::Research && CheckResearchIsDone(reinterpret_cast<int *>(unknownGameAndPlayerData)[1192], req->_elementObjectID) == 3)
+					if(req->_elementType == TechTreeElement::ItemType::Research && CheckResearchIsDone(reinterpret_cast<int *>(player)[1192], req->_elementObjectID) == 3)
 					{
 						// Found
 						researched = true;
@@ -134,7 +134,7 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 		else if(_elementType == ItemType::Research)
 		{
 			// Check if research is completed
-			if(CheckResearchIsDone(reinterpret_cast<int *>(unknownGameAndPlayerData)[1192], _elementObjectID) != 3)
+			if(CheckResearchIsDone(reinterpret_cast<int *>(player)[1192], _elementObjectID) != 3)
 				_renderState = ItemRenderState::NotResearched;
 		}
 	}
@@ -208,7 +208,7 @@ void TechTreeElement::UpdateRenderState(char selectedCivId, int unknownGameAndPl
 
 	// Update render state for all children recursively
 	for(auto &c : _children)
-		c->UpdateRenderState(selectedCivId, unknownGameAndPlayerData, _renderState == ItemRenderState::NotResearched);
+		c->UpdateRenderState(selectedCivId, player, _renderState == ItemRenderState::NotResearched);
 }
 
 TechTreeElement::RequiredElement::RequiredElement(int datFileHandle)

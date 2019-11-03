@@ -7,6 +7,7 @@
 
 // Other includes
 #include "Shape.h"
+#include "Player.h"
 #include "FontData.h"
 #include <stack>
 #include <vector>
@@ -146,8 +147,8 @@ public:
 	// Parameteres:
 	// -> gameData: The game data.
 	// -> windowSize: The size of the render window.
-	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
-	VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, int unknownGameAndPlayerData);
+	// -> playen: Data given ingame to highlight currently available units and researches.
+	VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, Player *playen);
 
 	// Destructor.
 	~VanillaTechTreeRenderer();

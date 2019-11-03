@@ -79,10 +79,10 @@ extern "C" __declspec(dllexport) void Init()
 
 // aoc-mmmod initialization.
 extern "C" __declspec(dllexport) void mmm_setup(mmm_mod_info* info) {
-  info->name = "Moddable Tech Tree";
-  info->version = TECH_TREE_VERSION;
+	info->name = "Moddable Tech Tree";
+	info->version = TECH_TREE_VERSION;
 }
 
 extern "C" __declspec(dllexport) void mmm_before_setup(mmm_mod_info* info) {
-  Init();
+	Init();
 }

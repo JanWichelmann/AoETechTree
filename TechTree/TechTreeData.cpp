@@ -11,10 +11,10 @@
 /* STATIC WRAPPER FUNCTIONS */
 
 static void THISCALL(TechTreeData_Constructor, TechTreeData *self, int datFileHandle) {
-  return self->Constructor(datFileHandle);
+	return self->Constructor(datFileHandle);
 }
 static void THISCALL(TechTreeData_Destructor, TechTreeData *self) {
-  return self->Destructor();
+	return self->Destructor();
 }
 
 /* FUNCTIONS */
@@ -39,7 +39,7 @@ void TechTreeData::__Install()
 		0xE8, 0x00, 0x00, 0x00, 0x00  // call TechTreeData::Constructor (address will be inserted in the next step)
 	};
 	CopyBytesToAddr(0x004268DD, patch1, sizeof(patch1));
-   CreateCodecave(0x004268ED, reinterpret_cast<void(*)()>(TechTreeData_Constructor));
+	 CreateCodecave(0x004268ED, reinterpret_cast<void(*)()>(TechTreeData_Constructor));
 
 	// Install destructor (overwrite VTable address assignment as that isn't neccessary)
 	BYTE patch2[] =
@@ -48,7 +48,7 @@ void TechTreeData::__Install()
 		0xE8, 0x00, 0x00, 0x00, 0x00  // call TechTreeData::Destructor (address will be inserted in the next step)
 	};
 	CopyBytesToAddr(0x00425F9F, patch2, sizeof(patch2));
-   CreateCodecave(0x00425FA0, reinterpret_cast<void(*)()>(TechTreeData_Destructor));
+	 CreateCodecave(0x00425FA0, reinterpret_cast<void(*)()>(TechTreeData_Destructor));
 }
 
 TechTreeData::TechTreeData(int datFileHandle)
@@ -107,11 +107,11 @@ void TechTreeData::Destructor()
 	_staticNewTechTreeDataObject = nullptr;
 }
 
-void TechTreeData::UpdateRenderStates(char selectedCivId, int unknownGameAndPlayerData)
+void TechTreeData::UpdateRenderStates(char selectedCivId, Player *player)
 {
 	// Update render state for all elements recursively
 	for(auto &r : _rootElements)
-		r->UpdateRenderState(selectedCivId, unknownGameAndPlayerData);
+		r->UpdateRenderState(selectedCivId, player);
 }
 
 const std::vector<TechTreeElement *> &TechTreeData::GetRootElements()
