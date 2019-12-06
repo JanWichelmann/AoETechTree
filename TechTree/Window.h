@@ -37,6 +37,6 @@ public:
 	// -> styleResourceName: The resource file name (may be empty if ID is given).
 	// -> styleResourceId: The resource file id.
 	// -> unk: Unknown.
-	bool PrepareParentWindowAndLoadStyleData(DirectDrawBufferData *backBuffer, char *styleResourceName, int styleResourceId, int unk);
+	bool PrepareParentWindowAndLoadStyleData(DirectDrawArea *backBuffer, char *styleResourceName, int styleResourceId, int unk);
 };
 #pragma pack(pop)

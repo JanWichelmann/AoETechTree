@@ -25,6 +25,7 @@ PARAMS is the usual call to the Age of Empires process, e.g.: age2_x1.exe nostar
 For mod developers using their own Games/[MODNAME] subfolder, the call may be: 
 > AoETechTree.exe age2_x1.exe game=[MODNAME] nostartup
 
+This mod can also be loaded with [aoc-mmmod](https://github.com/SiegeEngineers/aoc-mmmod) instead of using the custom launcher. To do so, unpack TechTree.dll into the Games/[MODNAME]/mmmods/ folder for your mod.
 
 ## SYSTEM REQUIREMENTS
 

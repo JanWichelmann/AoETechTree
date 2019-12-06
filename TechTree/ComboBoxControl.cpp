@@ -15,11 +15,11 @@ void ComboBoxControl::SetStyleText2Colors(int styleTextColor1_BGR, int styleText
 {
 	// Set colors and do something unknown
 	_dropDownList->SetStyleText2Colors(styleTextColor1_BGR, styleTextColor2_BGR);
-	_dropDownList->sub_545D70(0);
-	_dropDownList->sub_545DF0(1, 0x83);
+	_dropDownList->SetStyle(0);
+	_dropDownList->SetFillBackground(1, 0x83);
 	_valueLabel->SetStyleText2Colors(styleTextColor1_BGR, styleTextColor2_BGR);
-	_valueLabel->sub_545D70(0);
-	_valueLabel->sub_545DF0(1, 0x83);
+	_valueLabel->SetStyle(0);
+	_valueLabel->SetFillBackground(1, 0x83);
 }
 
 ScrollBarControl* ComboBoxControl::GetDropDownScrollBar()

@@ -23,8 +23,8 @@ void Window::Destructor()
 	((void(__thiscall *)(Window *))0x00548050)(this);
 }
 
-bool Window::PrepareParentWindowAndLoadStyleData(DirectDrawBufferData *backBuffer, char *styleResourceName, int styleResourceId, int unk)
+bool Window::PrepareParentWindowAndLoadStyleData(DirectDrawArea *backBuffer, char *styleResourceName, int styleResourceId, int unk)
 {
 	// Call original function
-	return ((bool(__thiscall *)(Panel*, DirectDrawBufferData *, char *, int, int))0x00548060)(this, backBuffer, styleResourceName, styleResourceId, unk);
+	return ((bool(__thiscall *)(Panel*, DirectDrawArea *, char *, int, int))0x00548060)(this, backBuffer, styleResourceName, styleResourceId, unk);
 }

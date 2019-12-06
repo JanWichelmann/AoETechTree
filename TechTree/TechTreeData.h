@@ -8,6 +8,7 @@
 // Other includes
 #include "TechTreeElement.h"
 #include "TechTreeDesign.h"
+#include "Player.h"
 #include <vector>
 
 /* DEFINITIONS */
@@ -42,8 +43,8 @@ public:
 	// Updates the render states for the selected civ.
 	// Parameters:
 	// -> selectedCivId: The ID of the selected civ.
-	// -> unknownGameAndPlayerData: Data given ingame to highlight currently available units and researches.
-	void UpdateRenderStates(char selectedCivId, int unknownGameAndPlayerData);
+	// -> player: Data given ingame to highlight currently available units and researches.
+	void UpdateRenderStates(char selectedCivId, Player *player);
 
 	// Returns the root elements of the tech tree.
 	const std::vector<TechTreeElement *> &GetRootElements();

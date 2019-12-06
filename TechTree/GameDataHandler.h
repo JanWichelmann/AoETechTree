@@ -38,9 +38,9 @@ public: // Member variables (public for simplicity reasons...maybe put wrapper f
 	short _graphicCount;
 	char _gap_42[2];
 	int _graphics;
-	short _unknown_ProbablyPlayerCount;
+	short _playerCount;
 	char _gap_4A[2];
-	int *_dword4C;
+	Player **_players;
 	short _civCount;
 	char _gap_52[2];
 	CivData **_civs;
