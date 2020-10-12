@@ -5,6 +5,7 @@
 
 // Other includes
 #include <algorithm>
+#include <cassert>
 #include <functional>
 #include "Game.h"
 #include "DirectDrawHandler.h"
@@ -12,28 +13,28 @@
 
 /* FUNCTIONS */
 
-VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size &windowSize, int unknownGameAndPlayerData)
-	: TechTreeRenderer(gameData, unknownGameAndPlayerData)
+VanillaTechTreeRenderer::VanillaTechTreeRenderer(GameDataHandler *gameData, Size windowSize, Player *player)
+	: TechTreeRenderer(gameData, player)
 {
 	// Get design data
 	_designData = _staticNewTechTreeDataObject->GetDesignData();
 
 	// Load icon SLPs
-	_researchIcons = new SlpFileElement("btntech.shp", 50729);
-	_creatableIcons = new SlpFileElement("ico_unit.shp", 50730);
-	_buildingIcons = new SlpFileElement("ico_bld2.shp", 50706);
+	_researchIcons = new Shape("btntech.shp", 50729);
+	_creatableIcons = new Shape("ico_unit.shp", 50730);
+	_buildingIcons = new Shape("ico_bld2.shp", 50706);
 
 	// Load node SLP
-	_nodeGraphics = new SlpFileElement(_designData->_nodeSlpFileName, _designData->_nodeSlpId);
+	_nodeGraphics = new Shape(_designData->_nodeSlpFileName, _designData->_nodeSlpId);
 
 	// Load legend SLP
-	_legendAndAgesSlp = new SlpFileElement(_designData->_legendAgesSlpFileName, _designData->_legendAgesSlpId);
+	_legendAndAgesSlp = new Shape(_designData->_legendAgesSlpFileName, _designData->_legendAgesSlpId);
 
 	// Load tile SLP
-	_tileSlp = new SlpFileElement(_designData->_tileSlpFileName, _designData->_tileSlpId);
+	_tileSlp = new Shape(_designData->_tileSlpFileName, _designData->_tileSlpId);
 
 	// Load legend "disable" SLP
-	_legendDisableSlp = new SlpFileElement(_designData->_legendDisableSlpFileName, _designData->_legendDisableSlpId);
+	_legendDisableSlp = new Shape(_designData->_legendDisableSlpFileName, _designData->_legendDisableSlpId);
 
 	// Set resolution specific position values
 	_verticalDrawOffsets = new int[_ageCount * 2];
@@ -138,11 +139,11 @@ VanillaTechTreeRenderer::~VanillaTechTreeRenderer()
 	delete[] _ageLabelRectangles;
 }
 
-void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX, int offsetY)
+void VanillaTechTreeRenderer::Draw(DirectDrawArea *drawBuffer, int offsetX, int offsetY)
 {
 	// Set player color palette offset (16 + x, where x is 0, 16, 32, 48, 64, 80, 96 or 112)
 	// Default is blue (16)
-	((void(__cdecl *)(int))0x00632860)(_unknownGameAndPlayerData != 0 ? reinterpret_cast<int **>(_unknownGameAndPlayerData)[88][4] : 16);
+	((void(__cdecl *)(int))0x00632860)(_player != nullptr ? _player->GetColorTable()->ColorTransformBase : 16);
 
 	// Lock surface of draw buffer
 	drawBuffer->LockAssociatedSurface(1);
@@ -207,7 +208,7 @@ void VanillaTechTreeRenderer::Draw(DirectDrawBufferData *drawBuffer, int offsetX
 	drawBuffer->DeleteGdiContext();
 }
 
-void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer, int x, int y)
+void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawArea *drawBuffer, int x, int y)
 {
 	// Lock surface of draw buffer
 	drawBuffer->LockAssociatedSurface(1);
@@ -242,7 +243,7 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 	{
 		// Get graphics
 		int boxSlpFrameIndex = _designData->_nodeTypes[(int)currReq->_elementType]->_frameIndex;
-		SlpFileElement *iconSlp = nullptr;
+		Shape *iconSlp = nullptr;
 		int iconId = -1;
 		if(currReq->_elementType == TechTreeElement::ItemType::Building)
 		{
@@ -297,7 +298,7 @@ void VanillaTechTreeRenderer::DrawPopupLabelBox(DirectDrawBufferData *drawBuffer
 	drawBuffer->DeleteGdiContext();
 }
 
-void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDrawBufferData *drawBuffer, int offsetX, int offsetY)
+void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDrawArea *drawBuffer, int offsetX, int offsetY)
 {
 	// Element hidden?
 	if(element->_renderState == TechTreeElement::ItemRenderState::Hidden)
@@ -354,7 +355,7 @@ void VanillaTechTreeRenderer::RenderSubTree(TechTreeElement *element, DirectDraw
 	int boxSlpFrameIndex = _designData->_nodeTypes[(int)element->_elementType]->_frameIndex;
 	if(element->_backgroundIndex < _designData->_nodeTypes.size())
 		boxSlpFrameIndex = _designData->_nodeTypes[element->_backgroundIndex]->_frameIndex;
-	SlpFileElement *iconSlp = nullptr;
+	Shape *iconSlp = nullptr;
 	int iconId = -1;
 	if(element->_elementType == TechTreeElement::ItemType::Building)
 	{
@@ -856,8 +857,7 @@ void VanillaTechTreeRenderer::MoveTreeLeft(TechTreeElement *element, int amount)
 
 	// Calculate new column index
 	int newDrawX = element->_renderPosition.X - amount;
-	if(newDrawX < 0)
-		__asm int 3; // Should never happen
+	 assert(newDrawX >= 0);
 
 	// Update tree layout matrix
 	_treeLayoutMatrix[element->_renderPosition.Y][element->_renderPosition.X] = nullptr;

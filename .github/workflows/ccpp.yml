@@ -1,0 +1,51 @@
+name: Build AoETechTree
+
+on: [push]
+
+jobs:
+  debug:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Prepare debug DLL
+      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -A Win32
+    - name: Build debug DLL
+      run: cmake --build build --verbose
+    # - name: Make artifact
+    #   run: mkdir -p artifact && cp build/Debug/* artifact
+    # - uses: actions/upload-artifact@master
+    #   with:
+    #     name: AoETechTree-debug
+    #     path: artifact
+  release:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Prepare release DLL
+      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -A Win32
+    - name: Build release DLL
+      run: cmake --build build --verbose
+    # - name: Make artifact
+    #   run: mkdir -p artifact && cp build/Debug/*.dll artifact
+    # - uses: actions/upload-artifact@master
+    #   with:
+    #     name: AoETechTree-release
+    #     path: artifact
+
+  # linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: Add CMake repository
+  #     run: |
+  #       wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | sudo apt-key add -
+  #       sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+  #       sudo apt-get update
+  #   - name: Install toolchain
+  #     run: sudo apt-get install -y cmake mingw-w64
+  #   - name: Prepare debug DLL
+  #     run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=`which i686-w64-mingw32-gcc` -DCMAKE_CXX_COMPILER=`which i686-w64-mingw32-g++`
+  #   - name: Build debug DLL
+  #     run: cmake --build build --verbose

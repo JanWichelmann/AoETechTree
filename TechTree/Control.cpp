@@ -65,7 +65,7 @@ Control::ControlType Control::GetTypeIdentifier()
 	return _controlTypeIdentifier;
 }
 
-Rect& Control::GetPositionAndSizeData()
+Rect Control::GetPositionAndSizeData()
 {
 	// Create and return rect
 	return Rect(_positionX2, _positionY2, _width1, _height1);

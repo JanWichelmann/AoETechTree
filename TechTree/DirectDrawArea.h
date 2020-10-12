@@ -9,8 +9,8 @@
 #include <ddraw.h>
 
 // Other includes
-#include "DirectDrawBufferDataListElement.h"
-#include "Unknown1064ByteDirectDrawRelatedClass.h"
+#include "DirectDrawAreaNode.h"
+#include "BitmapInfo.h"
 
 /* DEFINITIONS */
 
@@ -19,13 +19,13 @@ class DirectDrawHandler;
 
 #pragma pack(push, 1)
 // Represents an DirectDraw buffer handler.
-class DirectDrawBufferData : public GameType
+class DirectDrawArea : public GameType
 {
 protected: // Member variables
 	DirectDrawHandler *_directDrawHandler;
 	HWND _mainWindowHWnd;
 	char *_lockedSurfaceMemoryAddress;
-	Unknown1064ByteDirectDrawRelatedClass *_unknown1064ByteStructPointer;
+	BITMAPINFO256 *_bitmapInfo;
 	HGDIOBJ _unknownGdiObject2;
 	HGDIOBJ _unknownGdiObject1;
 	int _width;
@@ -36,7 +36,7 @@ protected: // Member variables
 	HDC _gdiContext;
 	IDirectDrawSurface *_associatedDirectDrawSurface;
 	DDSURFACEDESC _associatedDirectDrawSurfaceDesc;
-	DirectDrawBufferDataListElement *_listElement;
+	DirectDrawAreaNode *_listElement;
 	char *_name;
 	DWORD _dwordB4;
 	BYTE _gapB8[4];
@@ -64,10 +64,10 @@ public:
 	// Parameters:
 	// -> name: The buffer name.
 	// -> unknown: Unknown.
-	DirectDrawBufferData(char *name, int unknown);
+	DirectDrawArea(char *name, int unknown);
 
 	// Destructor.
-	~DirectDrawBufferData();
+	~DirectDrawArea();
 
 	// Locks the DirectDraw surface memory for drawing operations.
 	// Parameters:
@@ -101,7 +101,7 @@ public:
 	// -> right: Right coordinate of a rectangle.
 	// -> top: Top coordinate of a rectangle.
 	// -> bottom: Bottom coordinate of a rectangle.
-	int sub_5A30A0(int left, int right, int top, int bottom);
+	int SetClipRect2(int left, int right, int top, int bottom);
 
 	// Returns the direct draw handler associated with this object.
 	DirectDrawHandler *GetDirectDrawHandler();
@@ -113,7 +113,7 @@ public:
 	// -> yTop: Unknown.
 	// -> childRect: Unknown.
 	// -> unknown: Unknown.
-	void sub_5A31E0(DirectDrawBufferData *backBuffer, int xLeft, int yTop, RECT *childRect, int unknown);
+	void Copy(DirectDrawArea *backBuffer, int xLeft, int yTop, RECT *childRect, int unknown);
 
 	// Gets the associated GDI context.
 	HDC CreateGdiContext();

@@ -8,8 +8,7 @@
 
 // Other includes
 #include "ControlListElement.h"
-#include "DirectDrawBufferData.h"
-#include "AnotherControlRelatedClass.h"
+#include "DirectDrawArea.h"
 #include "DrawUtilities.h"
 
 /* DEFINITIONS */
@@ -38,23 +37,23 @@ public:
 	ControlVTable *_VTable;
 
 protected: // Member variables
-	Control *_underlyingWindowInformation;
-	Control *_unknownWindowInformation1;
+	Control *_previousControl;
+	Control *_previousModal;
 	int _positionX2;
 	int _positionY2;
 	int _width1;
 	int _height1;
 	char *_controlTypeName;
-	DirectDrawBufferData *_backBufferData;
+	DirectDrawArea *_backBufferData;
 	RECT _clientRectangle;
 	int _maybeBiggerThanScreen;
 	int _maybeStillNeedsToBeDrawn;
 	Control *_currentSelectedSubElement;
 	Control *_parentWindow;
-	AnotherControlRelatedClass *_aWRS1;
-	AnotherControlRelatedClass *_aWRS2;
-	AnotherControlRelatedClass *_aWRS3;
-	AnotherControlRelatedClass *_aWRS4;
+	Control *_leftControl;
+	Control *_topControl;
+	Control *_rightControl;
+	Control *_bottomControl;
 	ControlListElement *_controlListElement;
 	ControlListElement *_childControlListBegin;
 	ControlListElement *_childControlListEnd;
@@ -134,7 +133,7 @@ public:
 	ControlType GetTypeIdentifier();
 
 	// Returns the position and size data of the control.
-	Rect& GetPositionAndSizeData();
+	Rect GetPositionAndSizeData();
 
 	// Sets the background fill mode.
 	// Parameters:
@@ -155,7 +154,7 @@ class ControlVTable : public VTableType
 {
 public: // Function pointers
 	void(__thiscall *ScalarDeletingDestructor)(Control *, char mode);
-	int(__thiscall *SetDrawDataAndCreateChildListElement)(Control *, DirectDrawBufferData *, Control *, int, int, int, int, int);
+	int(__thiscall *SetDrawDataAndCreateChildListElement)(Control *, DirectDrawArea *, Control *, int, int, int, int, int);
 	void(__thiscall *AssignRectangleDataAndCreateDrawRegion)(Control *, int, int, int, int);
 	void(__thiscall *AssignSizeDataAndCreateDrawRegion)(Control *, int, int, int, int);
 	void(__thiscall *AssignBackgroundColorAndRedraw)(Control *, BYTE);
@@ -206,7 +205,7 @@ public: // Function pointers
 	void(__thiscall *SetSelectionState)(Control *, int);
 	DWORD SetTabInformation;
 	DWORD AssignTabInformationToControlArray;
-	DirectDrawBufferData *(__thiscall *GetBackBufferData)(Control *);
+	DirectDrawArea *(__thiscall *GetBackBufferData)(Control *);
 	DWORD _func3;
 	DWORD _func4;
 	int(__thiscall *UnknownRecursiveChildrenCheck)(Control *);

@@ -11,16 +11,16 @@ LabelControl* LabelControl::Constructor()
 	return ((LabelControl *(__thiscall *)(LabelControl *))0x00544280)(this);
 }
 
-int LabelControl::sub_545D50(int unknown)
+int LabelControl::SetWordWrap(int enable)
 {
 	// Call original function
-	return ((int(__thiscall *)(LabelControl *, int))0x00545D50)(this, unknown);
+	return ((int(__thiscall *)(LabelControl *, int))0x00545D50)(this, enable);
 }
 
-int LabelControl::sub_545D70(int unknown)
+int LabelControl::SetStyle(int style)
 {
 	// Call original function
-	return ((int(__thiscall *)(LabelControl *, int))0x00545D70)(this, unknown);
+	return ((int(__thiscall *)(LabelControl *, int))0x00545D70)(this, style);
 }
 
 int LabelControl::SetStyleText2Colors(int styleTextColor1_BGR, int styleTextColor2_BGR)
@@ -35,13 +35,13 @@ void LabelControl::ForceDraw()
 	((void(__thiscall *)(LabelControl *))0x005464A0)(this);
 }
 
-void LabelControl::InterpreteTextFormatCodesAndComputeWordWrap(char *unformattedText, int id, int isResearch)
+void LabelControl::SetTextFormat(char *unformattedText, int id, int isResearch)
 {
 	// Call virtual function
-	static_cast<LabelControlVTable *>(_VTable)->InterpreteTextFormatCodesAndComputeWordWrap(this, unformattedText, id, isResearch);
+	static_cast<LabelControlVTable *>(_VTable)->SetTextFormat(this, unformattedText, id, isResearch);
 }
 
-int LabelControl::sub_545DF0(int unknown1, char unknown2)
+int LabelControl::SetFillBackground(int unknown1, char unknown2)
 {
 	// Call original function
 	return ((int(__thiscall *)(LabelControl *, int, char))0x00545DF0)(this, unknown1, unknown2);
@@ -53,10 +53,10 @@ void LabelControl::SetBackgroundSlp(char *slpFileName, int slpResId)
 	((void(__thiscall *)(LabelControl *, char *, int))0x00545E10)(this, slpFileName, slpResId);
 }
 
-int LabelControl::sub_5444B0(DirectDrawBufferData *parentControlBackBuffer, Control *parentControl, int posX, int posY, int width, int height, HFONT *fonts, int maximumCharWidth, int maximumCharHeight, char *slpFileName, int unknown1, char unknown2, int unknown3, char unknown4, short maxLineLength, char *text)
+int LabelControl::Setup(DirectDrawArea *parentControlBackBuffer, Control *parentControl, int posX, int posY, int width, int height, HFONT *fonts, int maximumCharWidth, int maximumCharHeight, char *slpFileName, int unknown1, char unknown2, int unknown3, char unknown4, short maxLineLength, char *text)
 {
 	// Call original function
-	return ((int(__thiscall *)(LabelControl *, DirectDrawBufferData *, Control *, int, int, int, int, HFONT *, int, int, char *, int, char, int, char, short, char *))0x005444B0)(this, parentControlBackBuffer, parentControl, posX, posY, width, height, fonts, maximumCharWidth, maximumCharHeight, slpFileName, unknown1, unknown2, unknown3, unknown4, maxLineLength, text);
+	return ((int(__thiscall *)(LabelControl *, DirectDrawArea *, Control *, int, int, int, int, HFONT *, int, int, char *, int, char, int, char, short, char *))0x005444B0)(this, parentControlBackBuffer, parentControl, posX, posY, width, height, fonts, maximumCharWidth, maximumCharHeight, slpFileName, unknown1, unknown2, unknown3, unknown4, maxLineLength, text);
 }
 
 void LabelControl::SetTextAlignment(int horizontalAlignment, int verticalAlignment)

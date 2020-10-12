@@ -8,11 +8,11 @@
 
 /* FUNCTIONS */
 
-TechTreeRenderer::TechTreeRenderer(GameDataHandler *gameData, int unknownGameAndPlayerData)
+TechTreeRenderer::TechTreeRenderer(GameDataHandler *gameData, Player *player)
 {
 	// Remember parameters
 	_gameData = gameData;
-	_unknownGameAndPlayerData = unknownGameAndPlayerData;
+	_player = player;
 
 	// Initialize selected civ member
 	_selectedCivId = 0;
@@ -44,7 +44,7 @@ void TechTreeRenderer::SetCurrentCiv(int civId)
 	_selectedCivId = civId;
 
 	// Update render states
-	_staticNewTechTreeDataObject->UpdateRenderStates(civId, _unknownGameAndPlayerData);
+	_staticNewTechTreeDataObject->UpdateRenderStates(civId, _player);
 }
 
 int TechTreeRenderer::GetAgeCount()

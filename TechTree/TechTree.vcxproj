@@ -87,14 +87,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnotherControlRelatedClass.cpp" />
     <ClCompile Include="BaseUnitData.cpp" />
+    <ClCompile Include="BitmapInfo.cpp" />
     <ClCompile Include="ButtonControl.cpp" />
     <ClCompile Include="CivData.cpp" />
+    <ClCompile Include="ColorTable.cpp" />
     <ClCompile Include="ComboBoxControl.cpp" />
     <ClCompile Include="Control.cpp" />
-    <ClCompile Include="DirectDrawBufferData.cpp" />
-    <ClCompile Include="DirectDrawBufferDataListElement.cpp" />
+    <ClCompile Include="ControlListElement.cpp" />
+    <ClCompile Include="DirectDrawArea.cpp" />
+    <ClCompile Include="DirectDrawAreaNode.cpp" />
     <ClCompile Include="DirectDrawHandler.cpp" />
     <ClCompile Include="DropDownButtonControl.cpp" />
     <ClCompile Include="FontData.cpp" />
@@ -112,8 +114,6 @@
     <ClCompile Include="SlpFrameHeader.cpp" />
     <ClCompile Include="StaticControlContainer.cpp" />
     <ClCompile Include="TechTree.cpp" />
-    <ClCompile Include="functions.cpp" />
-    <ClCompile Include="ControlListElement.cpp" />
     <ClCompile Include="TechTreeData.cpp" />
     <ClCompile Include="TechTreeDesign.cpp" />
     <ClCompile Include="TechTreeElement.cpp" />
@@ -121,20 +121,21 @@
     <ClCompile Include="TechTreeWindow.cpp" />
     <ClCompile Include="TextBoxControl.cpp" />
     <ClCompile Include="TextFormatData.cpp" />
-    <ClCompile Include="Unknown1064ByteDirectDrawRelatedClass.cpp" />
-    <ClCompile Include="UnknownPaletteRelatedClass.cpp" />
     <ClCompile Include="VanillaTechTreeRenderer.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="functions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnotherControlRelatedClass.h" />
     <ClInclude Include="BaseUnitData.h" />
+    <ClInclude Include="BitmapInfo.h" />
     <ClInclude Include="ButtonControl.h" />
     <ClInclude Include="CivData.h" />
+    <ClInclude Include="ColorTable.h" />
     <ClInclude Include="ComboBoxControl.h" />
     <ClInclude Include="Control.h" />
-    <ClInclude Include="DirectDrawBufferData.h" />
-    <ClInclude Include="DirectDrawBufferDataListElement.h" />
+    <ClInclude Include="ControlListElement.h" />
+    <ClInclude Include="DirectDrawArea.h" />
+    <ClInclude Include="DirectDrawAreaNode.h" />
     <ClInclude Include="DirectDrawHandler.h" />
     <ClInclude Include="DrawUtilities.h" />
     <ClInclude Include="DropDownButtonControl.h" />
@@ -142,7 +143,6 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameDataHandler.h" />
     <ClInclude Include="GameType.h" />
-    <ClInclude Include="functions.h" />
     <ClInclude Include="LabelControl.h" />
     <ClInclude Include="LabelLineData.h" />
     <ClInclude Include="ListBoxControl.h" />
@@ -153,7 +153,6 @@
     <ClInclude Include="SlpFile.h" />
     <ClInclude Include="SlpFileElement.h" />
     <ClInclude Include="SlpFrameHeader.h" />
-    <ClInclude Include="ControlListElement.h" />
     <ClInclude Include="StaticControlContainer.h" />
     <ClInclude Include="TechTreeData.h" />
     <ClInclude Include="TechTreeDesign.h" />
@@ -162,11 +161,10 @@
     <ClInclude Include="TechTreeWindow.h" />
     <ClInclude Include="TextBoxControl.h" />
     <ClInclude Include="TextFormatData.h" />
-    <ClInclude Include="Unknown1064ByteDirectDrawRelatedClass.h" />
-    <ClInclude Include="UnknownPaletteRelatedClass.h" />
-    <ClInclude Include="VanillaTechTreeRenderer.h" />
     <ClInclude Include="VTableType.h" />
+    <ClInclude Include="VanillaTechTreeRenderer.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="functions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

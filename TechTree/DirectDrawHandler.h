@@ -9,7 +9,7 @@
 #include <ddraw.h>
 
 // Other includes
-#include "DirectDrawBufferData.h"
+#include "DirectDrawArea.h"
 
 /* DEFINITIONS */
 
@@ -22,9 +22,9 @@ protected: // Member variables
 	HINSTANCE _applicationInstance;
 	HWND _mainWindowHWnd;
 	HPALETTE _mainPalette;
-	DirectDrawBufferData *_backBufferBufferData;
-	DirectDrawBufferData *_primarySurfaceBufferData;
-	DirectDrawBufferDataListElement *_firstBufferDataListElement;
+	DirectDrawArea *_backBufferBufferData;
+	DirectDrawArea *_primarySurfaceBufferData;
+	DirectDrawAreaNode *_firstBufferDataListElement;
 	IDirectDraw *_directDrawObject;
 	IDirectDrawSurface *_primaryDirectDrawSurface;
 	IDirectDrawClipper *_directDrawClipper;

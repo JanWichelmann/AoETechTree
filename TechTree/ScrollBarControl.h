@@ -6,7 +6,7 @@
 #include "Control.h"
 
 // Other includes
-#include "SlpFileElement.h"
+#include "Shape.h"
 
 /* DEFINITIONS */
 
@@ -17,7 +17,7 @@ class ScrollBarControl : public Control
 protected: // Member variables
 	Control *_scrolledControl;
 	char _unknown100a[16];
-	SlpFileElement *_designSlp;
+	Shape *_designSlp;
 	int _designSlpUnknownValue;
 	int _designSlpScrollUpFrameIndex;
 	int _designSlpScrollDownFrameIndex;
